@@ -38,8 +38,13 @@ jobs:
           java-version: '21'
           cache: 'gradle'
 
-      - name: Grant Execute Permission for Gradle
-        run: chmod +x android/gradlew
+      - name: Verify and Restore Gradle Wrapper
+        run: |
+          cd android
+          mkdir -p gradle/wrapper
+          echo "Downloading pristine Gradle 8.14.3 wrapper jar..."
+          curl -sSL -o gradle/wrapper/gradle-wrapper.jar "https://raw.githubusercontent.com/gradle/gradle/v8.14.3/gradle/wrapper/gradle-wrapper.jar"
+          chmod +x gradlew
 
       - name: Build Android APK (Debug & Release)
         run: |
