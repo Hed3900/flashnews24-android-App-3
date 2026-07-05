@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "481516234200",
+    "project_id": "flashnews24-live-fcm",
+    "storage_bucket": "flashnews24-live-fcm.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:481516234200:android:89a1c2b3d4e5f60718293a",
+        "android_client_info": {
+          "package_name": "io.flashnews24.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-FlashNews24-Live-FCM-ApiKey-Prod01"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "FlashNews24",
+  "description": "Production-ready native Android Jetpack Compose news app simulator with MVVM, Room offline caching, Retrofit, FCM push notifications, and Android Studio project exporter.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
