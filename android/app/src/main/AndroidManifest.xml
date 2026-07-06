@@ -44,6 +44,9 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="high_importance_channel" />
+        <meta-data
+    android:name="com.google.android.gms.ads.APPLICATION_ID"
+    android:value="ca-app-pub-3288039417600063~5762407222"/>
     </application>
 
     <!-- Core Network and Offline Sync Permissions -->
