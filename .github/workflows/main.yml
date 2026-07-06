@@ -46,9 +46,9 @@ jobs:
           chmod +x gradlew
 
       - name: Decode Release Keystore
-        run: |
-          cd android
-          echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > release.keystore
+  run: |
+    cd android
+    echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > app/release.keystore
 
       - name: Build Release APK
         env:
