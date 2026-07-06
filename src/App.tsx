@@ -604,8 +604,9 @@ export default function App() {
             )}
               </>
           <nav>
-          
-</nav>
+           ...
+          </nav>
+
             )}
           </AndroidPhoneFrame>
         </div>
