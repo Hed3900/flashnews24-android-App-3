@@ -595,20 +595,17 @@ export default function App() {
             )}
 
             {activeScreen === 'notifications' && (
-              <NotificationsScreen
-                notifications={notifications}
-                allArticles={articles}
-                onSelectArticle={handleSelectArticle}
-                onClearNotifications={() => setNotifications([])}
-              />
-            )}
-              </>
-          <nav>
-           ...
-          </nav>
+  <NotificationsScreen
+    notifications={notifications}
+    allArticles={articles}
+    onSelectArticle={handleSelectArticle}
+    onClearNotifications={() => setNotifications([])}
+  />
+)}
 
-            )}
-          </AndroidPhoneFrame>
+</>
+)}
+</AndroidPhoneFrame>
         </div>
 
         {/* RIGHT COLUMN: MVVM Architecture Inspector & Play Store ZIP Exporter (Hidden on mobile if tab != inspector) */}
