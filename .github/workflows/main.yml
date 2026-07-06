@@ -49,12 +49,12 @@ jobs:
       - name: Build Android APK (Debug & Release)
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleRelease --no-daemon
 
       - name: Build Android App Bundle / AAB (Debug & Release)
         run: |
           cd android
-          ./gradlew bundleDebug --no-daemon
+          ./gradlew bundleRelease --no-daemon
 
       - name: Upload APK Artifacts
         uses: actions/upload-artifact@v4
