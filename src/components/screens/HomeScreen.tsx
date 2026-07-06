@@ -283,9 +283,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                         </div>
                         <div className="flex items-center justify-between mt-3 pt-2 border-t border-[#2D333B] text-[10px] text-[#E1E4E8] opacity-60">
                           <span>{art.publishedAt}</span>
-                          <span className="text-blue-400 font-bold flex items-center gap-0.5">
-                            Read More <ChevronRight className="w-3 h-3" />
-                          </span>
+                      
                         </div>
                       </div>
                     </div>
