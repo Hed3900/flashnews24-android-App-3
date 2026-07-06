@@ -603,40 +603,9 @@ export default function App() {
               />
             )}
               </>
-            <>
-  {activeScreen === 'home' && <HomeScreen ... />}
-
-  {activeScreen === 'detail' && <DetailScreen ... />}
-
-  {activeScreen === 'search' && <SearchScreen ... />}
-
-  {activeScreen === 'bookmarks' && <BookmarksScreen ... />}
-
-  {activeScreen === 'notifications' && <NotificationsScreen ... />}
-
-  {/* ఇక్కడ Bottom Navigation */}
-  
-    <nav className="fixed bottom-0 left-0 right-0 h-16 bg-[#14171C] border-t border-[#2D333B] flex justify-around items-center">
-
-  <button onClick={() => setActiveScreen('home')}>
-    🏠 Home
-  </button>
-
-  <button onClick={() => setActiveScreen('search')}>
-    🔍 Search
-  </button>
-
-  <button onClick={() => setActiveScreen('bookmarks')}>
-    🔖 Saved
-  </button>
-
-  <button onClick={() => setActiveScreen('notifications')}>
-    🔔 Alerts
-  </button>
-
+          <nav>
+          
 </nav>
-  
-</>
             )}
           </AndroidPhoneFrame>
         </div>
