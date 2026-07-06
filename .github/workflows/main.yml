@@ -3,35 +3,32 @@ name: Build Android APK & AAB
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
-  build-android:
-    name: Build Vite & Capacitor Android
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 22
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
-          cache: "npm"
+          node-version: 22
+          cache: npm
 
       - name: Install Dependencies
         run: npm ci
 
-      - name: Build Vite App
+      - name: Build Web
         run: npm run build
 
-      - name: Run Capacitor Sync
+      - name: Capacitor Sync
         run: npx cap sync android
 
-      - name: Setup Java 21
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -42,19 +39,23 @@ jobs:
         run: |
           cd android
           mkdir -p gradle/wrapper
-          curl -sSL -o gradle/wrapper/gradle-wrapper.jar https://raw.githubusercontent.com/gradle/gradle/v8.14.3/gradle/wrapper/gradle-wrapper.jar
+          curl -L https://raw.githubusercontent.com/gradle/gradle/v8.14.3/gradle/wrapper/gradle-wrapper.jar -o gradle/wrapper/gradle-wrapper.jar
           chmod +x gradlew
 
       - name: Decode Release Keystore
         run: |
           cd android/app
-          echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > release.keystore
+          echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > release.keystore
+          ls -lh release.keystore
+          keytool -list \
+            -keystore release.keystore \
+            -storepass "${{ secrets.KEYSTORE_PASSWORD }}"
 
       - name: Build Release APK
         env:
           ORG_GRADLE_PROJECT_MYAPP_UPLOAD_STORE_FILE: release.keystore
-          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           ORG_GRADLE_PROJECT_MYAPP_UPLOAD_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           cd android
@@ -63,8 +64,8 @@ jobs:
       - name: Build Release AAB
         env:
           ORG_GRADLE_PROJECT_MYAPP_UPLOAD_STORE_FILE: release.keystore
-          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           ORG_GRADLE_PROJECT_MYAPP_UPLOAD_STORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           cd android
