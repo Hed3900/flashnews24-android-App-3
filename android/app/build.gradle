@@ -33,10 +33,9 @@ android {
                 keyPassword keystoreProperties.getProperty("keyPassword", "flashnews24")
             } else {
     storeFile file("release.keystore")
-    storePassword System.getenv("ORG_GRADLE_PROJECT_MYAPP_UPLOAD_STORE_PASSWORD")
-    keyAlias System.getenv("ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_ALIAS")
-    keyPassword System.getenv("ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_PASSWORD")
-            }
+storePassword System.getenv("ORG_GRADLE_PROJECT_MYAPP_UPLOAD_STORE_PASSWORD")
+keyAlias System.getenv("ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_ALIAS")
+keyPassword System.getenv("ORG_GRADLE_PROJECT_MYAPP_UPLOAD_KEY_PASSWORD")
             v1SigningEnabled true
             v2SigningEnabled true
         }
