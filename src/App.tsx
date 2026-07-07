@@ -310,12 +310,7 @@ export default function App() {
     console.log('Share cancelled', err);
   }
 };
-<button
-  onClick={() => setMenuOpen(true)}
-  className="p-2 rounded-full hover:bg-white/10"
->
-  <MenuIcon className="w-5 h-5 text-white" />
-</button>
+
   const handleBroadcastNotification = (title: string, body: string, priority: 'HIGH' | 'NORMAL', articleId?: string) => {
     const newNotif: FcmNotification = {
       id: `fcm-${Date.now()}`,
