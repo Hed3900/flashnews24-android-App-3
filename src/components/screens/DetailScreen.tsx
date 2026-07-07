@@ -181,50 +181,7 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
           </span>
         </div>
 
-        {/* ✨ Gemini AI Smart Takeaway Badge */}
-        <div className="bg-[#1A1D23] border border-[#2D333B] rounded-[24px] p-4 shadow-2xl">
-          <div 
-            onClick={() => setShowAiCard(!showAiCard)}
-            className="flex items-center justify-between cursor-pointer select-none"
-          >
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 rounded-lg bg-blue-600 text-white shadow-md shadow-blue-900/20">
-                <Sparkles className="w-4 h-4" />
-              </div>
-              <div>
-                <h3 className="text-xs font-bold tracking-tight text-blue-400 flex items-center gap-1.5">
-                  GEMINI AI SMART TAKEAWAY
-                  <span className="text-[9px] bg-blue-600/20 text-blue-400 px-1.5 py-0.5 rounded font-bold uppercase tracking-widest border border-blue-500/30">3.5-FLASH</span>
-                </h3>
-                <p className="text-[10px] text-[#E1E4E8] opacity-60 font-medium">Real-time synthesis & sentiment analysis</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-md bg-blue-600/20 text-blue-400 border border-blue-500/30">
-                {sentiment}
-              </span>
-              {showAiCard ? <ChevronUp className="w-4 h-4 text-[#E1E4E8] opacity-60" /> : <ChevronDown className="w-4 h-4 text-[#E1E4E8] opacity-60" />}
-            </div>
-          </div>
-
-          {showAiCard && (
-            <div className="mt-3 pt-3 border-t border-[#2D333B] space-y-2 animate-in fade-in duration-200">
-              {isSummarizing ? (
-                <div className="flex items-center gap-2 text-xs text-blue-400 py-2 animate-pulse font-medium">
-                  <Sparkles className="w-4 h-4 animate-spin" />
-                  Synthesizing key insights from article content...
-                </div>
-              ) : (
-                aiSummary?.map((point, idx) => (
-                  <div key={idx} className="flex items-start gap-2 text-xs text-[#E1E4E8] opacity-90">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 flex-shrink-0 mt-0.5" />
-                    <span className="font-normal">{point}</span>
-                  </div>
-                ))
-              )}
-            </div>
-          )}
-        </div>
+        
 
         {/* Main Article Body */}
         <div className={`space-y-4 text-[#E1E4E8] ${fontClasses[fontSize]} pt-1`}>
@@ -242,15 +199,7 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
             <p className="leading-relaxed opacity-90">{article.summary}</p>
           )}
 
-          <div className="bg-[#1A1D23] p-4 rounded-[24px] border border-[#2D333B] shadow-lg mt-6">
-            <h4 className="text-xs font-bold mb-1 flex items-center gap-1.5 text-white">
-              <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
-              100% Native Jetpack Compose Renderer (No WebView)
-            </h4>
-            <p className="text-[11px] text-[#E1E4E8] opacity-60 leading-relaxed">
-              This screen renders live Blogger feed articles from flashnews24.site using native Jetpack Compose Material 3 typography components without embedding WebViews or HTML frames. All font scaling, text-to-speech simulations, and image loading are handled via native Android architectural patterns.
-            </p>
-          </div>
+          
         </div>
       </div>
     </div>
