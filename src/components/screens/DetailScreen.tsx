@@ -98,15 +98,16 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
           >
             {isPlayingAudio ? <Volume2 className="w-4 h-4 text-white" /> : <VolumeX className="w-4 h-4 text-white" />
           </button>
+              
           <button
-           onClick={() =>
-             setFontSize(prev =>
-            prev === 'sm' ? 'md' : prev === 'md' ? 'lg' : 'sm'
-          )
-         }
-        className="p-2 rounded-full text-white hover:bg-white/10 transition-colors"
-        title="Cycle font size (Small / Normal / Large)"
-          >
+  onClick={() =>
+    setFontSize(prev =>
+      prev === 'sm' ? 'md' : prev === 'md' ? 'lg' : 'sm'
+    )
+  }
+  className="p-2 rounded-full text-white hover:bg-white/10 transition-colors"
+  title="Cycle font size (Small / Normal / Large)"
+>
             <Share2 className="w-4 h-4 text-white" />
           </button>
           <button
