@@ -392,9 +392,7 @@ export default function App() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-screen bg-[#0F1115] text-[#E1E4E8] font-sans overflow-hidden select-none">
-          </div>
-            isDarkMode={isDarkMode}
+           isDarkMode={isDarkMode}
             onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
             activeNotification={activeBanner}
             onDismissNotification={() => setActiveBanner(null)}
@@ -472,9 +470,6 @@ export default function App() {
 
 </>
 )}
-
-          {/* RIGHT COLUMN: MVVM Architecture Inspector & Play Store ZIP Exporter (Hidden on mobile if tab != inspector) */}
-
 </div>
 </div>
 );
