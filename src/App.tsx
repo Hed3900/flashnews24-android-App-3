@@ -28,6 +28,13 @@ import {
   loadNativeArticlesCache
 } from './services/capacitorService';
 import { Flame, Bell, Database, Smartphone, Code, Wifi, Sparkles, Download } from 'lucide-react';
+import {
+  Menu,
+  MenuItem,
+  IconButton
+} from '@capacitor-community/material-menu';
+
+import { Menu as MenuIcon } from 'lucide-react';
 
 const INITIAL_ARTICLES: Article[] = [
   {
@@ -134,6 +141,7 @@ export default function App() {
   const [isGeneratingAiNews, setIsGeneratingAiNews] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [isSyncingBlogger, setIsSyncingBlogger] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Workbench tabs for responsive screens
   const [mobileWorkbenchTab, setMobileWorkbenchTab] = useState<'phone' | 'fcm' | 'inspector'>('phone');
@@ -302,7 +310,12 @@ export default function App() {
     console.log('Share cancelled', err);
   }
 };
-
+<button
+  onClick={() => setMenuOpen(true)}
+  className="p-2 rounded-full hover:bg-white/10"
+>
+  <MenuIcon className="w-5 h-5 text-white" />
+</button>
   const handleBroadcastNotification = (title: string, body: string, priority: 'HIGH' | 'NORMAL', articleId?: string) => {
     const newNotif: FcmNotification = {
       id: `fcm-${Date.now()}`,
@@ -450,7 +463,68 @@ export default function App() {
             )}
           </>
         )}
-      
+      {menuOpen && (
+  <div className="fixed inset-0 z-50">
+    <div
+      className="absolute inset-0"
+      onClick={() => setMenuOpen(false)}
+    />
+
+    <div className="absolute top-16 right-4 w-56 bg-[#1f1f1f] rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
+
+      <button
+        className="w-full text-left px-4 py-3 hover:bg-gray-700"
+        onClick={() => {
+          setMenuOpen(false);
+          setActiveScreen("home");
+        }}
+      >
+        🏠 Home
+      </button>
+
+      <button
+        className="w-full text-left px-4 py-3 hover:bg-gray-700"
+        onClick={() => {
+          setMenuOpen(false);
+          setActiveScreen("bookmarks");
+        }}
+      >
+        🔖 Bookmarks
+      </button>
+
+      <button
+        className="w-full text-left px-4 py-3 hover:bg-gray-700"
+      >
+        🔔 Notifications
+      </button>
+
+      <button
+        className="w-full text-left px-4 py-3 hover:bg-gray-700"
+      >
+        ⭐ Rate App
+      </button>
+
+      <button
+        className="w-full text-left px-4 py-3 hover:bg-gray-700"
+      >
+        📤 Share App
+      </button>
+
+      <button
+        className="w-full text-left px-4 py-3 hover:bg-gray-700"
+      >
+        ⚙️ Settings
+      </button>
+
+      <button
+        className="w-full text-left px-4 py-3 hover:bg-gray-700"
+      >
+        ℹ️ About
+      </button>
+
+    </div>
+  </div>
+)}
     </div>
   );
 }
