@@ -417,17 +417,7 @@ export default function App() {
                     : 'text-[#E1E4E8] opacity-60 hover:opacity-100'
                 }`}
               >
-                <Smartphone className="w-3.5 h-3.5" />
-                <span>Home Feed</span>
-              </button>
-              <button
-                onClick={() => setActiveScreen('bookmarks')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-                  activeScreen === 'bookmarks'
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20'
-                    : 'text-[#E1E4E8] opacity-60 hover:opacity-100'
-                }`}
-              >
+                
                 <Database className="w-3.5 h-3.5" />
                 <span>Room Bookmarks ({bookmarkedIds.length})</span>
               </button>
