@@ -315,7 +315,20 @@ export default function App() {
     console.log('Share cancelled', err);
   }
 };
-
+  
+const handleShareApp = async () => {
+  try {
+    await Share.share({
+      title: "FlashNews24",
+      text: "Get the latest breaking news with FlashNews24!",
+      url: "https://play.google.com/store/apps/details?id=com.flashnews24.app",
+      dialogTitle: "Share FlashNews24",
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+  
   const handleBroadcastNotification = (title: string, body: string, priority: 'HIGH' | 'NORMAL', articleId?: string) => {
     const newNotif: FcmNotification = {
       id: `fcm-${Date.now()}`,
