@@ -79,17 +79,19 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
           <ArrowLeft className="w-4 h-4 text-white" />
           <span>Back</span>
         </button>
-
-        <div className="flex items-center gap-1">
-          <button
-            onClick={() => setFontSize(prev => prev === 'sm' ? 'md' : prev === 'md' ? 'lg' : 'sm')}
-            className=
-            title="Cycle font size (Small / Normal / Large)"
-          >
-            <Type className="w-4 h-4 text-white" />
-            <span className="text-[9px] uppercase">{fontSize}</span>
-          </button>
-          <button
+        <button
+  onClick={() =>
+    setFontSize(prev =>
+      prev === 'sm' ? 'md' : prev === 'md' ? 'lg' : 'sm'
+    )
+  }
+  className="p-2 rounded-full text-white hover:bg-white/10 transition-colors flex items-center gap-1"
+  title="Cycle font size (Small / Normal / Large)"
+>
+  <Type className="w-4 h-4 text-white" />
+  <span className="text-[9px] uppercase">{fontSize}</span>
+</button>
+          <button>
             onClick={() => setIsPlayingAudio(!isPlayingAudio)}
             className={`p-2 rounded-full transition-colors ${
               isPlayingAudio ? 'bg-blue-600 text-white animate-pulse' : 'hover:bg-white/10'
@@ -98,18 +100,13 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
           >
             {isPlayingAudio ? <Volume2 className="w-4 h-4 text-white" /> : <VolumeX className="w-4 h-4 text-white" />
           </button>
-          <button>
-              onClick={() =>
-    setFontSize(prev =>
-      prev === 'sm' ? 'md' : prev === 'md' ? 'lg' : 'sm'
-          )
-        }
-  className="p-2 rounded-full text-white hover:bg-white/10 transition-colors flex items-center gap-1"
-  title="Cycle font size (Small / Normal / Large)"
-     >
-  <Type className="w-4 h-4 text-white" />
-  <span className="text-[9px] uppercase">{fontSize}</span>
-       </button>
+          <button
+  onClick={() => onShare(article)}
+  className="p-2 rounded-full text-white hover:bg-white/10 transition-colors"
+  title="Share via Intent"
+>
+  <Share2 className="w-4 h-4 text-white" />
+</button>
           <button
             onClick={() => onToggleBookmark(article.id)}
             className="p-2 rounded-full text-white hover:bg-white/10 transition-colors"
