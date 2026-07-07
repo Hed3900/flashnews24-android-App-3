@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { Share } from '@capacitor/share';
 import { Article, NewsCategory, NewsUiState, RetrofitLog, FcmNotification, SimulatorScreen } from './types';
 import { HomeScreen } from './components/screens/HomeScreen';
 import { DetailScreen } from './components/screens/DetailScreen';
@@ -289,18 +290,18 @@ export default function App() {
     setActiveScreen('detail');
   };
 
-  const handleShareArticle = (article: Article) => {
-    if (navigator.share) {
-      navigator.share({
-        title: article.title,
-        text: article.summary,
-        url: article.url
-      }).catch(() => {});
-    } else {
-      navigator.clipboard.writeText(`${article.title}\n${article.url}`);
-      alert(`Shared: ${article.title}\nLink copied to clipboard!`);
-    }
-  };
+  const handleShareArticle = async (article: Article) => {
+  try {
+    await Share.share({
+      title: article.title,
+      text: article.summary,
+      url: article.url,
+      dialogTitle: 'Share News'
+    });
+  } catch (err) {
+    console.log('Share cancelled', err);
+  }
+};
 
   const handleBroadcastNotification = (title: string, body: string, priority: 'HIGH' | 'NORMAL', articleId?: string) => {
     const newNotif: FcmNotification = {
