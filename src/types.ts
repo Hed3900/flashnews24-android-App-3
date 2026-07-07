@@ -68,6 +68,7 @@ export interface AndroidProjectFile {
   description: string;
 }
 
-export type SimulatorScreen = 'home' | 'detail' | 'bookmarks' | 'search' | 'notifications';
+export type SimulatorScreen = 'home' | 'detail' | 'bookmarks' | 'search' | 'notifications' | "about"
+| 'settings' | 'privacy' | 'terms' | 'contact'
 
 export type InspectorTab = 'room' | 'retrofit' | 'mvvm' | 'fcm' | 'code_export';
