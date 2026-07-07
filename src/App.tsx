@@ -452,11 +452,3 @@ export default function App() {
               </button>
             </div>
           </div>
-
-        {/* RIGHT COLUMN: MVVM Architecture Inspector & Play Store ZIP Exporter (Hidden on mobile if tab != inspector) */}
-        <div className={`w-full lg:w-[420px] xl:w-[480px] flex-shrink-0 h-full ${
-          mobileWorkbenchTab === 'inspector' ? 'flex' : 'hidden lg:flex'
-        }`}>
-      
-        </div>
-  );
