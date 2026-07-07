@@ -112,10 +112,10 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
           >
             <Bookmark
               className={`w-4 h-4 ${
-  isBookmarked
-    ? 'fill-blue-500 text-blue-500'
-    : 'text-white'
-}`}
+                   isBookmarked
+                  ? 'fill-blue-500 text-blue-500'
+                : 'text-white'
+               }`}
             />
           </button>
         </div>
