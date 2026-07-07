@@ -91,7 +91,7 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
   <Type className="w-4 h-4 text-white" />
   <span className="text-[9px] uppercase">{fontSize}</span>
 </button>
-          <button>
+          <button
             onClick={() => setIsPlayingAudio(!isPlayingAudio)}
             className={`p-2 rounded-full transition-colors ${
               isPlayingAudio ? 'bg-blue-600 text-white animate-pulse' : 'hover:bg-white/10'
