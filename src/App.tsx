@@ -491,57 +491,104 @@ export default function App() {
 
     <div className="absolute top-16 right-4 w-56 bg-[#1f1f1f] rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
 
-      <button
-        className="w-full text-left px-4 py-3 hover:bg-gray-700"
-        onClick={() => {
-          setMenuOpen(false);
-          setActiveScreen("home");
-        }}
-      >
-        🏠 Home
-      </button>
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("home");
+    }}
+  >
+    🏠 Home
+  </button>
 
-      <button
-        className="w-full text-left px-4 py-3 hover:bg-gray-700"
-        onClick={() => {
-          setMenuOpen(false);
-          setActiveScreen("bookmarks");
-        }}
-      >
-        🔖 Bookmarks
-      </button>
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("bookmarks");
+    }}
+  >
+    🔖 Bookmarks
+  </button>
 
-      <button
-        className="w-full text-left px-4 py-3 hover:bg-gray-700"
-      >
-        🔔 Notifications
-      </button>
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("notifications");
+    }}
+  >
+    🔔 Notifications
+  </button>
 
-      <button
-        className="w-full text-left px-4 py-3 hover:bg-gray-700"
-      >
-        ⭐ Rate App
-      </button>
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      window.open("https://play.google.com/store/apps/details?id=com.flashnews24.app","_blank");
+    }}
+  >
+    ⭐ Rate App
+  </button>
 
-      <button
-        className="w-full text-left px-4 py-3 hover:bg-gray-700"
-      >
-        📤 Share App
-      </button>
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={handleShareApp}
+  >
+    📤 Share App
+  </button>
 
-      <button
-        className="w-full text-left px-4 py-3 hover:bg-gray-700"
-      >
-        ⚙️ Settings
-      </button>
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("settings");
+    }}
+  >
+    ⚙️ Settings
+  </button>
 
-      <button
-        className="w-full text-left px-4 py-3 hover:bg-gray-700"
-      >
-        ℹ️ About
-      </button>
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("about");
+    }}
+  >
+    ℹ️ About
+  </button>
 
-    </div>
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("privacy");
+    }}
+  >
+    🔒 Privacy Policy
+  </button>
+
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("terms");
+    }}
+  >
+    📜 Terms & Conditions
+  </button>
+
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("contact");
+    }}
+  >
+    📞 Contact Us
+  </button>
+
+</div>
   </div>
 )}
     </div>
