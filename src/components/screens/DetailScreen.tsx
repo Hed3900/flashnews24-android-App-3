@@ -105,11 +105,12 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
       prev === 'sm' ? 'md' : prev === 'md' ? 'lg' : 'sm'
     )
   }
-  className="p-2 rounded-full text-white hover:bg-white/10 transition-colors"
+  className="p-2 rounded-full text-white hover:bg-white/10 transition-colors flex items-center gap-1"
   title="Cycle font size (Small / Normal / Large)"
 >
-            <Share2 className="w-4 h-4 text-white" />
-          </button>
+  <Type className="w-4 h-4 text-white" />
+  <span className="text-[9px] uppercase">{fontSize}</span>
+</button>
           <button
             onClick={() => onToggleBookmark(article.id)}
             className="p-2 rounded-full text-white hover:bg-white/10 transition-colors"
