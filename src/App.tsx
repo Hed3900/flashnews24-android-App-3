@@ -417,28 +417,6 @@ export default function App() {
                     : 'text-[#E1E4E8] opacity-60 hover:opacity-100'
                 }`}
               >
-                
-                <Database className="w-3.5 h-3.5" />
-                <span>Room Bookmarks ({bookmarkedIds.length})</span>
-              </button>
-              <button
-                onClick={() => setActiveScreen('notifications')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-                  activeScreen === 'notifications'
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20'
-                    : 'text-[#E1E4E8] opacity-60 hover:opacity-100'
-                }`}
-              >
-                <Bell className="w-3.5 h-3.5" />
-                <span>FCM Alerts ({notifications.length})</span>
-              </button>
-              <button
-                onClick={() => setShowSplash(true)}
-                className="px-3 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-blue-600/30 to-indigo-600/30 text-blue-300 hover:text-white border border-blue-500/40 hover:border-blue-400 transition-all flex items-center gap-1 shadow-sm"
-                title="Replay Android Native Boot Splash Screen"
-              >
-                <Sparkles className="w-3.5 h-3.5 animate-spin" />
-                <span>⚡ Boot Splash</span>
               </button>
             </div>
           </div>
