@@ -134,7 +134,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
           <div>
             <h1 className="text-base font-bold tracking-tight flex items-center gap-1">
-              FlashNews<span className="text-Blue-500">24</span>
+              FlashNews<span className="text-blue-500">24</span>
             </h1>
             <p className="text-[9px] text-[#E1E4E8] opacity-60 font-medium">Blogger Live Feed • flashnews24.site</p>
           </div>
@@ -162,7 +162,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             }`}
             title="Simulate Pull-to-Refresh (Retrofit sync)"
           >
-            <RotateCw className="w-4 h-4" />
+            <RotateCcw className="w-4 h-4" />
           </button>
         </div>
       </div>
