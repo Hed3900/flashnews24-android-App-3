@@ -219,58 +219,45 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
             <p className="leading-relaxed opacity-90">{article.summary}</p>
           )}
 
-          {/* Footer */}
+          {/* ===== Footer ===== */}
 <div className="mt-10 border-t border-gray-800 pt-6">
 
   <div className="flex gap-3 mb-6">
+
     <button
       onClick={onToggleBookmark}
-      className="flex-1 bg-blue-600 hover:bg-blue-700 rounded-xl py-3 font-semibold"
+      className="flex-1 bg-blue-600 hover:bg-blue-700 rounded-xl py-3 font-semibold transition"
     >
-      🔖 Bookmark
+      🔖 {isBookmarked ? "Bookmarked" : "Bookmark"}
     </button>
 
     <button
       onClick={onShare}
-      className="flex-1 bg-green-600 hover:bg-green-700 rounded-xl py-3 font-semibold"
+      className="flex-1 bg-green-600 hover:bg-green-700 rounded-xl py-3 font-semibold transition"
     >
       📤 Share
     </button>
+
   </div>
 
-  <div className="bg-[#161B22] rounded-2xl p-5 mb-6">
-    <h3 className="text-lg font-bold mb-3">
-      Follow FlashNews24
-    </h3>
+  <div className="bg-[#161B22] rounded-2xl p-5 mb-5">
 
-    <div className="space-y-2 text-gray-300">
-      <p>🌐 Website : flashnews24.site</p>
-      <p>📘 Facebook</p>
-      <p>📸 Instagram</p>
-      <p>🐦 X (Twitter)</p>
-      <p>📢 Telegram</p>
-      <p>▶ YouTube</p>
-    </div>
-  </div>
-
-  <div className="bg-[#161B22] rounded-2xl p-5 mb-6">
     <h3 className="text-lg font-bold mb-2">
-      About FlashNews24
+      FlashNews24
     </h3>
 
     <p className="text-gray-400 leading-7">
-      FlashNews24 delivers breaking news from around the world including
-      politics, technology, business, sports, AI, entertainment and local
-      updates with a fast and reliable reading experience.
+      FlashNews24 delivers breaking news, world news, technology,
+      business, sports, AI and local updates with a fast,
+      reliable and clean reading experience.
     </p>
+
   </div>
 
-  <div className="text-center text-gray-500 text-sm pb-10">
+  <div className="text-center text-gray-500 text-sm pb-8">
     © 2026 FlashNews24
     <br />
-    All Rights Reserved.
-    <br />
-    Privacy Policy • Terms & Conditions • Contact Us
+    Fast • Trusted • Breaking News
   </div>
 
 </div>
