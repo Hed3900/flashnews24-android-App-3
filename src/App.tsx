@@ -441,12 +441,14 @@ const handleShareApp = async () => {
 )}
             {activeScreen === 'detail' && selectedArticle && (
               <DetailScreen
-                article={selectedArticle}
-                isBookmarked={bookmarkedIds.includes(selectedArticle.id)}
-                onBack={() => setActiveScreen('home')}
-                onToggleBookmark={handleToggleBookmark}
-                onShare={handleShareArticle}
-              />
+  article={selectedArticle}
+  isBookmarked={bookmarkedIds.includes(selectedArticle.id)}
+  relatedArticles={articles.filter(a => a.id !== selectedArticle.id)}
+  onBack={() => setActiveScreen("home")}
+  onToggleBookmark={handleToggleBookmark}
+  onShare={handleShareArticle}
+  onSelectArticle={handleSelectArticle}
+/>
             )}
 
             {activeScreen === 'bookmarks' && (
