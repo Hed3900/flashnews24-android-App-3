@@ -393,32 +393,6 @@ export default function App() {
 
   return (
     <div className="w-full h-screen bg-[#0F1115]">
-    
-      isDarkMode={isDarkMode}
-      onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
-      activeNotification={activeBanner}
-      onDismissNotification={() => setActiveBanner(null)}
-      onNotificationClick={(notif) => {
-        setActiveBanner(null);
-
-        if (notif.articleId) {
-          const target = articles.find(a => a.id === notif.articleId);
-
-          if (target) {
-            setSelectedArticle(target);
-            setActiveScreen('detail');
-            return;
-          }
-        }
-
-        setActiveScreen('notifications');
-      }}
-      isOffline={isOffline}
-      onToggleOffline={() => setIsOffline(!isOffline)}
-    >
-    
-            
-            {/* Render Boot Splash Screen or active native mobile screen */}
             {showSplash ? (
               <SplashScreen onFinish={() => setShowSplash(false)} />
             ) : (
