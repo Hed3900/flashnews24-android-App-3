@@ -8,14 +8,16 @@ interface DetailScreenProps {
   onBack: () => void;
   onToggleBookmark: (id: string) => void;
   onShare: (article: Article) => void;
-}
-
+  relatedArticles: Article[];
+  onSelectArticle: (article: Article) => void;
+  
 export const DetailScreen: React.FC<DetailScreenProps> = ({
   article,
   isBookmarked,
   onBack,
   onToggleBookmark,
-  onShare
+  onShare,
+  onSelectArticle
 }) => {
   const [fontSize, setFontSize] = useState<'sm' | 'md' | 'lg'>('md');
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
