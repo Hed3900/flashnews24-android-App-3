@@ -14,6 +14,7 @@ interface HomeScreenProps {
   onOpenSearch: () => void;
   isRefreshing: boolean;
   isOffline: boolean;
+  setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const STANDARD_CATEGORIES: NewsCategory[] = ['Tech', 'AI', 'Business', 'World', 'Science', 'Sports'];
@@ -66,7 +67,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onRefresh,
   onOpenSearch,
   isRefreshing,
-  isOffline
+  isOffline,
+setMenuOpen
 }) => {
   const [isPulling, setIsPulling] = useState(false);
 
@@ -162,6 +164,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             }`}
             title="Simulate Pull-to-Refresh (Retrofit sync)"
           >
+            <button
+  onClick={() => setMenuOpen(true)}
+  className="p-2 rounded-full hover:bg-white/10 transition-colors"
+  title="Menu"
+>
+  <MenuIcon className="w-5 h-5 text-blue-500" />
+</button>
             <RotateCcw className="w-4 h-4 text-blue-500" />
           </button>
         </div>
