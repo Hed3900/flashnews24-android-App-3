@@ -149,10 +149,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           )}
           <button
             onClick={onOpenSearch}
-            className="p-2 rounded-full text-[#E4EAE8] hover:bg-white/10 transition-colors"
+            className="p-2 rounded-full hover:bg-white/10 transition-colors"
             title="Search news"
           >
-            <Search className="w-4 h-4 text-[#E4EAE8]" />
+            <Search className="w-4 h-4 opacity-80" />
           </button>
           <button
             onClick={handleManualRefresh}
@@ -162,7 +162,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             }`}
             title="Simulate Pull-to-Refresh (Retrofit sync)"
           >
-            <RotateCw className="w-4 h-4 text-[#E4EAE8]" />
+            <RotateCw className="w-4 h-4" />
           </button>
         </div>
       </div>
