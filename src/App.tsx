@@ -396,11 +396,6 @@ export default function App() {
       
         
         {/* LEFT COLUMN: FCM Push Lab & Live AI News Dispatcher (Hidden on mobile if tab != fcm) */}
-        <div className={`w-full lg:w-[360px] xl:w-[400px] flex-shrink-0 h-full ${
-          mobileWorkbenchTab === 'fcm' ? 'flex' : 'hidden lg:flex'
-        }`}
-          >
-        </div>
 
         {/* CENTER COLUMN: Android Native Smartphone Simulator (Pixel Frame) */}
         <div className={`flex-1 flex flex-col items-center justify-center min-w-[380px] h-full ${
@@ -420,7 +415,6 @@ export default function App() {
               </button>
             </div>
           </div>
-          <AndroidPhoneFrame
             isDarkMode={isDarkMode}
             onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
             activeNotification={activeBanner}
@@ -499,14 +493,9 @@ export default function App() {
 
 </>
 )}
-</AndroidPhoneFrame>
+
           {/* RIGHT COLUMN: MVVM Architecture Inspector & Play Store ZIP Exporter (Hidden on mobile if tab != inspector) */}
-<div
-  className={`w-full lg:w-[420px] xl:w-[480px] flex-shrink-0 h-full ${
-    mobileWorkbenchTab === 'inspector' ? 'flex' : 'hidden lg:flex'
-  }`}
->
-</div>
+
 </div>
 </div>
 );
