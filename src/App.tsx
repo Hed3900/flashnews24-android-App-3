@@ -5,7 +5,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Article, NewsCategory, NewsUiState, RetrofitLog, FcmNotification, SimulatorScreen } from './types';
-import { AndroidPhoneFrame } from './components/AndroidPhoneFrame';
 import { HomeScreen } from './components/screens/HomeScreen';
 import { DetailScreen } from './components/screens/DetailScreen';
 import { BookmarksScreen } from './components/screens/BookmarksScreen';
