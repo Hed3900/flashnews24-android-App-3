@@ -99,22 +99,26 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
             {isPlayingAudio ? <Volume2 className="w-4 h-4 text-white" /> : <VolumeX className="w-4 h-4 text-white" />
           </button>
           <button
-            onClick={() => onShare(article)}
-            className="p-2 rounded-full text-white hover:bg-white/10 transition-colors""
-            title="Share via Intent"
+           onClick={() =>
+             setFontSize(prev =>
+            prev === 'sm' ? 'md' : prev === 'md' ? 'lg' : 'sm'
+          )
+         }
+        className="p-2 rounded-full text-white hover:bg-white/10 transition-colors"
+        title="Cycle font size (Small / Normal / Large)"
           >
             <Share2 className="w-4 h-4 text-white" />
           </button>
           <button
             onClick={() => onToggleBookmark(article.id)}
-            className="p-2 rounded-full text-white hover:bg-white/10 transition-colors""
+            className="p-2 rounded-full text-white hover:bg-white/10 transition-colors"
             title={isBookmarked ? 'Remove from Room DB' : 'Save to Room DB'}
           >
             <Bookmark
               className={`w-4 h-4 ${
-                   isBookmarked
-                  ? 'fill-blue-500 text-blue-500'
-                : 'text-white'
+               isBookmarked
+              ? 'fill-blue-500 text-blue-500'
+              : 'text-white'
                }`}
             />
           </button>
