@@ -452,6 +452,86 @@ export default function App() {
               </button>
             </div>
           </div>
+          <AndroidPhoneFrame
+            isDarkMode={isDarkMode}
+            onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
+            activeNotification={activeBanner}
+            onDismissNotification={() => setActiveBanner(null)}
+            onNotificationClick={(notif) => {
+              setActiveBanner(null);
+              if (notif.articleId) {
+                const target = articles.find(a => a.id === notif.articleId);
+                if (target) {
+                  setSelectedArticle(target);
+                  setActiveScreen('detail');
+                  return;
+                }
+              }
+              setActiveScreen('notifications');
+            }}
+            isOffline={isOffline}
+            onToggleOffline={() => setIsOffline(!isOffline)}
+          >
+            {/* Render Boot Splash Screen or active native mobile screen */}
+            {showSplash ? (
+              <SplashScreen onFinish={() => setShowSplash(false)} />
+            ) : (
+              <>
+                {activeScreen === 'home' && (
+              <HomeScreen
+                articles={articles}
+                bookmarkedIds={bookmarkedIds}
+                selectedCategory={selectedCategory}
+                onSelectCategory={setSelectedCategory}
+                onSelectArticle={handleSelectArticle}
+                onToggleBookmark={handleToggleBookmark}
+                onShareArticle={handleShareArticle}
+                onRefresh={handleRefreshNews}
+                onOpenSearch={() => setActiveScreen('search')}
+                isRefreshing={isRefreshing}
+                isOffline={isOffline}
+              />
+            )}
+
+            {activeScreen === 'detail' && selectedArticle && (
+              <DetailScreen
+                article={selectedArticle}
+                isBookmarked={bookmarkedIds.includes(selectedArticle.id)}
+                onBack={() => setActiveScreen('home')}
+                onToggleBookmark={handleToggleBookmark}
+                onShare={handleShareArticle}
+              />
+            )}
+
+            {activeScreen === 'bookmarks' && (
+              <BookmarksScreen
+                articles={bookmarkedArticles}
+                onSelectArticle={handleSelectArticle}
+                onRemoveBookmark={handleToggleBookmark}
+                onClearAllBookmarks={() => setBookmarkedIds([])}
+              />
+            )}
+
+            {activeScreen === 'search' && (
+              <SearchScreen
+                allArticles={articles}
+                onSelectArticle={handleSelectArticle}
+                onClose={() => setActiveScreen('home')}
+              />
+            )}
+
+            {activeScreen === 'notifications' && (
+  <NotificationsScreen
+    notifications={notifications}
+    allArticles={articles}
+    onSelectArticle={handleSelectArticle}
+    onClearNotifications={() => setNotifications([])}
+  />
+)}
+
+</>
+)}
+</AndroidPhoneFrame>
           {/* RIGHT COLUMN: MVVM Architecture Inspector & Play Store ZIP Exporter (Hidden on mobile if tab != inspector) */}
 <div
   className={`w-full lg:w-[420px] xl:w-[480px] flex-shrink-0 h-full ${
