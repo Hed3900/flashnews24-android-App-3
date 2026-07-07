@@ -398,7 +398,7 @@ export default function App() {
         {/* LEFT COLUMN: FCM Push Lab & Live AI News Dispatcher (Hidden on mobile if tab != fcm) */}
         <div className={`w-full lg:w-[360px] xl:w-[400px] flex-shrink-0 h-full ${
           mobileWorkbenchTab === 'fcm' ? 'flex' : 'hidden lg:flex'
-        }`}
+        }`}>
         </div>
 
         {/* CENTER COLUMN: Android Native Smartphone Simulator (Pixel Frame) */}
