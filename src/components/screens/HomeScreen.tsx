@@ -134,7 +134,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
           <div>
             <h1 className="text-base font-bold tracking-tight flex items-center gap-1">
-              FlashNews<span className="text-white-500">24</span>
+              FlashNews<span className="text-Blue-500">24</span>
             </h1>
             <p className="text-[9px] text-[#E1E4E8] opacity-60 font-medium">Blogger Live Feed • flashnews24.site</p>
           </div>
@@ -214,7 +214,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {/* Simulated Pull-to-Refresh Bar */}
       {(isRefreshing || isPulling) && (
         <div className="bg-gradient-to-r from-blue-600/20 via-indigo-600/10 to-transparent text-blue-400 text-xs py-2 px-4 font-semibold flex items-center justify-center gap-2.5 animate-pulse border-b border-blue-500/20">
-          <RotateCcw className="w-3.5 h-3.5 animate-spin text-white-400" />
+          <RotateCcw className="w-3.5 h-3.5 animate-spin text-blue-400" />
           <span>Syncing Blogger Live Feed (flashnews24.site) via Retrofit & Room DB...</span>
         </div>
       )}
