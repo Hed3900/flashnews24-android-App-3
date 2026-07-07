@@ -221,46 +221,6 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
             <p className="leading-relaxed opacity-90">{article.summary}</p>
           )}
 
-          {/* ===== Related Articles ===== */}
-<div className="mt-8">
-
-  <h2 className="text-lg font-bold text-white mb-4">
-    📰 Related Articles
-  </h2>
-
-  <div className="space-y-3">
-
-    {relatedArticles.slice(0, 3).map((item) => (
-      <div
-        key={item.id}
-        onClick={() => onSelectArticle(item)}
-        className="flex gap-3 bg-[#161B22] rounded-xl p-3 border border-[#2D333B] cursor-pointer hover:border-blue-500 transition"
-      >
-        <img
-          src={item.imageUrl}
-          alt={item.title}
-          className="w-20 h-20 rounded-lg object-cover"
-        />
-
-        <div className="flex-1">
-
-          <h3 className="text-sm font-semibold line-clamp-2 text-white">
-            {item.title}
-          </h3>
-
-          <p className="text-xs text-gray-400 mt-2">
-            {item.sourceName} • {item.publishedAt}
-          </p>
-
-        </div>
-
-      </div>
-    ))}
-
-  </div>
-
-</div>
-
           {/* ===== Footer ===== */}
 <div className="mt-10 border-t border-gray-800 pt-6">
 
