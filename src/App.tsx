@@ -393,7 +393,7 @@ export default function App() {
 
   return (
     <div className="w-full h-screen bg-[#0F1115]">
-    <AndroidPhoneFrame
+    
       isDarkMode={isDarkMode}
       onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
       activeNotification={activeBanner}
@@ -476,7 +476,7 @@ export default function App() {
             )}
           </>
         )}
-      </AndroidPhoneFrame>
+      
     </div>
   );
 }
