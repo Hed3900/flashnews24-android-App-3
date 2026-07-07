@@ -411,21 +411,21 @@ export default function App() {
             ) : (
               <>
                 {activeScreen === 'home' && (
-              <HomeScreen
-                articles={articles}
-                bookmarkedIds={bookmarkedIds}
-                selectedCategory={selectedCategory}
-                onSelectCategory={setSelectedCategory}
-                onSelectArticle={handleSelectArticle}
-                onToggleBookmark={handleToggleBookmark}
-                onShareArticle={handleShareArticle}
-                onRefresh={handleRefreshNews}
-                onOpenSearch={() => setActiveScreen('search')}
-                isRefreshing={isRefreshing}
-                isOffline={isOffline}
-              />
-            )}
-
+  <HomeScreen
+    articles={articles}
+    bookmarkedIds={bookmarkedIds}
+    selectedCategory={selectedCategory}
+    onSelectCategory={setSelectedCategory}
+    onSelectArticle={handleSelectArticle}
+    onToggleBookmark={handleToggleBookmark}
+    onShareArticle={handleShareArticle}
+    onRefresh={handleRefreshNews}
+    onOpenSearch={() => setActiveScreen('search')}
+    isRefreshing={isRefreshing}
+    isOffline={isOffline}
+    setMenuOpen={setMenuOpen}
+  />
+)}
             {activeScreen === 'detail' && selectedArticle && (
               <DetailScreen
                 article={selectedArticle}
