@@ -209,3 +209,4 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
     </div>
   );
 };
+
