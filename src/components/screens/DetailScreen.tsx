@@ -76,17 +76,17 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
           onClick={onBack}
           className="p-2 rounded-full hover:bg-white/10 transition-colors flex items-center gap-1.5 font-bold text-xs"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4 text-white" />
           <span>Back</span>
         </button>
 
         <div className="flex items-center gap-1">
           <button
             onClick={() => setFontSize(prev => prev === 'sm' ? 'md' : prev === 'md' ? 'lg' : 'sm')}
-            className="p-2 rounded-full hover:bg-white/10 transition-colors text-xs font-bold flex items-center gap-0.5"
+            className=
             title="Cycle font size (Small / Normal / Large)"
           >
-            <Type className="w-4 h-4" />
+            <Type className="w-4 h-4 text-white" />
             <span className="text-[9px] uppercase">{fontSize}</span>
           </button>
           <button
@@ -96,24 +96,26 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
             }`}
             title={isPlayingAudio ? 'Stop TTS Audio' : 'Listen to Article (TTS)'}
           >
-            {isPlayingAudio ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4 opacity-70" />}
+            {isPlayingAudio ? <Volume2 className="w-4 h-4 text-white" /> : <VolumeX className="w-4 h-4 text-white" />
           </button>
           <button
             onClick={() => onShare(article)}
-            className="p-2 rounded-full hover:bg-white/10 transition-colors"
+            className="p-2 rounded-full text-white hover:bg-white/10 transition-colors""
             title="Share via Intent"
           >
-            <Share2 className="w-4 h-4 opacity-80" />
+            <Share2 className="w-4 h-4 text-white" />
           </button>
           <button
             onClick={() => onToggleBookmark(article.id)}
-            className="p-2 rounded-full hover:bg-white/10 transition-colors"
+            className="p-2 rounded-full text-white hover:bg-white/10 transition-colors""
             title={isBookmarked ? 'Remove from Room DB' : 'Save to Room DB'}
           >
             <Bookmark
               className={`w-4 h-4 ${
-                isBookmarked ? 'fill-blue-500 text-blue-500' : 'opacity-80'
-              }`}
+  isBookmarked
+    ? 'fill-blue-500 text-blue-500'
+    : 'text-white'
+}`}
             />
           </button>
         </div>
