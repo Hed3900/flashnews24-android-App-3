@@ -10,7 +10,7 @@ interface DetailScreenProps {
   onShare: (article: Article) => void;
   relatedArticles: Article[];
   onSelectArticle: (article: Article) => void;
-  
+}
 export const DetailScreen: React.FC<DetailScreenProps> = ({
   article,
   isBookmarked,
