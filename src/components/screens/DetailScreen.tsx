@@ -227,14 +227,14 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
   <div className="flex gap-3 mb-6">
 
     <button
-      onClick={onToggleBookmark}
+      onClick={() => onToggleBookmark(article.id)}
       className="flex-1 bg-blue-600 hover:bg-blue-700 rounded-xl py-3 font-semibold transition"
     >
       🔖 {isBookmarked ? "Bookmarked" : "Bookmark"}
     </button>
 
     <button
-      onClick={onShare}
+      onClick={() => onShare(article)}
       className="flex-1 bg-green-600 hover:bg-green-700 rounded-xl py-3 font-semibold transition"
     >
       📤 Share
