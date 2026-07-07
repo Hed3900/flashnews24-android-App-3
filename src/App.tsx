@@ -35,6 +35,11 @@ import {
 } from '@capacitor-community/material-menu';
 
 import { Menu as MenuIcon } from 'lucide-react';
+import AboutScreen from "./components/screens/AboutScreen";
+import SettingsScreen from "./components/screens/SettingsScreen";
+import PrivacyScreen from "./components/screens/PrivacyScreen";
+import TermsScreen from "./components/screens/TermsScreen";
+import ContactScreen from "./components/screens/ContactScreen";
 
 const INITIAL_ARTICLES: Article[] = [
   {
@@ -456,6 +461,25 @@ export default function App() {
                 onClearNotifications={() => setNotifications([])}
               />
             )}
+                {activeScreen === "about" && (
+  <AboutScreen onBack={() => setActiveScreen("home")} />
+)}
+
+{activeScreen === "settings" && (
+  <SettingsScreen onBack={() => setActiveScreen("home")} />
+)}
+
+{activeScreen === "privacy" && (
+  <PrivacyScreen onBack={() => setActiveScreen("home")} />
+)}
+
+{activeScreen === "terms" && (
+  <TermsScreen onBack={() => setActiveScreen("home")} />
+)}
+
+{activeScreen === "contact" && (
+  <ContactScreen onBack={() => setActiveScreen("home")} />
+)}
           </>
         )}
       {menuOpen && (
