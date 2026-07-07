@@ -150,19 +150,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </span>
           )}
           <button
-            onClick={onOpenSearch}
-            className="p-2 rounded-full hover:bg-white/10 transition-colors"
-            title="Search news"
-          >
-            <button
+  onClick={onOpenSearch}
+  className="p-2 rounded-full hover:bg-white/10 transition-colors"
+  title="Search news"
+>
+  <Search className="w-4 h-4 text-blue-500" />
+</button>
+
+<button
   onClick={() => setMenuOpen(true)}
   className="p-2 rounded-full hover:bg-white/10 transition-colors"
   title="Menu"
 >
   <Menu className="w-5 h-5 text-blue-500" />
 </button>
-            <Search className="w-4 h-4 text-blue-500" />
-          </button>
+          
           <button
             onClick={handleManualRefresh}
             disabled={isRefreshing || isPulling}
