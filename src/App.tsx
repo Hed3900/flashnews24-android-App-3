@@ -393,27 +393,6 @@ export default function App() {
 
   return (
     <div className="flex flex-col h-screen w-screen bg-[#0F1115] text-[#E1E4E8] font-sans overflow-hidden select-none">
-      
-        
-        {/* LEFT COLUMN: FCM Push Lab & Live AI News Dispatcher (Hidden on mobile if tab != fcm) */}
-
-        {/* CENTER COLUMN: Android Native Smartphone Simulator (Pixel Frame) */}
-        <div className={`flex-1 flex flex-col items-center justify-center min-w-[380px] h-full ${
-          mobileWorkbenchTab === 'phone' ? 'flex' : 'hidden lg:flex'
-        }`}>
-          <div className="flex items-center gap-4 mb-3">
-            {/* Phone Bottom/Top Navigation Bar Selector */}
-            <div className="flex items-center gap-1.5 bg-[#1A1D23] p-1.5 rounded-2xl border border-[#2D333B] shadow-xl">
-              <button
-                onClick={() => setActiveScreen('home')}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
-                  activeScreen === 'home' || activeScreen === 'detail'
-                    ? 'bg-blue-600 text-white shadow-md shadow-blue-900/20'
-                    : 'text-[#E1E4E8] opacity-60 hover:opacity-100'
-                }`}
-              >
-              </button>
-            </div>
           </div>
             isDarkMode={isDarkMode}
             onToggleDarkMode={() => setIsDarkMode(!isDarkMode)}
