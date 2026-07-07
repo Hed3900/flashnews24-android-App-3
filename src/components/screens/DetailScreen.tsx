@@ -98,19 +98,18 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
           >
             {isPlayingAudio ? <Volume2 className="w-4 h-4 text-white" /> : <VolumeX className="w-4 h-4 text-white" />
           </button>
-              
-          <button
-  onClick={() =>
+          <button>
+              onClick={() =>
     setFontSize(prev =>
       prev === 'sm' ? 'md' : prev === 'md' ? 'lg' : 'sm'
-    )
-  }
+          )
+        }
   className="p-2 rounded-full text-white hover:bg-white/10 transition-colors flex items-center gap-1"
   title="Cycle font size (Small / Normal / Large)"
->
+     >
   <Type className="w-4 h-4 text-white" />
   <span className="text-[9px] uppercase">{fontSize}</span>
-</button>
+       </button>
           <button
             onClick={() => onToggleBookmark(article.id)}
             className="p-2 rounded-full text-white hover:bg-white/10 transition-colors"
