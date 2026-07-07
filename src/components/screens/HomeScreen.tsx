@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Article, NewsCategory } from '../../types';
-import { Search, RotateCcw, Bookmark, Share2, Sparkles, Clock, Flame, WifiOff, ChevronRight, Zap } from 'lucide-react';
+import { Search, RotateCcw, Bookmark, Share2, Sparkles, Clock, Flame, WifiOff, ChevronRight, Zap, Menu } from 'lucide-react';
 
 interface HomeScreenProps {
   articles: Article[];
@@ -68,7 +68,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onOpenSearch,
   isRefreshing,
   isOffline,
-setMenuOpen
+  setMenuOpen
 }) => {
   const [isPulling, setIsPulling] = useState(false);
 
@@ -154,6 +154,13 @@ setMenuOpen
             className="p-2 rounded-full hover:bg-white/10 transition-colors"
             title="Search news"
           >
+            <button
+  onClick={() => setMenuOpen(true)}
+  className="p-2 rounded-full hover:bg-white/10 transition-colors"
+  title="Menu"
+>
+  <Menu className="w-5 h-5 text-blue-500" />
+</button>
             <Search className="w-4 h-4 text-blue-500" />
           </button>
           <button
@@ -164,13 +171,6 @@ setMenuOpen
             }`}
             title="Simulate Pull-to-Refresh (Retrofit sync)"
           >
-            <button
-  onClick={() => setMenuOpen(true)}
-  className="p-2 rounded-full hover:bg-white/10 transition-colors"
-  title="Menu"
->
-  <MenuIcon className="w-5 h-5 text-blue-500" />
-</button>
             <RotateCcw className="w-4 h-4 text-blue-500" />
           </button>
         </div>
