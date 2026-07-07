@@ -466,19 +466,17 @@ export default function App() {
               />
             )}
 
-            {activeScreen === 'notifications' && (
-  <NotificationsScreen
-    notifications={notifications}
-    allArticles={articles}
-    onSelectArticle={handleSelectArticle}
-    onClearNotifications={() => setNotifications([])}
-  />
-)}
-
-</>
-)}
-</div>
-</div>
-);
+                        {activeScreen === 'notifications' && (
+              <NotificationsScreen
+                notifications={notifications}
+                allArticles={articles}
+                onSelectArticle={handleSelectArticle}
+                onClearNotifications={() => setNotifications([])}
+              />
+            )}
+          </>
+        )}
+      </AndroidPhoneFrame>
+    </div>
+  );
 }
-
