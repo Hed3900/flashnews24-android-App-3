@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.flashnews24.app',
+  appId: 'com.flashnews24.app',
   appName: 'FlashNews24',
   webDir: 'dist',
   server: {
