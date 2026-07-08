@@ -311,6 +311,12 @@ useEffect(() => {
 
 }, []);
   
+  await AdMob.prepareAppOpen({
+  adId: "ca-app-pub-3288039417600063/7707211570",
+});
+
+await AdMob.showAppOpen();
+  
   useEffect(() => {
     saveNativeBookmarks(bookmarkedIds);
   }, [bookmarkedIds]);
