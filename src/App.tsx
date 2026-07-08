@@ -40,6 +40,7 @@ import SettingsScreen from "./components/screens/SettingsScreen";
 import PrivacyScreen from "./components/screens/PrivacyScreen";
 import TermsScreen from "./components/screens/TermsScreen";
 import ContactScreen from "./components/screens/ContactScreen";
+import { AdMob } from "@capacitor-community/admob";
 
 const INITIAL_ARTICLES: Article[] = [
   {
