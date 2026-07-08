@@ -122,7 +122,7 @@ const initialArticles = [
   }
 ];
 
-const BLOGGER_FEED_URL = 'https://www.flashnews24.site/feeds/posts/default?alt=json';
+const BLOGGER_FEED_URL = 'https://www.flashnews24.site/feeds/posts/default?alt=json&max-results=500&start-index=1';
 
 function decodeBloggerEntities(text: string): string {
   if (!text) return '';
