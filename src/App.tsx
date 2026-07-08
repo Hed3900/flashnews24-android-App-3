@@ -297,7 +297,7 @@ useEffect(() => {
       await AdMob.initialize();
 
       await AdMob.showBanner({
-        adId: "ca-app-pub-3288039417600063/7198038278", // Banner Ad Unit ID
+        adId: "ca-app-pub-3288039417600063/3826509024", // Banner Ad Unit ID
         adSize: BannerAdSize.ADAPTIVE_BANNER,
         position: BannerAdPosition.BOTTOM_CENTER,
         isTesting: false
