@@ -361,6 +361,8 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
       (a.tags && a.tags.some(t => t.includes(q)))
     );
   }
+  console.log("Fetched:", fetchedArticles.length);
+console.log("Filtered:", filtered.length);
 
   return filtered.length > 0 ? filtered : OFFLINE_BLOGGER_CACHE;
 }
