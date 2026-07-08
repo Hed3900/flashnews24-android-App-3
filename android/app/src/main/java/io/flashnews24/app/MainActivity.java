@@ -1,4 +1,4 @@
-package io.flashnews24.app;
+package com.flashnews24.app;
 
 import android.os.Bundle;
 
