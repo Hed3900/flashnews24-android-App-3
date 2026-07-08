@@ -297,11 +297,22 @@ export default function App() {
     );
   };
 
-  const handleSelectArticle = (article: Article) => {
-    triggerHapticLight();
-    setSelectedArticle(article);
-    setActiveScreen('detail');
-  };
+  const handleSelectArticle = async (article: Article) => {
+  triggerHapticLight();
+
+  setSelectedArticle(article);
+  setActiveScreen("detail");
+
+  try {
+    await AdMob.prepareInterstitial({
+      adId: "ca-app-pub-3288039417600063/1445588386",
+    });
+
+    await AdMob.showInterstitial();
+  } catch (err) {
+    console.log("AdMob Error:", err);
+  }
+};
 
   const handleShareArticle = async (article: Article) => {
   try {
