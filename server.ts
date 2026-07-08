@@ -258,6 +258,7 @@ app.get('/api/news', async (req, res) => {
     });
     if (bloggerRes.ok) {
       const data = await bloggerRes.json();
+      console.log("Feed entries:", data.feed?.entry?.length);
       if (data.feed && data.feed.entry) {
         articles = data.feed.entry.map((e: any, idx: number) => parseBloggerEntryServer(e, idx));
       }
