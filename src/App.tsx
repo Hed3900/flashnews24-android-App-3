@@ -40,7 +40,7 @@ import SettingsScreen from "./components/screens/SettingsScreen";
 import PrivacyScreen from "./components/screens/PrivacyScreen";
 import TermsScreen from "./components/screens/TermsScreen";
 import ContactScreen from "./components/screens/ContactScreen";
-
+import { AdMob, BannerAdPosition, BannerAdSize } from "@capacitor-community/admob";
 const showInterstitial = async () => {
   try {
     await AdMob.prepareInterstitial({
@@ -290,7 +290,27 @@ export default function App() {
       removeNetListenerPromise.then(remove => remove());
     };
   }, [handleRefreshNews, isOffline]);
+  
+useEffect(() => {
+  const initAds = async () => {
+    try {
+      await AdMob.initialize();
 
+      await AdMob.showBanner({
+        adId: "ca-app-pub-3288039417600063/7198038278", // Banner Ad Unit ID
+        adSize: BannerAdSize.ADAPTIVE_BANNER,
+        position: BannerAdPosition.BOTTOM_CENTER,
+        isTesting: false
+      });
+    } catch (e) {
+      console.log("Banner Error", e);
+    }
+  };
+
+  initAds();
+
+}, []);
+  
   useEffect(() => {
     saveNativeBookmarks(bookmarkedIds);
   }, [bookmarkedIds]);
