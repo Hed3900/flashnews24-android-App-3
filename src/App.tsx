@@ -40,7 +40,19 @@ import SettingsScreen from "./components/screens/SettingsScreen";
 import PrivacyScreen from "./components/screens/PrivacyScreen";
 import TermsScreen from "./components/screens/TermsScreen";
 import ContactScreen from "./components/screens/ContactScreen";
+import { AdMob } from "@capacitor-community/admob";
 
+const showInterstitial = async () => {
+  try {
+    await AdMob.prepareInterstitial({
+      adId: "ca-app-pub-3288039417600063/1445588386",
+    });
+
+    await AdMob.showInterstitial();
+  } catch (err) {
+    console.error(err);
+  }
+};
 const INITIAL_ARTICLES: Article[] = [
   {
     id: 'art-1',
