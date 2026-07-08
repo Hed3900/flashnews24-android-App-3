@@ -296,26 +296,27 @@ useEffect(() => {
     try {
       await AdMob.initialize();
 
+      // Banner
       await AdMob.showBanner({
-        adId: "ca-app-pub-3288039417600063/3826509024", // Banner Ad Unit ID
+        adId: "ca-app-pub-3288039417600063/7198038278",
         adSize: BannerAdSize.ADAPTIVE_BANNER,
         position: BannerAdPosition.BOTTOM_CENTER,
-        isTesting: false
       });
+
+      // App Open
+      await AdMob.prepareAppOpen({
+        adId: "ca-app-pub-3288039417600063/7707211570",
+      });
+
+      await AdMob.showAppOpen();
+
     } catch (e) {
-      console.log("Banner Error", e);
+      console.log(e);
     }
   };
 
   initAds();
-
 }, []);
-  
-  await AdMob.prepareAppOpen({
-  adId: "ca-app-pub-3288039417600063/7707211570",
-});
-
-await AdMob.showAppOpen();
   
   useEffect(() => {
     saveNativeBookmarks(bookmarkedIds);
