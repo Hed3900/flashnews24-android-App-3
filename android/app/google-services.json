@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "481516234200",
-    "project_id": "flashnews24-live-fcm",
-    "storage_bucket": "flashnews24-live-fcm.firebasestorage.app"
+    "project_number": "192814639105",
+    "project_id": "flashnews24-5bfd6",
+    "storage_bucket": "flashnews24-5bfd6.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:481516234200:android:89a1c2b3d4e5f60718293a",
+        "mobilesdk_app_id": "1:192814639105:android:0bd19a117460c790577800",
         "android_client_info": {
-          "package_name": "io.flashnews24.app"
+          "package_name": "Com.flashnews24.app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD-FlashNews24-Live-FCM-ApiKey-Prod01"
+          "current_key": "AIzaSyDugH7O-Q1QuDCOU_C_CIHdD3WPQ8OcTsU"
         }
       ],
       "services": {
