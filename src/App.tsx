@@ -219,9 +219,8 @@ const [articles, setArticles] = useState<Article[]>([]);
     if (liveArticles && liveArticles.length > 0) {
       setArticles(prev => {
         const aiStories = prev.filter(
-          a => a.id.startsWith("art-ai-") || a.id.startsWith("art-live-")
-        );
-
+  a => a.id.startsWith("art-ai-")
+);
         const merged = [...aiStories, ...liveArticles];
         const unique = Array.from(
           new Map(merged.map(item => [item.id, item])).values()
