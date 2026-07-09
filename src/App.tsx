@@ -279,14 +279,7 @@ export default function App() {
       }
     });
 
-    loadNativeArticlesCache().then(cached => {
-  setArticles(prev => {
-    if (prev.length > INITIAL_ARTICLES.length) {
-      return prev; // Live data already loaded
-    }
-    return (cached && cached.length > 0) ? cached : prev;
-  });
-});
+    
 
     const interval = setInterval(() => {
       if (!isOffline) {
