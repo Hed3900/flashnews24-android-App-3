@@ -205,7 +205,7 @@ export function parseBloggerEntry(entry: any, index: number): Article {
     sourceName: 'FlashNews24.site',
     publishedAt,
     imageUrl,
-    category: tags.length > 0 ? tags[0] : primary,
+    category: primary,
     tags,
     url,
     readTimeMinutes,
