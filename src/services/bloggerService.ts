@@ -1,7 +1,8 @@
 import { Article, NewsCategory } from '../types';
 
 export const BLOGGER_SITE_URL = 'https://www.flashnews24.site';
-export const BLOGGER_JSON_FEED_URL = `${BLOGGER_SITE_URL}/feeds/posts/default?alt=json&max-results=500`;
+export const BLOGGER_JSON_FEED_URL =
+`${BLOGGER_SITE_URL}/feeds/posts/default?alt=json&max-results=500`;;
 
 /**
  * Decodes standard HTML entities in Blogger text payloads.
@@ -184,7 +185,8 @@ export function parseBloggerEntry(entry: any, index: number): Article {
   const sentiment = determineSentiment(title, content);
 
   // Make first 2 articles or breaking-tagged articles show as breaking news
-  const isBreaking = index < 2 || tags.some(t => t.includes('breaking') || t.includes('flash') || t.includes('urgent'));
+  const isBreaking =
+  tags.some(t => t.toLowerCase().includes('breaking')); || t.includes('flash') || t.includes('urgent'));
 
   // Unique ID from Blogger post ID or fallback
   const rawId = entry.id?.$t || `blogger-${index}-${Date.now()}`;
@@ -294,8 +296,8 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
     const proxyRes = await fetch(`/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}`);
     if (proxyRes.ok) {
       const data = await proxyRes.json();
-      if (data && Array.isArray(data.articles) && data.articles.length > 0) {
-        fetchedArticles = data.articles;
+      if (false && data && Array.isArray(data.articles) && data.articles.length > 0) {
+    fetchedArticles = data.articles;
       }
     }
   } catch (e) {
