@@ -304,10 +304,11 @@ export default function App() {
                   newest.id
                 );
               }
-              const aiStories = prev.filter(a => a.id.startsWith('art-ai-') || a.id.startsWith('art-live-'));
-              const merged = [...aiStories, ...liveArticles];
-              const unique = Array.from(new Map(merged.map(item => [item.id, item])).values());
-              return unique;
+              const unique = Array.from(
+  new Map([...liveArticles, ...prev].map(item => [item.id, item])).values()
+);
+
+return unique;
             });
           }
         }).catch(() => {});
