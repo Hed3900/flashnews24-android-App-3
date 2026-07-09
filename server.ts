@@ -246,7 +246,7 @@ const linkObj = entry.link?.find((l: any) => l.rel === 'alternate') || entry.lin
   const id = rawId.replace(/[^a-zA-Z0-9-_]/g, '-');
 
   return {
-    id, title, summary, content, author, sourceName: 'FlashNews24.site', publishedAt, imageUrl, category: primary, tags, url, readTimeMinutes, isBreaking, sentiment, isLiveBlogger: true
+    id, title, summary, content, author, sourceName: 'FlashNews24.site', rawPublishedAt, publishedAt, imageUrl, category: primary, tags, url, readTimeMinutes, isBreaking, sentiment, isLiveBlogger: true
   };
 }
 
@@ -264,7 +264,16 @@ app.get('/api/news', async (req, res) => {
       console.log("Feed entries:", data.feed?.entry?.length);
       console.log("Latest:", data.feed?.entry?.[0]?.title?.$t);
       if (data.feed && data.feed.entry) {
-        articles = data.feed.entry.map((e: any, idx: number) => parseBloggerEntryServer(e, idx));
+        articles = data.feed.entry.map((e: any, idx: number) =>
+  parseBloggerEntryServer(e, idx)
+);
+
+articles.sort((a, b) => {
+  return (
+    new Date(b.rawPublishedAt).getTime() -
+    new Date(a.rawPublishedAt).getTime()
+  );
+});
       }
     }
   } catch (err) {
