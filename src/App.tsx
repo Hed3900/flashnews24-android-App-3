@@ -222,10 +222,7 @@ const [articles, setArticles] = useState<Article[]>([]);
         const unique = Array.from(
           new Map(merged.map(item => [item.id, item])).values()
         );
-
-        return unique;
-      });
-
+      
       addRetrofitLog(
         "GET",
         `${BLOGGER_JSON_FEED_URL}?category=all`,
