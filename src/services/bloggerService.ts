@@ -300,9 +300,8 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
     const proxyRes = await fetch(`/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}`);
     if (proxyRes.ok) {
       const data = await proxyRes.json();
-      if (false && data && Array.isArray(data.articles) && data.articles.length > 0) {
+      if (data && Array.isArray(data.articles) && data.articles.length > 0) {
     fetchedArticles = data.articles;
-      }
     }
   } catch (e) {
     console.warn('Backend proxy fetch retry needed...', e);
@@ -374,5 +373,10 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
   console.log("Fetched:", fetchedArticles.length);
 console.log("Filtered:", filtered.length);
 
-  return fetchedArticles;
+  return filtered.length > 0
+  ? filtered.sort((a, b) =>
+      new Date(b.publishedAt).getTime() -
+      new Date(a.publishedAt).getTime()
+    ).slice(0, 50)
+  : OFFLINE_BLOGGER_CACHE.slice(0, 50);
 }
