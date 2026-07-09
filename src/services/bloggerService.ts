@@ -199,7 +199,7 @@ export function parseBloggerEntry(entry: any, index: number): Article {
     sourceName: 'FlashNews24.site',
     publishedAt,
     imageUrl,
-    category: primary,
+    category: tags.length > 0 ? tags[0] : primary,
     tags,
     url,
     readTimeMinutes,
@@ -369,6 +369,8 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
 console.log("Filtered:", filtered.length);
 
   return filtered.length > 0
-  ? filtered.slice(0, 50)
+  ? filtered.sort((a, b) =>
+      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+    ).slice(0, 50)
   : OFFLINE_BLOGGER_CACHE.slice(0, 50);
 }
