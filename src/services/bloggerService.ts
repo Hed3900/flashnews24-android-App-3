@@ -1,7 +1,7 @@
 import { Article, NewsCategory } from '../types';
 
 export const BLOGGER_SITE_URL = 'https://www.flashnews24.site';
-export const BLOGGER_JSON_FEED_URL =`${BLOGGER_SITE_URL}/feeds/posts/default?alt=json&max-results=500`;;
+export const BLOGGER_JSON_FEED_URL =`${BLOGGER_SITE_URL}/feeds/posts/default?alt=json&max-results=500`;
 
 /**
  * Decodes standard HTML entities in Blogger text payloads.
@@ -374,9 +374,5 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
   console.log("Fetched:", fetchedArticles.length);
 console.log("Filtered:", filtered.length);
 
-  return filtered.length > 0
-  ? filtered.sort((a, b) =>
-      new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-    ).slice(0, 50)
-  : OFFLINE_BLOGGER_CACHE.slice(0, 50);
+  return fetchedArticles;
 }
