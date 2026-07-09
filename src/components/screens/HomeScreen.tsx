@@ -110,21 +110,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   }, [selectedCategory, activeCategories, onSelectCategory]);
 
   const breakingArticles = articles.filter(a => a.isBreaking);
-  const regularArticles = articles.filter(a => {
-    if (selectedCategory === 'All') {
-      return !a.isBreaking;
-    }
-    const catLower = selectedCategory.toLowerCase();
-    const matchCategory = typeof a.category === 'string' && a.category.toLowerCase() === catLower;
-    const matchTags = a.tags && a.tags.some(tag => tag.includes(catLower));
-    return matchCategory || matchTags;
-  });
 const regularArticles = articles
   .filter(a => {
     if (selectedCategory === 'All') {
       return !a.isBreaking;
     }
-
     const catLower = selectedCategory.toLowerCase();
     const matchCategory =
       typeof a.category === 'string' &&
@@ -135,7 +125,6 @@ const regularArticles = articles
     return matchCategory || matchTags;
   })
   .slice(0, 20);
-
   const handleManualRefresh = () => {
     setIsPulling(true);
     onRefresh();
