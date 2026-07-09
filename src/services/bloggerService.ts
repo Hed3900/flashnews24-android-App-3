@@ -1,8 +1,7 @@
 import { Article, NewsCategory } from '../types';
 
 export const BLOGGER_SITE_URL = 'https://www.flashnews24.site';
-export const BLOGGER_JSON_FEED_URL =
-`${BLOGGER_SITE_URL}/feeds/posts/default?alt=json&max-results=500`;;
+export const BLOGGER_JSON_FEED_URL =`${BLOGGER_SITE_URL}/feeds/posts/default?alt=json&max-results=500`;;
 
 /**
  * Decodes standard HTML entities in Blogger text payloads.
@@ -186,7 +185,12 @@ export function parseBloggerEntry(entry: any, index: number): Article {
 
   // Make first 2 articles or breaking-tagged articles show as breaking news
   const isBreaking =
-  tags.some(t => t.toLowerCase().includes('breaking')); || t.includes('flash') || t.includes('urgent'));
+  tags.some(
+    t =>
+      t.toLowerCase().includes('breaking') ||
+      t.toLowerCase().includes('flash') ||
+      t.toLowerCase().includes('urgent')
+  );
 
   // Unique ID from Blogger post ID or fallback
   const rawId = entry.id?.$t || `blogger-${index}-${Date.now()}`;
