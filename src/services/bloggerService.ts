@@ -302,6 +302,7 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
       const data = await proxyRes.json();
       if (data && Array.isArray(data.articles) && data.articles.length > 0) {
     fetchedArticles = data.articles;
+      }
     }
   } catch (e) {
     console.warn('Backend proxy fetch retry needed...', e);
