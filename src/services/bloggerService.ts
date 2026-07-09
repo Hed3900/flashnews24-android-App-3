@@ -374,10 +374,10 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
   console.log("Fetched:", fetchedArticles.length);
 console.log("Filtered:", filtered.length);
 
-  return filtered.length > 0
-  ? filtered.sort((a, b) =>
-      new Date(b.publishedAt).getTime() -
-      new Date(a.publishedAt).getTime()
-    ).slice(0, 50)
-  : OFFLINE_BLOGGER_CACHE.slice(0, 50);
+  fetchedArticles.sort((a, b) =>
+  new Date(b.publishedAt).getTime() -
+  new Date(a.publishedAt).getTime()
+);
+
+return fetchedArticles;
 }
