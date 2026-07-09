@@ -217,10 +217,7 @@ const [articles, setArticles] = useState<Article[]>([]);
     fetchBloggerArticles("All")
   .then(liveArticles => {
     if (liveArticles && liveArticles.length > 0) {
-      setArticles(prev => {
-        const aiStories = prev.filter(
-  a => a.id.startsWith("art-ai-")
-);
+      setArticles(liveArticles);
         const merged = [...aiStories, ...liveArticles];
         const unique = Array.from(
           new Map(merged.map(item => [item.id, item])).values()
@@ -457,11 +454,7 @@ const handleShareApp = async () => {
       const liveArticles = await fetchBloggerArticles('All');
       if (liveArticles && liveArticles.length > 0) {
         const latest = liveArticles[0];
-        setArticles(prev => {
-          const aiStories = prev.filter(a => a.id.startsWith('art-ai-') || a.id.startsWith('art-live-'));
-          const merged = [...aiStories, ...liveArticles];
-          return Array.from(new Map(merged.map(item => [item.id, item])).values());
-        });
+        setArticles(liveArticles);
         addRetrofitLog('GET', `${BLOGGER_JSON_FEED_URL}?category=all&fcm_trigger=1`, 200, Date.now() - startTime, '48.2 KB');
         
         handleBroadcastNotification(
