@@ -227,8 +227,11 @@ function parseBloggerEntryServer(entry: any, index: number): any {
   const rawHtml = entry.content?.$t || entry.summary?.$t || '';
   const { summary, content, readTimeMinutes } = cleanBloggerHtml(rawHtml);
   const author = entry.author?.[0]?.name?.$t || 'FlashNews24 Live';
-  const publishedAt = formatBloggerDate(entry.published?.$t || entry.updated?.$t);
-  const linkObj = entry.link?.find((l: any) => l.rel === 'alternate') || entry.link?.[0];
+
+const rawPublishedAt = entry.published?.$t || entry.updated?.$t;
+const publishedAt = formatBloggerDate(rawPublishedAt);
+
+const linkObj = entry.link?.find((l: any) => l.rel === 'alternate') || entry.link?.[0];
   const url = linkObj?.href || 'https://www.flashnews24.site';
   const imageUrl = extractBloggerImage(entry, rawHtml);
   const { primary, tags } = categorizeBlogger(title, content, entry.category);
