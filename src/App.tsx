@@ -300,7 +300,11 @@ export default function App() {
               const unique = Array.from(
   new Map([...liveArticles, ...prev].map(item => [item.id, item])).values()
 );
-
+unique.sort(
+  (a, b) =>
+    new Date(b.rawPublishedAt || b.publishedAt).getTime() -
+    new Date(a.rawPublishedAt || a.publishedAt).getTime()
+);
 return unique;
             });
           }
