@@ -305,7 +305,9 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
   // 2. Try direct client-side fetch from Blogger JSON API endpoint
   if (fetchedArticles.length === 0) {
     try {
-      const directRes = await fetch(BLOGGER_JSON_FEED_URL);
+      const directRes = await fetch(`${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`, {
+  cache: "no-store"
+});
       if (directRes.ok) {
         const feedJson = await directRes.json();
         if (feedJson?.feed?.entry) {
@@ -323,7 +325,9 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
   if (fetchedArticles.length === 0) {
     try {
       const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(BLOGGER_JSON_FEED_URL)}`;
-      const proxyRes = await fetch(proxyUrl);
+      const proxyRes = await fetch(`${proxyUrl}&t=${Date.now()}`, {
+  cache: "no-store"
+});
       if (proxyRes.ok) {
         const feedJson = await proxyRes.json();
         if (feedJson?.feed?.entry) {
