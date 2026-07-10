@@ -307,20 +307,26 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
   // 2. Try direct client-side fetch from Blogger JSON API endpoint
   if (fetchedArticles.length === 0) {
     try {
-      const directRes = await fetch(`${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`, {
-  cache: "no-store"
-});
-      if (directRes.ok) {
+    const directRes = await fetch(`${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`, {
+        cache: "no-store"
+    });
+
+    if (directRes.ok) {
         const feedJson = await directRes.json();
+
+        // 👇 ఇక్కడ add చేయి
+        console.log(feedJson);
+        console.log(feedJson.feed?.entry?.length);
+
         if (feedJson?.feed?.entry) {
-          fetchedArticles = feedJson.feed.entry.map((entry: any, index: number) => 
-            parseBloggerEntry(entry, index)
-          );
+            fetchedArticles = feedJson.feed.entry.map((entry: any, index: number) =>
+                parseBloggerEntry(entry, index)
+            );
         }
-      }
-    } catch (err) {
-      console.warn('Direct fetch fallback triggered...');
     }
+} catch (err) {
+    console.warn("Direct fetch fallback triggered...");
+}
   }
 
   // 3. Fallback to public CORS proxy if direct fetch failed
