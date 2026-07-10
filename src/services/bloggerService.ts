@@ -290,8 +290,6 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
  */
 export async function fetchBloggerArticles(category: string = 'All', searchQuery: string = ''): Promise<Article[]> {
   let fetchedArticles: Article[] = [];
-console.log("Feed URL:", BLOGGER_JSON_FEED_URL);
-console.log("HTTP Status:", directRes.status);
 
 const data = await directRes.json();
 console.log("feed exists:", !!data.feed);
@@ -378,15 +376,12 @@ console.log("entry count:", data.feed?.entry?.length ?? 0);
       (a.tags && a.tags.some(t => t.includes(q)))
     );
   }
-  console.log("Fetched:", fetchedArticles.length);
-console.log("Filtered:", filtered.length);
-
+  
   fetchedArticles.sort((a, b) =>
   new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
   new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
 );
-console.log("FETCHED TOTAL:", fetchedArticles.length);
-console.log("FILTERED TOTAL:", filtered.length);
+
 return filtered.length > 0
   ? filtered
       .sort((a, b) =>
