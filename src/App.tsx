@@ -367,7 +367,7 @@ const handleShareApp = async () => {
 
       console.log("LIVE:", liveArticles.length);
 console.log("STATE BEFORE:", articles.length);
-
+setArticles(liveArticles);
       addRetrofitLog(
         'GET',
         `${BLOGGER_JSON_FEED_URL}?category=all&fcm_trigger=1`,
