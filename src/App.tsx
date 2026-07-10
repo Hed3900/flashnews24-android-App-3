@@ -267,7 +267,12 @@ const [articles, setArticles] = useState<Article[]>(INITIAL_ARTICLES);
     initCapacitorPushNotifications((title, body, articleId) => {
       handleBroadcastNotification(title, body, 'HIGH', articleId);
     });
-
+    
+loadNativeArticlesCache().then(cached => {
+  if (cached && cached.length > 0) {
+    setArticles(cached);
+  }
+});
     loadNativeBookmarks().then(saved => {
       if (saved && saved.length > 0) {
         setBookmarkedIds(saved);
@@ -460,7 +465,12 @@ const handleShareApp = async () => {
     if (liveArticles && liveArticles.length > 0) {
       const latest = liveArticles[0];
 
-      setArticles(liveArticles);
+      setArticles(prev => {
+  const merged = [...liveArticles, ...prev];
+  return Array.from(
+    new Map(merged.map(item => [item.id, item])).values()
+  );
+});
 
       addRetrofitLog(
         'GET',
