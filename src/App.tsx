@@ -339,9 +339,9 @@ handleBroadcastNotification(
 );
 
 return unique;
-          }
-          
-        }).catch(() => {});
+});
+
+}).catch(() => {});
       }
     }, 45000);
     return () => {
