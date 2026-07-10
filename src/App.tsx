@@ -52,7 +52,7 @@ const showInterstitial = async () => {
     console.error(err);
   }
 };
-const INITIAL_ARTICLES: Article[] = [
+const [articles, setArticles] = useState<Article[]>([]);
   {
     id: 'art-1',
     title: 'Google DeepMind Unveils Gemini 3.5: Next-Gen Autonomous Reasoning Engine',
