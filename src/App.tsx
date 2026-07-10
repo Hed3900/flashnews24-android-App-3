@@ -230,7 +230,7 @@ useEffect(() => {
       });
 
       // App Open
-      await AdMob.prepareAppOpen({
+     // await AdMob.prepareAppOpen({
         adId: "ca-app-pub-3288039417600063/7707211570",
       });
 
