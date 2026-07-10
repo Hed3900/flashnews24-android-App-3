@@ -285,37 +285,42 @@ loadNativeArticlesCache().then(cached => {
     const interval = setInterval(() => {
       if (!isOffline) {
         fetchBloggerArticles('All').then(liveArticles => {
+          console.log("LIVE:", liveArticles.length);
           if (liveArticles && liveArticles.length > 0) {
-            setArticles(prev => {
-  if (liveArticles.length === prev.length) {
-    return prev;
-  }
+    setArticles(prev => {
 
-  const existingIds = new Set(prev.map(a => a.id));
-  const newArrivals = liveArticles.filter(a => !existingIds.has(a.id));
+        console.log("LIVE:", liveArticles.length);
 
-  if (newArrivals.length > 0) {
-    const newest = newArrivals[0];
-    handleBroadcastNotification(
-      `🚨 NEW BLOGGER POST (${newest.category}): ${newest.title.slice(0, 45)}...`,
-      newest.summary || 'Real-time feed sync received.',
-      'HIGH',
-      newest.id
-    );
-  }
+        if (liveArticles.length === prev.length) {
+            return prev;
+        }
 
-  const unique = Array.from(
-    new Map([...liveArticles, ...prev].map(item => [item.id, item])).values()
-  );
+        const existingIds = new Set(prev.map(a => a.id));
+        const newArrivals = liveArticles.filter(a => !existingIds.has(a.id));
 
-  unique.sort(
-    (a, b) =>
-      new Date(b.rawPublishedAt || b.publishedAt).getTime() -
-      new Date(a.rawPublishedAt || a.publishedAt).getTime()
-  );
+        if (newArrivals.length > 0) {
+            const newest = newArrivals[0];
+            handleBroadcastNotification(
+                `🚨 NEW BLOGGER POST (${newest.category}): ${newest.title.slice(0,45)}...`,
+                newest.summary || "Real-time feed sync received.",
+                "HIGH",
+                newest.id
+            );
+        }
 
-  return unique;
-});
+        const unique = Array.from(
+            new Map([...liveArticles, ...prev].map(item => [item.id, item])).values()
+        );
+
+        unique.sort(
+            (a, b) =>
+                new Date(b.rawPublishedAt || b.publishedAt).getTime() -
+                new Date(a.rawPublishedAt || a.publishedAt).getTime()
+        );
+
+        return unique;
+    });
+          }
           }
         }).catch(() => {});
       }
