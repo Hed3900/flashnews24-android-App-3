@@ -185,10 +185,7 @@ export function parseBloggerEntry(entry: any, index: number): Article {
   const sentiment = determineSentiment(title, content);
 
   // Make first 2 articles or breaking-tagged articles show as breaking news
-  const isBreaking = tags.some(t => {
-  const tag = t.toLowerCase();
-  return tag.includes("breaking") || tag.includes("flash") || tag.includes("urgent");
-});
+  const isBreaking = index < 6;
 
   // Unique ID from Blogger post ID or fallback
   const rawId = entry.id?.$t || `blogger-${index}-${Date.now()}`;
