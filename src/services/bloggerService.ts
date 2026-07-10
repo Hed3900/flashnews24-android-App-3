@@ -308,8 +308,12 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
   if (fetchedArticles.length === 0) {
     try {
     const directRes = await fetch(`${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`, {
-        cache: "no-store"
-    });
+  method: "GET",
+  cache: "no-store",
+  headers: {
+    Accept: "application/json"
+  }
+});
 
     if (directRes.ok) {
         const feedJson = await directRes.json();
