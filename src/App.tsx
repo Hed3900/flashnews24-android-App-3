@@ -457,7 +457,8 @@ const handleShareApp = async () => {
     if (liveArticles && liveArticles.length > 0) {
       const latest = liveArticles[0];
 
-      setArticles(liveArticles);
+      console.log("LIVE:", liveArticles.length);
+console.log("STATE BEFORE:", articles.length);
 
       addRetrofitLog(
         'GET',
