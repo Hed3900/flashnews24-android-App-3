@@ -317,32 +317,28 @@ loadNativeArticlesCache().then(async cached => {
   );
 
   // 🔥 Prevent unnecessary re-render (flicker fix)
-  const existingIds = new Set(prev.map(a => a.id));
+  
 
-const newArrivals = liveArticles.filter(
-  a => !existingIds.has(a.id)
-);
+
+
+
+  // Notify only for truly new posts
+  const existingIds = new Set(prev.map(a => a.id));
+const newArrivals = liveArticles.filter(a => !existingIds.has(a.id));
 
 if (newArrivals.length === 0) {
     return prev;
 }
 
-  // Notify only for truly new posts
-  const existingIds = new Set(prev.map(a => a.id));
-  const newArrivals = liveArticles.filter(a => !existingIds.has(a.id));
+const newest = newArrivals[0];
+handleBroadcastNotification(
+    `🚨 NEW BLOGGER POST (${newest.category}): ${newest.title.slice(0,45)}...`,
+    newest.summary || "Real-time feed sync received.",
+    "HIGH",
+    newest.id
+);
 
-  if (newArrivals.length > 0) {
-    const newest = newArrivals[0];
-    handleBroadcastNotification(
-      `🚨 NEW BLOGGER POST (${newest.category}): ${newest.title.slice(0, 45)}...`,
-      newest.summary || "Real-time feed sync received.",
-      "HIGH",
-      newest.id
-    );
-  }
-
-  return unique;
-});
+return unique;
           }
           
         }).catch(() => {});
