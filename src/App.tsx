@@ -447,28 +447,48 @@ const handleShareApp = async () => {
   };
 
   const handleSyncLatestBloggerPostPush = async () => {
-    setIsSyncingBlogger(true);
-    const startTime = Date.now();
-    try {
-      const liveArticles = await fetchBloggerArticles('All');
-      if (liveArticles && liveArticles.length > 0) {
-        const latest = liveArticles[0];
-        setArticles(liveArticles);
-        addRetrofitLog('GET', `${BLOGGER_JSON_FEED_URL}?category=all&fcm_trigger=1`, 200, Date.now() - startTime, '48.2 KB');
-        
-        handleBroadcastNotification(
-          `🚨 NEW BLOGGER POST (${latest.category}): ${latest.title.slice(0, 45)}...`,
-          latest.summary || 'Real-time Blogger headline synced via Retrofit and Room.',
-          'HIGH',
-          latest.id
-        );
-      }
-    } catch (err) {
-      addRetrofitLog('GET', BLOGGER_JSON_FEED_URL, 500, Date.now() - startTime, '0 B');
-    } finally {
-      setIsSyncingBlogger(false);
+  setIsSyncingBlogger(true);
+
+  // Hide syncing banner after 5 seconds, background sync continues
+  setTimeout(() => {
+    setIsSyncingBlogger(false);
+  }, 5000);
+
+  const startTime = Date.now();
+
+  try {
+    const liveArticles = await fetchBloggerArticles('All');
+
+    if (liveArticles && liveArticles.length > 0) {
+      const latest = liveArticles[0];
+
+      setArticles(liveArticles);
+
+      addRetrofitLog(
+        'GET',
+        `${BLOGGER_JSON_FEED_URL}?category=all&fcm_trigger=1`,
+        200,
+        Date.now() - startTime,
+        '48.2 KB'
+      );
+
+      handleBroadcastNotification(
+        `🚨 NEW BLOGGER POST (${latest.category}): ${latest.title.slice(0, 45)}...`,
+        latest.summary || 'Real-time Blogger headline synced via Retrofit and Room.',
+        'HIGH',
+        latest.id
+      );
     }
-  };
+  } catch (err) {
+    addRetrofitLog(
+      'GET',
+      BLOGGER_JSON_FEED_URL,
+      500,
+      Date.now() - startTime,
+      '0 B'
+    );
+  }
+};
 
   const bookmarkedArticles = articles.filter(a => bookmarkedIds.includes(a.id));
 
