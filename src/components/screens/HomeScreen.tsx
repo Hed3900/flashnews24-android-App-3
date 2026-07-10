@@ -250,7 +250,7 @@ const regularArticles = articles
             </div>
 
             <div className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar">
-              {(isRefreshing || isPulling) && articles.length === 0 ? (
+              {articles.length === 0 ? (
                 <>
                   <BreakingShimmerSkeleton />
                   <BreakingShimmerSkeleton />
@@ -319,7 +319,7 @@ const regularArticles = articles
             <span className="text-[10px] text-[#E1E4E8] opacity-40">{regularArticles.length} stories cached</span>
           </div>
 
-          {(isRefreshing || isPulling) && regularArticles.length === 0 ? (
+          {regularArticles.length === 0 ? (
             <div className="space-y-3">
               <ArticleShimmerSkeleton />
               <ArticleShimmerSkeleton />
