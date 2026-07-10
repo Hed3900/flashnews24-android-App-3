@@ -1,424 +1,696 @@
-import { Article, NewsCategory } from '../types';
-
-export const BLOGGER_SITE_URL = 'https://www.flashnews24.site';
-export const BLOGGER_JSON_FEED_URL = `${BLOGGER_SITE_URL}/feeds/posts/default?alt=json&max-results=100`;
-
 /**
- * Decodes standard HTML entities in Blogger text payloads.
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
  */
-function decodeHtmlEntities(text: string): string {
-  if (!text) return '';
-  let decoded = text
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&#39;/g, "'")
-    .replace(/&quot;/g, '"')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&#160;/g, ' ')
-    .replace(/&#8217;/g, "'")
-    .replace(/&#8216;/g, "'")
-    .replace(/&#8220;/g, '"')
-    .replace(/&#8221;/g, '"')
-    .replace(/&#8211;/g, '-')
-    .replace(/&#8212;/g, '--');
 
-  // Also decode numeric HTML entities like &#x27;
-  decoded = decoded.replace(/&#x([0-9A-Fa-f]+);/g, (_m, hex) => String.fromCharCode(parseInt(hex, 16)));
-  decoded = decoded.replace(/&#([0-9]+);/g, (_m, num) => String.fromCharCode(Number(num)));
-  return decoded;
-}
+import React, { useState, useEffect, useCallback } from 'react';
+import { Share } from '@capacitor/share';
+import { Article, NewsCategory, NewsUiState, RetrofitLog, FcmNotification, SimulatorScreen } from './types';
+import { HomeScreen } from './components/screens/HomeScreen';
+import { DetailScreen } from './components/screens/DetailScreen';
+import { BookmarksScreen } from './components/screens/BookmarksScreen';
+import { SearchScreen } from './components/screens/SearchScreen';
+import { NotificationsScreen } from './components/screens/NotificationsScreen';
+import { FcmPushLab } from './components/workbench/FcmPushLab';
+import { ArchitectureInspector } from './components/workbench/ArchitectureInspector';
+import { SplashScreen } from './components/screens/SplashScreen';
+import { fetchBloggerArticles, BLOGGER_JSON_FEED_URL } from './services/bloggerService';
+import {
+  isNativeCapacitor,
+  initCapacitorNativeUI,
+  initCapacitorNetworkListener,
+  initCapacitorPushNotifications,
+  triggerHapticLight,
+  triggerHapticMedium,
+  saveNativeBookmarks,
+  loadNativeBookmarks,
+  saveNativeArticlesCache,
+  loadNativeArticlesCache
+} from './services/capacitorService';
+import { Flame, Bell, Database, Smartphone, Code, Wifi, Sparkles, Download } from 'lucide-react';
+import {
+  Menu,
+  MenuItem,
+  IconButton
+} from '@capacitor-community/material-menu';
 
-/**
- * Converts Blogger HTML content into clean paragraphs separated by double newlines,
- * stripping tags so native UI components can render paragraphs natively without WebView.
- */
-function cleanBloggerHtmlToParagraphs(html: string): { summary: string; content: string; readTimeMinutes: number } {
-  if (!html) return { summary: 'No summary available.', content: 'No content available.', readTimeMinutes: 1 };
-
-  // Convert block tags and line breaks to double newlines
-  let text = html
-    .replace(/<(p|div|h[1-6]|ul|ol|li|blockquote|table|tr)[^>]*>/gi, '\n\n')
-    .replace(/<\/(p|div|h[1-6]|ul|ol|li|blockquote|table|tr)>/gi, '\n\n')
-    .replace(/<br\s*\/?>/gi, '\n\n');
-
-  // Remove all remaining HTML tags (script, style, span, img, a, etc.)
-  text = text.replace(/<[^>]+>/g, '');
-
-  // Decode HTML entities
-  text = decodeHtmlEntities(text);
-
-  // Clean up excessive whitespace and ensure clean paragraph separation
-  text = text
-    .split(/\n\s*\n+/)
-    .map(para => para.replace(/\s+/g, ' ').trim())
-    .filter(para => para.length > 0)
-    .join('\n\n');
-
-  const words = text.trim().length > 0 ? text.split(/\s+/).length : 0;
-  const readTimeMinutes = Math.max(1, Math.round(words / 200));
-
-  // Summary is first paragraph or first 200 characters
-  const firstPara = text.split('\n\n')[0] || text;
-  const summary = firstPara.length > 200 ? firstPara.slice(0, 197) + '...' : firstPara;
-
-  return { summary, content: text, readTimeMinutes };
-}
-
-/**
- * Extracts high-resolution featured image from Blogger entry thumbnail or inline HTML images.
- * This function NEVER filters posts — it always returns a valid image URL (thumbnail transformed to high-res or a fallback).
- */
-function extractImageUrl(entry: any, htmlContent: string): string {
-  // Attempt 1: Blogger media$thumbnail (common)
-  const thumbUrl = entry?.media$thumbnail?.url;
-  if (thumbUrl && typeof thumbUrl === 'string' && thumbUrl.length > 0) {
-    // Replace Blogger thumbnail size indicators (e.g., /s72-c/ or =s72-c or /w72-h72-c/) with /s1000/ for higher resolution.
-    // Use global replacement to cover different URL shapes.
-    let highRes = thumbUrl.replace(/(\/|=)(?:s|w|h)\d+(-[a-z0-9]+)?(\/)?/gi, (match) => {
-      // Keep either slash or equals style normalized to '/s1000/'
-      return match.startsWith('=') ? '=s1000' : '/s1000/';
-    });
-
-    // Some Google URLs end size with ?..., ensure no duplicate markers; normalize to a clean s1000 param/segment
-    highRes = highRes.replace(/(\?|-).*/g, (m) => {
-      // preserve query parameters only if necessary; otherwise strip trailing query params for safety
-      return '';
-    });
-
-    // If we ended up with an equals-form like '=s1000' without URL structure, try a safe fallback transform:
-    if (!/^https?:\/\//i.test(highRes)) {
-      // fallback to original but append a s1000 param if possible
-      if (thumbUrl.includes('=s')) {
-        highRes = thumbUrl.replace(/=s\d+(-[a-z0-9]+)?/i, '=s1000');
-      } else {
-        highRes = thumbUrl;
-      }
-    }
-
-    return highRes;
-  }
-
-  // Attempt 2: Find first img src in provided HTML content
-  if (htmlContent && typeof htmlContent === 'string') {
-    const match = htmlContent.match(/<img[^>]+src=["']([^"']+)["']/i);
-    if (match && match[1]) {
-      let imgUrl = match[1];
-
-      // Upgrade Blogger inline size markers similarly
-      if (/(\=s|\/(s|w|h)\d+)/i.test(imgUrl)) {
-        imgUrl = imgUrl.replace(/(\/|=)(?:s|w|h)\d+(-[a-z0-9]+)?(\/)?/gi, (m) => (m.startsWith('=') ? '=s1000' : '/s1000/'));
-        imgUrl = imgUrl.replace(/(\?|-).*/g, '');
-      }
-
-      if (imgUrl && imgUrl.length > 0) return imgUrl;
-    }
-  }
-
-  // Final fallback: High quality general news photo
-  return 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1000&auto=format&fit=crop&q=80';
-}
-
-/**
- * Formats Blogger ISO publication date to human-readable string.
- */
-function formatPublishedDate(dateStr: string): string {
-  if (!dateStr) return 'Just now';
+import { Menu as MenuIcon } from 'lucide-react';
+import AboutScreen from "./components/screens/AboutScreen";
+import SettingsScreen from "./components/screens/SettingsScreen";
+import PrivacyScreen from "./components/screens/PrivacyScreen";
+import TermsScreen from "./components/screens/TermsScreen";
+import ContactScreen from "./components/screens/ContactScreen";
+import { AdMob, BannerAdPosition, BannerAdSize } from "@capacitor-community/admob";
+const showInterstitial = async () => {
   try {
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return dateStr;
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.round(diffMs / 60000);
-    const diffHours = Math.round(diffMins / 60);
+    await AdMob.prepareInterstitial({
+      adId: "ca-app-pub-3288039417600063/1445588386",
+    });
 
-    if (diffMins < 60) {
-      return diffMins <= 1 ? 'Just now' : `${diffMins} mins ago`;
-    }
-    if (diffHours < 24) {
-      return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
-    }
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' • ' +
-      date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-  } catch {
-    return dateStr;
+    await AdMob.showInterstitial();
+  } catch (err) {
+    console.error(err);
   }
-}
-
-/**
- * Categorizes a Blogger entry into standard tabs based on tags and keywords.
- */
-function categorizeBloggerEntry(title: string, content: string, categories: any[] = []): { primary: NewsCategory; tags: string[] } {
-  const tags = categories.map((c: any) => (c?.term || '').toLowerCase().trim()).filter(Boolean);
-  const combined = (title + ' ' + content + ' ' + tags.join(' ')).toLowerCase();
-
-  // Define keyword lists
-  const keywords: { [k in NewsCategory]?: string[] } = {
-    AI: ['ai', 'artificial intelligence', 'chatgpt', 'llm', 'machine learning', 'neural', 'openai', 'anthropic', 'deepmind', 'automation', 'gemini'],
-    Tech: ['tech', 'technology', 'gadget', 'apple', 'google', 'android', 'microsoft', 'software', 'hardware', 'cyber', 'internet', 'smartphone', 'app', 'chip', 'silicon'],
-    Business: ['business', 'market', 'markets', 'economy', 'finance', 'stock', 'crypto', 'bitcoin', 'invest', 'company', 'industry'],
-    Sports: ['sport', 'sports', 'football', 'soccer', 'basketball', 'nba', 'nfl', 'tennis', 'olympic', 'cricket', 'golf', 'formula 1', 'f1'],
-    Science: ['science', 'nasa', 'astronomy', 'physics', 'climate', 'research', 'biology', 'medical', 'vaccine', 'telescope'],
-    World: ['world', 'international', 'global', 'war', 'conflict', 'government', 'police', 'crash', 'fire', 'accident', 'politics', 'country', 'nation'],
-    Entertainment: ['entertainment', 'movie', 'film', 'music', 'celebrity', 'tv', 'show']
-  };
-
-  let primary: NewsCategory = 'All';
-
-  for (const [cat, keys] of Object.entries(keywords)) {
-    if (keys!.some(k => combined.includes(k))) {
-      primary = (cat as unknown) as NewsCategory;
-      break;
-    }
-  }
-
-  // If no category matched, check tags for secondary topics
-  if (primary === 'All' && tags.length > 0) {
-    const secondaryTopics = ['health', 'entertainment', 'aviation', 'environment', 'education', 'politics', 'crime', 'energy', 'lifestyle', 'travel', 'automotive', 'real estate', 'weather'];
-    const matched = tags.find(t => secondaryTopics.some(sub => t.includes(sub)));
-    if (matched) {
-      const clean = matched.split(' ')[0];
-      primary = (clean.charAt(0).toUpperCase() + clean.slice(1)) as NewsCategory;
-    } else {
-      primary = 'World';
-    }
-  } else if (primary === 'All') {
-    primary = 'World';
-  }
-
-  return { primary, tags };
-}
-
-/**
- * Determines sentiment based on article keywords.
- */
-function determineSentiment(title: string, content: string): 'Positive' | 'Neutral' | 'Urgent' | 'Analytical' {
-  const text = (title + ' ' + content).toLowerCase();
-
-  const urgentWords = ['crash', 'emergency', 'alert', 'attack', 'disaster', 'deadly', 'urgent', 'explosion', 'injured', 'killed', 'breaking'];
-  const positiveWords = ['win', 'victory', 'rally', 'growth', 'breakthrough', 'success', 'record', 'booming', 'surge'];
-  const analyticalWords = ['study', 'research', 'analysis', 'report', 'data', 'telescope', 'qubit', 'investigation', 'experiments'];
-
-  if (urgentWords.some(w => text.includes(w))) return 'Urgent';
-  if (positiveWords.some(w => text.includes(w))) return 'Positive';
-  if (analyticalWords.some(w => text.includes(w))) return 'Analytical';
-  return 'Neutral';
-}
-
-/**
- * Parses a raw Blogger JSON feed entry into an Article object.
- */
-export function parseBloggerEntry(entry: any, index: number): Article {
-  const title = decodeHtmlEntities(entry?.title?.$t || 'Untitled Article');
-  const rawHtml = entry?.content?.$t || entry?.summary?.$t || '';
-  const { summary, content, readTimeMinutes } = cleanBloggerHtmlToParagraphs(rawHtml);
-
-  const author = entry?.author?.[0]?.name?.$t || 'FlashNews24 Live';
-  const publishedAt = formatPublishedDate(entry?.published?.$t || entry?.updated?.$t);
-
-  // Find web URL
-  const linkObj = Array.isArray(entry?.link) ? entry.link.find((l: any) => l.rel === 'alternate') || entry.link[0] : null;
-  const url = linkObj?.href || BLOGGER_SITE_URL;
-
-  const imageUrl = extractImageUrl(entry, rawHtml);
-  const { primary, tags } = categorizeBloggerEntry(title, content, entry?.category || []);
-  const sentiment = determineSentiment(title, content);
-
-  // Mark the first few as breaking for demo purposes (unchanged logic)
-  const isBreaking = index < 6;
-
-  // Unique ID from Blogger post ID or fallback
-  const rawId = entry?.id?.$t || `blogger-${index}-${Date.now()}`;
-  const id = rawId.replace(/[^a-zA-Z0-9-_]/g, '-');
-
-  return {
-    id,
-    title,
-    summary,
-    content,
-    author,
-    sourceName: 'FlashNews24.site',
-    publishedAt,
-    rawPublishedAt: entry?.published?.$t || entry?.updated?.$t,
-    imageUrl,
-    category: primary,
-    tags,
-    url,
-    readTimeMinutes,
-    isBreaking,
-    sentiment,
-    isLiveBlogger: true
-  };
-}
-
-/**
- * Real cached Blogger articles from flashnews24.site as instant offline / retry fallback.
- * Keep this as a last-resort fallback when network and proxies fail.
- */
-const OFFLINE_BLOGGER_CACHE: Article[] = [
+};
+const INITIAL_ARTICLES: Article[] = [
   {
-    id: "offline-1",
-    title: "FlashNews24 — Offline sample article",
-    summary: "This is a cached offline article used as a last-resort fallback when live feed cannot be retrieved.",
-    content: "This is placeholder offline content. Live feed could not be fetched.",
-    author: "FlashNews24 Live",
-    sourceName: "FlashNews24.site",
-    publishedAt: "Just now",
-    rawPublishedAt: new Date().toISOString(),
-    imageUrl: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1000&auto=format&fit=crop&q=80",
-    category: "World",
-    tags: ["offline"],
-    url: BLOGGER_SITE_URL,
-    readTimeMinutes: 1,
+    id: 'art-1',
+    title: 'Google DeepMind Unveils Gemini 3.5: Next-Gen Autonomous Reasoning Engine',
+    summary: 'The new architecture introduces native multimodal tool chaining and real-time reflection loops, outperforming human experts in complex engineering benchmarks.',
+    content: 'In a landmark keynote today, researchers at Google DeepMind revealed the Gemini 3.5 series. The model introduces massive upgrades in real-time latency, native speech synthesis, and autonomous task execution. Early enterprise testers report a 4x increase in software development productivity and automated bug resolution. The new architecture also features enhanced safety guardrails and verifiable citation grounding.',
+    author: 'Elena Rostova',
+    sourceName: 'TechCrunch 24',
+    publishedAt: '10 mins ago',
+    imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
+    category: 'AI',
+    url: 'https://flashnews24.io/articles/gemini-3-5-unveiled',
+    readTimeMinutes: 4,
+    isBreaking: true,
+    sentiment: 'Urgent'
+  },
+  {
+    id: 'art-2',
+    title: 'Global Markets Rally as Green Energy Adoption Hits Tipping Point in Europe',
+    summary: 'Solar and wind energy output officially surpassed fossil fuels across EU grids during Q2, triggering massive institutional investments in clean tech.',
+    content: 'Stock markets across Europe and North America surged today following data from the International Energy Agency showing that renewable sources provided over 52% of total electricity generation last quarter. Solar grid installations grew by 38% year-over-year, driven by breakthrough perovskite panel efficiency and grid-scale battery storage cost drops.',
+    author: 'Marcus Vance',
+    sourceName: 'Bloomberg News',
+    publishedAt: '32 mins ago',
+    imageUrl: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&auto=format&fit=crop&q=80',
+    category: 'Business',
+    url: 'https://flashnews24.io/articles/green-energy-tipping-point',
+    readTimeMinutes: 5,
     isBreaking: false,
-    sentiment: "Neutral",
-    isLiveBlogger: true
+    sentiment: 'Positive'
+  },
+  {
+    id: 'art-3',
+    title: 'James Webb Telescope Spots Earliest Water-Rich Atmosphere on Exoplanet K2-18c',
+    summary: 'Spectroscopic analysis reveals clear signatures of water vapor and carbon-bearing molecules in the habitable zone of a nearby red dwarf star.',
+    content: 'Astronomers using the James Webb Space Telescope have detected definitive signatures of water vapor, methane, and carbon dioxide in the atmosphere of exoplanet K2-18c, located 120 light-years from Earth. The findings suggest an ocean-covered sub-Neptune world capable of sustaining liquid water on its surface.',
+    author: 'Dr. Aris Thorne',
+    sourceName: 'Scientific American',
+    publishedAt: '1 hour ago',
+    imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80',
+    category: 'Science',
+    url: 'https://flashnews24.io/articles/jwst-water-atmosphere',
+    readTimeMinutes: 6,
+    isBreaking: false,
+    sentiment: 'Analytical'
+  },
+  {
+    id: 'art-4',
+    title: 'Android 16 Developer Preview Brings Real-time Spatial Audio & Satellite SOS',
+    summary: 'Google releases the first beta build featuring Jetpack Compose 1.8 optimizations, dynamic material color synthesis, and satellite emergency messaging.',
+    content: 'The Android development ecosystem is buzzing following the release of the Android 16 Developer Preview. Highlights include native spatial audio rendering with dynamic head tracking, automated background battery management powered by on-device AI, and built-in satellite SOS APIs for developers building mission-critical field apps.',
+    author: 'Sarah Jenkins',
+    sourceName: 'Android Central',
+    publishedAt: '2 hours ago',
+    imageUrl: 'https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?w=800&auto=format&fit=crop&q=80',
+    category: 'Tech',
+    url: 'https://flashnews24.io/articles/android-16-preview',
+    readTimeMinutes: 3,
+    isBreaking: false,
+    sentiment: 'Positive'
+  },
+  {
+    id: 'art-5',
+    title: 'Championship Thriller: Underdog FC Tokyo Secures Last-Minute Victory in Extra Time',
+    summary: 'A dramatic 94th-minute volley seals a historic 3-2 comeback against the reigning champions in front of a sold-out stadium of 65,000 fans.',
+    content: 'In one of the most memorable matches of the decade, FC Tokyo overturned a 2-0 halftime deficit to defeat the league champions 3-2. Teenager Kenji Sato scored the winner in the 94th minute with a stunning volley from 25 yards out, igniting euphoric celebrations across the stadium.',
+    author: 'David Beckham Jr.',
+    sourceName: 'ESPN Global',
+    publishedAt: '3 hours ago',
+    imageUrl: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800&auto=format&fit=crop&q=80',
+    category: 'Sports',
+    url: 'https://flashnews24.io/articles/fc-tokyo-thriller',
+    readTimeMinutes: 4,
+    isBreaking: false,
+    sentiment: 'Positive'
+  },
+  {
+    id: 'art-6',
+    title: 'Next-Gen Quantum Chip Achieves 99.9% Error-Correction Gate Fidelity',
+    summary: 'Physicists demonstrate fault-tolerant topological qubits operating at room temperature, paving the way for commercial quantum supercomputers by 2028.',
+    content: 'A consortium of quantum researchers has announced a major breakthrough in qubit stability. By utilizing topological braiding in diamond nitrogen-vacancy centers, the team achieved a 99.9% two-qubit gate fidelity without requiring liquid helium dilution refrigerators. This milestone removes the biggest hurdle to commercial quantum scaling.',
+    author: 'Prof. Chen Wei',
+    sourceName: 'Nature Technology',
+    publishedAt: '5 hours ago',
+    imageUrl: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&auto=format&fit=crop&q=80',
+    category: 'Tech',
+    url: 'https://flashnews24.io/articles/quantum-chip-fidelity',
+    readTimeMinutes: 5,
+    isBreaking: false,
+    sentiment: 'Analytical'
   }
 ];
 
-/**
- * Fetches articles from backend /api/news endpoint which proxies flashnews24.site Blogger feed.
- * NEVER falls back to offline cache unless the backend is completely unreachable.
- * 
- * Root cause fix:
- * - Previously: Tried multiple fetch methods independently, could lose articles at each fallback level
- * - Now: Single source of truth is the backend /api/news endpoint
- * - Backend already handles all fallbacks (direct fetch + live Blogger parsing)
- * - Client filters results after successful fetch, never rejects based on category/search
- */
-export async function fetchBloggerArticles(category: string = 'All', searchQuery: string = ''): Promise<Article[]> {
-  // PRIMARY: Always use backend /api/news endpoint first
-  // The backend handles all retry logic and Blogger feed parsing
-  try {
-    const backendUrl = new URL('/api/news', typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
-    backendUrl.searchParams.set('category', category);
-    backendUrl.searchParams.set('search', searchQuery);
+export default function App() {
+const [articles, setArticles] = useState<Article[]>(INITIAL_ARTICLES);
+  const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(['art-1', 'art-4']);
+  const [selectedCategory, setSelectedCategory] = useState<NewsCategory>('All');
+  const [activeScreen, setActiveScreen] = useState<SimulatorScreen>('home');
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isOffline, setIsOffline] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isGeneratingAiNews, setIsGeneratingAiNews] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
+  const [isSyncingBlogger, setIsSyncingBlogger] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-    const response = await fetch(backendUrl.toString(), {
+  // Workbench tabs for responsive screens
+  const [mobileWorkbenchTab, setMobileWorkbenchTab] = useState<'phone' | 'fcm' | 'inspector'>('phone');
+
+  // FCM Notifications
+  const [notifications, setNotifications] = useState<FcmNotification[]>([
+    {
+      id: 'fcm-init-1',
+      title: '🚨 FLASH BREAKING: Gemini 3.5 Unveiled',
+      body: 'Google DeepMind announces autonomous reasoning architecture with real-time reflection.',
+      priority: 'HIGH',
+      timestamp: '10 mins ago',
+      articleId: 'art-1'
+    }
+  ]);
+  const [activeBanner, setActiveBanner] = useState<FcmNotification | null>(null);
+
+  // Retrofit HTTP Interceptor Logs
+  const [retrofitLogs, setRetrofitLogs] = useState<RetrofitLog[]>([
+    {
+      id: 'log-1',
+      timestamp: new Date().toLocaleTimeString(),
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      cache: 'no-store'
+      url: BLOGGER_JSON_FEED_URL,
+      status: 200,
+      durationMs: 142,
+      responseSize: '42.8 KB'
+    }
+  ]);
+
+  const addRetrofitLog = useCallback((method: 'GET' | 'POST', url: string, status: number, duration: number, size: string) => {
+    const newLog: RetrofitLog = {
+      id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+      timestamp: new Date().toLocaleTimeString(),
+      method,
+      url,
+      status,
+      durationMs: duration,
+      responseSize: size
+    };
+    setRetrofitLogs(prev => [newLog, ...prev]);
+  }, []);
+
+  const handleRefreshNews = useCallback(() => {
+    if (articles.length === 0) {
+  setIsRefreshing(true);
+    }
+    triggerHapticMedium();
+    const startTime = Date.now();
+    
+    if (isOffline) {
+      setTimeout(() => {
+        setIsRefreshing(false);
+        addRetrofitLog('GET', BLOGGER_JSON_FEED_URL, 503, Date.now() - startTime, '0 B');
+      }, 500);
+      return;
+    }
+
+    fetchBloggerArticles("All")
+  .then((liveArticles) => {
+    if (liveArticles && liveArticles.length > 0) {
+    setArticles(prev => {
+        const aiStories = prev.filter(a => a.id.startsWith("art-ai-"));
+        const merged = [...aiStories, ...liveArticles];
+        return Array.from(new Map(merged.map(item => [item.id, item])).values());
+    });
+        
+      addRetrofitLog(
+        "GET",
+        `${BLOGGER_JSON_FEED_URL}?category=all`,
+        200,
+        Date.now() - startTime,
+        "48.2 KB"
+      );
+    } else {
+      addRetrofitLog(
+        "GET",
+        `${BLOGGER_JSON_FEED_URL}?category=all`,
+        304,
+        Date.now() - startTime,
+        "12.4 KB"
+      );
+    }
+  })
+  .catch(() => {
+    addRetrofitLog(
+      "GET",
+      BLOGGER_JSON_FEED_URL,
+      500,
+      Date.now() - startTime,
+      "0 B"
+    );
+  })
+  .finally(() => {
+    setIsRefreshing(false);
+  });
+  }, [isOffline, addRetrofitLog, articles.length]);
+
+  useEffect(() => {
+    handleRefreshNews();
+    initCapacitorNativeUI();
+
+    const removeNetListenerPromise = initCapacitorNetworkListener((connected) => {
+      setIsOffline(!connected);
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      
-      // Validate backend response structure
-      if (data?.articles && Array.isArray(data.articles)) {
-        // CRITICAL FIX: Return articles immediately if backend provided them
-        // Do NOT fall through to offline cache
-        if (data.articles.length > 0) {
-          console.log(`✓ Backend returned ${data.articles.length} live articles from ${data.source || 'Unknown'}`);
-          return data.articles;
-        }
-        
-        // Backend provided empty array - this could be due to filtering
-        // Retry without filters to get the raw live feed
-        console.log('Backend returned empty array - retrying without category/search filters');
-        const retryUrl = new URL('/api/news', typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
-        
-        const retryResponse = await fetch(retryUrl.toString(), {
-          method: 'GET',
-          cache: 'no-store'
-        });
+    initCapacitorPushNotifications((title, body, articleId) => {
+      handleBroadcastNotification(title, body, 'HIGH', articleId);
+    });
 
-        if (retryResponse.ok) {
-          const retryData = await retryResponse.json();
-          if (retryData?.articles && retryData.articles.length > 0) {
-            console.log(`✓ Unfiltered backend returned ${retryData.articles.length} articles`);
-            return retryData.articles;
+    loadNativeBookmarks().then(saved => {
+      if (saved && saved.length > 0) {
+        setBookmarkedIds(saved);
+      }
+    });
+
+    
+
+    const interval = setInterval(() => {
+      if (!isOffline) {
+        fetchBloggerArticles('All').then(liveArticles => {
+          if (liveArticles && liveArticles.length > 0) {
+            setArticles(prev => {
+              const existingIds = new Set(prev.map(a => a.id));
+              const newArrivals = liveArticles.filter(a => !existingIds.has(a.id));
+              if (newArrivals.length > 0) {
+                const newest = newArrivals[0];
+                handleBroadcastNotification(
+                  `🚨 NEW BLOGGER POST (${newest.category}): ${newest.title.slice(0, 45)}...`,
+                  newest.summary || 'Real-time feed sync received via Firebase Cloud Messaging.',
+                  'HIGH',
+                  newest.id
+                );
+              }
+              const unique = Array.from(
+  new Map([...liveArticles, ...prev].map(item => [item.id, item])).values()
+);
+unique.sort(
+  (a, b) =>
+    new Date(b.rawPublishedAt || b.publishedAt).getTime() -
+    new Date(a.rawPublishedAt || a.publishedAt).getTime()
+);
+return unique;
+            });
           }
-        }
+        }).catch(() => {});
       }
-    } else {
-      console.error(`Backend /api/news returned HTTP ${response.status}`);
-    }
-  } catch (error: any) {
-    console.error('Backend /api/news fetch failed:', error?.message);
-  }
+    }, 45000);
+    return () => {
+      clearInterval(interval);
+      removeNetListenerPromise.then(remove => remove());
+    };
+  }, [handleRefreshNews, isOffline]);
+  
+useEffect(() => {
+  const initAds = async () => {
+    try {
+      await AdMob.initialize();
 
-  // FALLBACK 2: Try direct Blogger JSON API as secondary option
-  // This is a backup if the backend endpoint is completely down
+      // Banner
+      await AdMob.showBanner({
+        adId: "ca-app-pub-3288039417600063/3826509024",
+        adSize: BannerAdSize.ADAPTIVE_BANNER,
+        position: BannerAdPosition.BOTTOM_CENTER,
+      });
+
+      // App Open
+      await AdMob.prepareAppOpen({
+        adId: "ca-app-pub-3288039417600063/7707211570",
+      });
+
+      await AdMob.showAppOpen();
+
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  initAds();
+}, []);
+  
+  useEffect(() => {
+    saveNativeBookmarks(bookmarkedIds);
+  }, [bookmarkedIds]);
+
+  useEffect(() => {
+    if (articles.length > 0) {
+      saveNativeArticlesCache(articles);
+    }
+  }, [articles]);
+
+  const handleToggleBookmark = (id: string) => {
+    triggerHapticLight();
+    setBookmarkedIds(prev => 
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectArticle = async (article: Article) => {
+  triggerHapticLight();
+
+  setSelectedArticle(article);
+  setActiveScreen("detail");
+
   try {
-    console.log('Attempting direct Blogger API fetch as fallback...');
-    const directUrl = `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`;
-    
-    const directResponse = await fetch(directUrl, {
-      method: 'GET',
-      cache: 'no-store',
-      headers: {
-        'Accept': 'application/json'
-      }
+    await AdMob.prepareInterstitial({
+      adId: "ca-app-pub-3288039417600063/1445588386",
     });
 
-    if (directResponse.ok) {
-      const feedJson = await directResponse.json();
-      
-      if (feedJson?.feed?.entry && Array.isArray(feedJson.feed.entry)) {
-        console.log(`✓ Direct Blogger API returned ${feedJson.feed.entry.length} entries`);
-        
-        const articles = feedJson.feed.entry.map((entry: any, index: number) =>
-          parseBloggerEntry(entry, index)
-        );
-
-        // Sort by date
-        articles.sort((a, b) => {
-          const aTime = new Date(a.rawPublishedAt || a.publishedAt).getTime();
-          const bTime = new Date(b.rawPublishedAt || b.publishedAt).getTime();
-          return bTime - aTime;
-        });
-
-        if (articles.length > 0) {
-          return articles;
-        }
-      } else {
-        console.error('Direct Blogger API missing feed.entry structure');
-      }
-    } else {
-      console.error(`Direct Blogger API returned HTTP ${directResponse.status}`);
-    }
-  } catch (error: any) {
-    console.error('Direct Blogger API fetch failed:', error?.message);
+    await AdMob.showInterstitial();
+  } catch (err) {
+    console.log("AdMob Error:", err);
   }
+};
 
-  // FALLBACK 3: Try CORS proxy
+  const handleShareArticle = async (article: Article) => {
   try {
-    console.log('Attempting CORS proxy fetch as final fallback...');
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(BLOGGER_JSON_FEED_URL)}&t=${Date.now()}`;
-    
-    const proxyResponse = await fetch(proxyUrl, {
-      cache: 'no-store'
+    await Share.share({
+      title: article.title,
+      text: article.summary,
+      url: article.url,
+      dialogTitle: 'Share News'
     });
-
-    if (proxyResponse.ok) {
-      const feedJson = await proxyResponse.json();
-      
-      if (feedJson?.feed?.entry && Array.isArray(feedJson.feed.entry)) {
-        console.log(`✓ CORS proxy returned ${feedJson.feed.entry.length} entries`);
-        
-        const articles = feedJson.feed.entry.map((entry: any, index: number) =>
-          parseBloggerEntry(entry, index)
-        );
-
-        articles.sort((a, b) => {
-          const aTime = new Date(a.rawPublishedAt || a.publishedAt).getTime();
-          const bTime = new Date(b.rawPublishedAt || b.publishedAt).getTime();
-          return bTime - aTime;
-        });
-
-        if (articles.length > 0) {
-          return articles;
-        }
-      }
-    }
-  } catch (error: any) {
-    console.error('CORS proxy fetch failed:', error?.message);
+  } catch (err) {
+    console.log('Share cancelled', err);
   }
+};
+  
+const handleShareApp = async () => {
+  try {
+    await Share.share({
+      title: "FlashNews24",
+      text: "Get the latest breaking news with FlashNews24!",
+      url: "https://play.google.com/store/apps/details?id=com.flashnews24.app",
+      dialogTitle: "Share FlashNews24",
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+  
+  const handleBroadcastNotification = (title: string, body: string, priority: 'HIGH' | 'NORMAL', articleId?: string) => {
+    const newNotif: FcmNotification = {
+      id: `fcm-${Date.now()}`,
+      title,
+      body,
+      priority,
+      timestamp: 'Just now',
+      articleId
+    };
+    setNotifications(prev => [newNotif, ...prev]);
+    setActiveBanner(newNotif);
+    
+    // Auto hide banner after 6 seconds
+    setTimeout(() => {
+      setActiveBanner(curr => curr?.id === newNotif.id ? null : curr);
+    }, 6000);
+  };
 
-  // ABSOLUTE LAST RESORT: Only return offline cache when ALL network options fail
-  console.warn('❌ All fetch attempts failed. Returning OFFLINE_BLOGGER_CACHE as emergency fallback.');
-  return [...OFFLINE_BLOGGER_CACHE];
+  const handleGenerateAiBreakingArticle = async (topic: string) => {
+    setIsGeneratingAiNews(true);
+    const startTime = Date.now();
+    try {
+      const res = await fetch('/api/news/ai-breaking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic })
+      });
+      const data = await res.json();
+      if (data.article) {
+        setArticles(prev => [data.article, ...prev]);
+        addRetrofitLog('POST', 'https://api.flashnews24.io/top-headlines/ai-dispatch', 201, Date.now() - startTime, '4.2 KB');
+        
+        // Broadcast push alert for this new story
+        handleBroadcastNotification(
+          `⚡ BREAKING (${data.article.category}): ${data.article.title.slice(0, 45)}...`,
+          data.article.summary,
+          'HIGH',
+          data.article.id
+        );
+      }
+    } catch (err) {
+      addRetrofitLog('POST', 'https://api.flashnews24.io/top-headlines/ai-dispatch', 500, Date.now() - startTime, '0 B');
+    } 
+  };
+
+  const handleSyncLatestBloggerPostPush = async () => {
+  setIsSyncingBlogger(true);
+
+  // Hide syncing banner after 5 seconds, background sync continues
+  setTimeout(() => {
+    setIsSyncingBlogger(false);
+  }, 5000);
+
+  const startTime = Date.now();
+
+  try {
+    const liveArticles = await fetchBloggerArticles('All');
+
+    if (liveArticles && liveArticles.length > 0) {
+      const latest = liveArticles[0];
+
+      setArticles(liveArticles);
+
+      addRetrofitLog(
+        'GET',
+        `${BLOGGER_JSON_FEED_URL}?category=all&fcm_trigger=1`,
+        200,
+        Date.now() - startTime,
+        '48.2 KB'
+      );
+
+      handleBroadcastNotification(
+        `🚨 NEW BLOGGER POST (${latest.category}): ${latest.title.slice(0, 45)}...`,
+        latest.summary || 'Real-time Blogger headline synced via Retrofit and Room.',
+        'HIGH',
+        latest.id
+      );
+    }
+  } catch (err) {
+    addRetrofitLog(
+      'GET',
+      BLOGGER_JSON_FEED_URL,
+      500,
+      Date.now() - startTime,
+      '0 B'
+    );
+  }
+};
+
+  const bookmarkedArticles = articles.filter(a => bookmarkedIds.includes(a.id));
+
+  const uiState: NewsUiState = {
+    status: isRefreshing ? 'loading' : 'success',
+    articles,
+    bookmarkedIds,
+    selectedCategory,
+    searchQuery: '',
+    isRefreshing,
+    isOfflineMode: isOffline,
+    lastUpdated: new Date().toLocaleTimeString()
+  };
+
+  return (
+    <div className="w-full h-screen bg-[#0F1115]">
+            {showSplash ? (
+              <SplashScreen onFinish={() => setShowSplash(false)} />
+            ) : (
+              <>
+                {activeScreen === 'home' && (
+  <HomeScreen
+    articles={articles}
+    bookmarkedIds={bookmarkedIds}
+    selectedCategory={selectedCategory}
+    onSelectCategory={setSelectedCategory}
+    onSelectArticle={handleSelectArticle}
+    onToggleBookmark={handleToggleBookmark}
+    onShareArticle={handleShareArticle}
+    onRefresh={handleRefreshNews}
+    onOpenSearch={() => setActiveScreen('search')}
+    isRefreshing={isRefreshing}
+    isOffline={isOffline}
+    setMenuOpen={setMenuOpen}
+  />
+)}
+            {activeScreen === 'detail' && selectedArticle && (
+              <DetailScreen
+  article={selectedArticle}
+  isBookmarked={bookmarkedIds.includes(selectedArticle.id)}
+  relatedArticles={articles.filter(a => a.id !== selectedArticle.id)}
+  onBack={() => setActiveScreen("home")}
+  onToggleBookmark={handleToggleBookmark}
+  onShare={handleShareArticle}
+  onSelectArticle={handleSelectArticle}
+/>
+            )}
+
+            {activeScreen === 'bookmarks' && (
+              <BookmarksScreen
+                articles={bookmarkedArticles}
+                onSelectArticle={handleSelectArticle}
+                onRemoveBookmark={handleToggleBookmark}
+                onClearAllBookmarks={() => setBookmarkedIds([])}
+              />
+            )}
+
+            {activeScreen === 'search' && (
+              <SearchScreen
+                allArticles={articles}
+                onSelectArticle={handleSelectArticle}
+                onClose={() => setActiveScreen('home')}
+              />
+            )}
+
+                        {activeScreen === 'notifications' && (
+              <NotificationsScreen
+                notifications={notifications}
+                allArticles={articles}
+                onSelectArticle={handleSelectArticle}
+                onClearNotifications={() => setNotifications([])}
+              />
+            )}
+                {activeScreen === "about" && (
+  <AboutScreen onBack={() => setActiveScreen("home")} />
+)}
+
+{activeScreen === "settings" && (
+  <SettingsScreen onBack={() => setActiveScreen("home")} />
+)}
+
+{activeScreen === "privacy" && (
+  <PrivacyScreen onBack={() => setActiveScreen("home")} />
+)}
+
+{activeScreen === "terms" && (
+  <TermsScreen onBack={() => setActiveScreen("home")} />
+)}
+
+{activeScreen === "contact" && (
+  <ContactScreen onBack={() => setActiveScreen("home")} />
+)}
+          </>
+        )}
+      {menuOpen && (
+  <div className="fixed inset-0 z-50">
+    <div
+      className="absolute inset-0"
+      onClick={() => setMenuOpen(false)}
+    />
+
+    <div className="absolute top-16 right-4 w-56 bg-[#1f1f1f] rounded-xl shadow-2xl border border-gray-700 overflow-hidden">
+
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("home");
+    }}
+  >
+    🏠 Home
+  </button>
+
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("bookmarks");
+    }}
+  >
+    🔖 Bookmarks
+  </button>
+
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("notifications");
+    }}
+  >
+    🔔 Notifications
+  </button>
+
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      window.open("https://play.google.com/store/apps/details?id=com.flashnews24.app","_blank");
+    }}
+  >
+    ⭐ Rate App
+  </button>
+
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={handleShareApp}
+  >
+    📤 Share App
+  </button>
+
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("settings");
+    }}
+  >
+    ⚙️ Settings
+  </button>
+
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("about");
+    }}
+  >
+    ℹ️ About
+  </button>
+
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("privacy");
+    }}
+  >
+    🔒 Privacy Policy
+  </button>
+
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("terms");
+    }}
+  >
+    📜 Terms & Conditions
+  </button>
+
+  <button
+    className="w-full text-left px-4 py-3 hover:bg-gray-700"
+    onClick={() => {
+      setMenuOpen(false);
+      setActiveScreen("contact");
+    }}
+  >
+    📞 Contact Us
+  </button>
+
+</div>
+  </div>
+)}
+    </div>
+  );
 }
+
