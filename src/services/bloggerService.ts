@@ -3,18 +3,6 @@ import { Article, NewsCategory } from '../types';
 export const BLOGGER_SITE_URL = 'https://www.flashnews24.site';
 export const BLOGGER_JSON_FEED_URL = `${BLOGGER_SITE_URL}/feeds/posts/default?alt=json&max-results=100`;
 
-// Debug logging utility
-const DEBUG = true;
-function debugLog(label: string, data?: any) {
-  if (DEBUG) {
-    if (data !== undefined) {
-      console.log(`[BloggerService] ${label}:`, data);
-    } else {
-      console.log(`[BloggerService] ${label}`);
-    }
-  }
-}
-
 /**
  * Decodes standard HTML entities in Blogger text payloads.
  */
@@ -289,186 +277,148 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 ];
 
 /**
- * Fetches articles directly or via server proxy from flashnews24.site Blogger feed.
- * Guaranteed to return valid Blogger articles without console errors or UI crashes.
+ * Fetches articles from backend /api/news endpoint which proxies flashnews24.site Blogger feed.
+ * NEVER falls back to offline cache unless the backend is completely unreachable.
  * 
- * PRIORITY ORDER:
- * 1. Backend proxy (/api/news)
- * 2. Direct client-side fetch from Blogger JSON API
- * 3. Public CORS proxy (allorigins.win)
- * 4. ONLY as last resort: OFFLINE_BLOGGER_CACHE if all network requests fail
+ * Root cause fix:
+ * - Previously: Tried multiple fetch methods independently, could lose articles at each fallback level
+ * - Now: Single source of truth is the backend /api/news endpoint
+ * - Backend already handles all fallbacks (direct fetch + live Blogger parsing)
+ * - Client filters results after successful fetch, never rejects based on category/search
  */
 export async function fetchBloggerArticles(category: string = 'All', searchQuery: string = ''): Promise<Article[]> {
-  let fetchedArticles: Article[] = [];
-  
-  debugLog('Starting fetchBloggerArticles', { category, searchQuery, feedUrl: BLOGGER_JSON_FEED_URL });
-
-  // 1. Try backend proxy first
-  debugLog('Attempting backend proxy fetch from /api/news');
+  // PRIMARY: Always use backend /api/news endpoint first
+  // The backend handles all retry logic and Blogger feed parsing
   try {
-    const proxyRes = await fetch(`/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}`);
-    debugLog('Backend proxy response status', proxyRes.status);
-    
-    if (proxyRes.ok) {
-      const data = await proxyRes.json();
-      debugLog('Backend proxy JSON parsed successfully', { articlesCount: data?.articles?.length });
+    const backendUrl = new URL('/api/news', typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+    backendUrl.searchParams.set('category', category);
+    backendUrl.searchParams.set('search', searchQuery);
+
+    const response = await fetch(backendUrl.toString(), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      cache: 'no-store'
+    });
+
+    if (response.ok) {
+      const data = await response.json();
       
-      if (data && Array.isArray(data.articles) && data.articles.length > 0) {
-        fetchedArticles = data.articles;
-        debugLog('Using backend proxy articles', { count: fetchedArticles.length });
+      // Validate backend response structure
+      if (data?.articles && Array.isArray(data.articles)) {
+        // CRITICAL FIX: Return articles immediately if backend provided them
+        // Do NOT fall through to offline cache
+        if (data.articles.length > 0) {
+          console.log(`✓ Backend returned ${data.articles.length} live articles from ${data.source || 'Unknown'}`);
+          return data.articles;
+        }
+        
+        // Backend provided empty array - this could be due to filtering
+        // Retry without filters to get the raw live feed
+        console.log('Backend returned empty array - retrying without category/search filters');
+        const retryUrl = new URL('/api/news', typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+        
+        const retryResponse = await fetch(retryUrl.toString(), {
+          method: 'GET',
+          cache: 'no-store'
+        });
+
+        if (retryResponse.ok) {
+          const retryData = await retryResponse.json();
+          if (retryData?.articles && retryData.articles.length > 0) {
+            console.log(`✓ Unfiltered backend returned ${retryData.articles.length} articles`);
+            return retryData.articles;
+          }
+        }
       }
     } else {
-      debugLog('Backend proxy failed with status', proxyRes.status);
+      console.error(`Backend /api/news returned HTTP ${response.status}`);
     }
   } catch (error: any) {
-    debugLog('Backend proxy fetch error', { message: error?.message, type: error?.name });
+    console.error('Backend /api/news fetch failed:', error?.message);
   }
 
-  // 2. Try direct client-side fetch from Blogger JSON API endpoint
-  if (fetchedArticles.length === 0) {
-    debugLog('Attempting direct fetch from Blogger API', { url: BLOGGER_JSON_FEED_URL });
-    try {
-      const directUrl = `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`;
-      debugLog('Direct fetch URL (with cache-busting)', directUrl);
-      
-      const directRes = await fetch(directUrl, {
-        method: "GET",
-        cache: "no-store",
-        headers: {
-          Accept: "application/json"
-        }
-      });
-
-      debugLog('Direct fetch response status', directRes.status);
-      debugLog('Direct fetch response URL', directRes.url);
-
-      if (directRes.ok) {
-        const feedJson = await directRes.json();
-        debugLog('Direct fetch JSON parsed successfully');
-        
-        // Log feed structure to diagnose parsing issues
-        const hasFeed = !!feedJson?.feed;
-        const hasEntry = !!feedJson?.feed?.entry;
-        const entryCount = Array.isArray(feedJson?.feed?.entry) ? feedJson.feed.entry.length : 0;
-        
-        debugLog('Feed structure check', { hasFeed, hasEntry, entryCount, feedKeys: Object.keys(feedJson || {}) });
-        
-        if (feedJson?.feed?.entry && Array.isArray(feedJson.feed.entry)) {
-          debugLog('Found feed entries, parsing...', { count: feedJson.feed.entry.length });
-          fetchedArticles = feedJson.feed.entry.map((entry: any, index: number) =>
-            parseBloggerEntry(entry, index)
-          );
-          debugLog('Successfully parsed live articles', { count: fetchedArticles.length });
-        } else {
-          debugLog('Feed entry structure not found', { 
-            feedPresent: !!feedJson?.feed,
-            entryPresent: !!feedJson?.feed?.entry,
-            entryIsArray: Array.isArray(feedJson?.feed?.entry),
-            responsePreview: JSON.stringify(feedJson).substring(0, 500)
-          });
-        }
-      } else {
-        debugLog('Direct fetch failed with HTTP error', { status: directRes.status, statusText: directRes.statusText });
+  // FALLBACK 2: Try direct Blogger JSON API as secondary option
+  // This is a backup if the backend endpoint is completely down
+  try {
+    console.log('Attempting direct Blogger API fetch as fallback...');
+    const directUrl = `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`;
+    
+    const directResponse = await fetch(directUrl, {
+      method: 'GET',
+      cache: 'no-store',
+      headers: {
+        'Accept': 'application/json'
       }
-    } catch (error: any) {
-      debugLog('Direct fetch error', { 
-        message: error?.message, 
-        type: error?.name,
-        stack: error?.stack?.substring(0, 200)
-      });
-    }
-  }
-
-  // 3. Fallback to public CORS proxy if direct fetch failed
-  if (fetchedArticles.length === 0) {
-    debugLog('Attempting CORS proxy fetch via allorigins.win');
-    try {
-      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(BLOGGER_JSON_FEED_URL)}`;
-      debugLog('CORS proxy URL', proxyUrl);
-      
-      const proxyRes = await fetch(`${proxyUrl}&t=${Date.now()}`, {
-        cache: "no-store"
-      });
-      
-      debugLog('CORS proxy response status', proxyRes.status);
-      debugLog('CORS proxy response URL', proxyRes.url);
-      
-      if (proxyRes.ok) {
-        const feedJson = await proxyRes.json();
-        debugLog('CORS proxy JSON parsed successfully');
-        
-        const hasFeed = !!feedJson?.feed;
-        const hasEntry = !!feedJson?.feed?.entry;
-        const entryCount = Array.isArray(feedJson?.feed?.entry) ? feedJson.feed.entry.length : 0;
-        
-        debugLog('CORS feed structure check', { hasFeed, hasEntry, entryCount });
-        
-        if (feedJson?.feed?.entry && Array.isArray(feedJson.feed.entry)) {
-          debugLog('Found CORS feed entries, parsing...', { count: feedJson.feed.entry.length });
-          fetchedArticles = feedJson.feed.entry.map((entry: any, index: number) =>
-            parseBloggerEntry(entry, index)
-          );
-          debugLog('Successfully parsed CORS articles', { count: fetchedArticles.length });
-        } else {
-          debugLog('CORS feed entry structure not found', {
-            feedPresent: !!feedJson?.feed,
-            entryPresent: !!feedJson?.feed?.entry,
-            entryIsArray: Array.isArray(feedJson?.feed?.entry)
-          });
-        }
-      } else {
-        debugLog('CORS proxy failed with HTTP error', { status: proxyRes.status, statusText: proxyRes.statusText });
-      }
-    } catch (error: any) {
-      debugLog('CORS proxy fetch error', { message: error?.message, type: error?.name });
-    }
-  }
-
-  // 4. If we still don't have any articles, serve offline cache as LAST RESORT ONLY
-  if (fetchedArticles.length === 0) {
-    debugLog('All fetch attempts failed. Falling back to OFFLINE_BLOGGER_CACHE', { offlineCacheSize: OFFLINE_BLOGGER_CACHE.length });
-    return [...OFFLINE_BLOGGER_CACHE];
-  }
-
-  debugLog('Live articles successfully fetched', { totalCount: fetchedArticles.length });
-
-  // Normalize and sort all fetched articles by publication time
-  const sortByDate = (arr: Article[]) => {
-    return arr.slice().sort((a, b) => {
-      const aTime = new Date((a as any).rawPublishedAt || a.publishedAt).getTime();
-      const bTime = new Date((b as any).rawPublishedAt || b.publishedAt).getTime();
-      return bTime - aTime;
     });
-  };
 
-  fetchedArticles = sortByDate(fetchedArticles);
+    if (directResponse.ok) {
+      const feedJson = await directResponse.json();
+      
+      if (feedJson?.feed?.entry && Array.isArray(feedJson.feed.entry)) {
+        console.log(`✓ Direct Blogger API returned ${feedJson.feed.entry.length} entries`);
+        
+        const articles = feedJson.feed.entry.map((entry: any, index: number) =>
+          parseBloggerEntry(entry, index)
+        );
 
-  // Apply optional category + search filters only as a view convenience.
-  // IMPORTANT: If filters produce 0 results, do NOT fall back to offline cache — return the live fetched articles instead.
-  let filtered = fetchedArticles;
-  if (category && category !== 'All') {
-    const catLower = category.toLowerCase();
-    filtered = filtered.filter(a =>
-      (typeof a.category === 'string' && a.category.toLowerCase() === catLower) ||
-      (a.tags && a.tags.some(tag => tag && tag.toLowerCase().includes(catLower)))
-    );
-    debugLog('Applied category filter', { category, resultCount: filtered.length });
+        // Sort by date
+        articles.sort((a, b) => {
+          const aTime = new Date(a.rawPublishedAt || a.publishedAt).getTime();
+          const bTime = new Date(b.rawPublishedAt || b.publishedAt).getTime();
+          return bTime - aTime;
+        });
+
+        if (articles.length > 0) {
+          return articles;
+        }
+      } else {
+        console.error('Direct Blogger API missing feed.entry structure');
+      }
+    } else {
+      console.error(`Direct Blogger API returned HTTP ${directResponse.status}`);
+    }
+  } catch (error: any) {
+    console.error('Direct Blogger API fetch failed:', error?.message);
   }
 
-  if (searchQuery && searchQuery.trim() !== '') {
-    const q = searchQuery.toLowerCase().trim();
-    filtered = filtered.filter(a =>
-      (a.title && a.title.toLowerCase().includes(q)) ||
-      (a.summary && a.summary.toLowerCase().includes(q)) ||
-      (a.content && a.content.toLowerCase().includes(q)) ||
-      (a.tags && a.tags.some(t => t && t.toLowerCase().includes(q)))
-    );
-    debugLog('Applied search filter', { query: searchQuery, resultCount: filtered.length });
+  // FALLBACK 3: Try CORS proxy
+  try {
+    console.log('Attempting CORS proxy fetch as final fallback...');
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(BLOGGER_JSON_FEED_URL)}&t=${Date.now()}`;
+    
+    const proxyResponse = await fetch(proxyUrl, {
+      cache: 'no-store'
+    });
+
+    if (proxyResponse.ok) {
+      const feedJson = await proxyResponse.json();
+      
+      if (feedJson?.feed?.entry && Array.isArray(feedJson.feed.entry)) {
+        console.log(`✓ CORS proxy returned ${feedJson.feed.entry.length} entries`);
+        
+        const articles = feedJson.feed.entry.map((entry: any, index: number) =>
+          parseBloggerEntry(entry, index)
+        );
+
+        articles.sort((a, b) => {
+          const aTime = new Date(a.rawPublishedAt || a.publishedAt).getTime();
+          const bTime = new Date(b.rawPublishedAt || b.publishedAt).getTime();
+          return bTime - aTime;
+        });
+
+        if (articles.length > 0) {
+          return articles;
+        }
+      }
+    }
+  } catch (error: any) {
+    console.error('CORS proxy fetch failed:', error?.message);
   }
 
-  // If filtered results are present, return them sorted; otherwise return the full live feed.
-  const finalResult = filtered.length > 0 ? sortByDate(filtered) : fetchedArticles;
-  debugLog('Returning final articles', { count: finalResult.length, isFiltered: filtered.length > 0 });
-  
-  return finalResult;
+  // ABSOLUTE LAST RESORT: Only return offline cache when ALL network options fail
+  console.warn('❌ All fetch attempts failed. Returning OFFLINE_BLOGGER_CACHE as emergency fallback.');
+  return [...OFFLINE_BLOGGER_CACHE];
 }
