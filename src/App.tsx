@@ -268,11 +268,11 @@ const [articles, setArticles] = useState<Article[]>(INITIAL_ARTICLES);
     });
     
 loadNativeArticlesCache().then(cached => {
-  if (cached && cached.length > 0) {
-    setArticles(cached);
-  }
+    if (isOffline && cached && cached.length > 0) {
+        setArticles(cached);
+    }
 
-  handleRefreshNews();
+    handleRefreshNews();
 });
     loadNativeBookmarks().then(saved => {
       if (saved && saved.length > 0) {
