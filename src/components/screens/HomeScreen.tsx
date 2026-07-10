@@ -124,7 +124,7 @@ const regularArticles = articles
 
     return matchCategory || matchTags;
   })
-  .slice(0, 20);
+  .slice(0, 50);
   const handleManualRefresh = () => {
     setIsPulling(true);
     onRefresh();
