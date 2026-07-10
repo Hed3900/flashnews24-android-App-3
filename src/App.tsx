@@ -342,9 +342,9 @@ return unique;
 });
 
 }).catch(() => {});
-      }
-    }, 45000);
-    return () => {
+}, 45000);
+
+return () => {
       clearInterval(interval);
       removeNetListenerPromise.then(remove => remove());
     };
