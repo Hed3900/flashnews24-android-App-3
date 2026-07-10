@@ -146,7 +146,7 @@ const INITIAL_ARTICLES: Article[] = [
 ];
 
 export default function App() {
-const [articles, setArticles] = useState<Article[]>(INITIAL_ARTICLES);
+const [articles, setArticles] = useState<Article[]>([]);
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>(['art-1', 'art-4']);
   const [selectedCategory, setSelectedCategory] = useState<NewsCategory>('All');
   const [activeScreen, setActiveScreen] = useState<SimulatorScreen>('home');
