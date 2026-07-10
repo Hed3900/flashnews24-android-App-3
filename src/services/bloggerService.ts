@@ -371,15 +371,15 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
 console.log("Filtered:", filtered.length);
 
   fetchedArticles.sort((a, b) =>
-  new Date(b.publishedAt).getTime() -
-  new Date(a.publishedAt).getTime()
+  new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
+new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
 );
 
 return filtered.length > 0
   ? filtered
       .sort((a, b) =>
-        new Date(b.publishedAt).getTime() -
-        new Date(a.publishedAt).getTime()
+        new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
+new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
       )
       .slice(0, 50)
   : OFFLINE_BLOGGER_CACHE.slice(0, 50);
