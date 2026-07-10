@@ -234,7 +234,7 @@ useEffect(() => {
         adId: "ca-app-pub-3288039417600063/7707211570",
       });
 
-     // await AdMob.showAppOpen();
+      await AdMob.showAppOpen();
 
     } catch (e) {
       console.log(e);
@@ -355,7 +355,7 @@ const handleShareApp = async () => {
   // Hide syncing banner after 5 seconds, background sync continues
   setTimeout(() => {
     setIsSyncingBlogger(false);
-  }, 5000);
+  },1000);
 
   const startTime = Date.now();
 
