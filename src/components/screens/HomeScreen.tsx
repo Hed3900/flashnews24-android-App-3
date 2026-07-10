@@ -320,23 +320,24 @@ const regularArticles = articles
           </div>
 
 {regularArticles.length === 0 ? (
-   // No articles found
+  <div className="text-center py-12 px-4 bg-[#1A1D23] rounded-[24px] border border-dashed border-[#2D333B]">
+    <Sparkles className="w-8 h-8 text-blue-500 mx-auto mb-2 opacity-50" />
+    <h4 className="text-sm font-bold">
+      No articles found in {selectedCategory}
+    </h4>
+    <p className="text-xs text-[#E1E4E8] opacity-60 mt-1">
+      Try selecting another category or pull to refresh from Retrofit.
+    </p>
+
+    <button
+      onClick={handleManualRefresh}
+      className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-500 transition-colors"
+    >
+      Fetch Live Articles
+    </button>
+  </div>
 ) : (
-   regularArticles.map(...)
-)}
-            <div className="text-center py-12 px-4 bg-[#1A1D23] rounded-[24px] border border-dashed border-[#2D333B]">
-              <Sparkles className="w-8 h-8 text-blue-500 mx-auto mb-2 opacity-50" />
-              <h4 className="text-sm font-bold">No articles found in {selectedCategory}</h4>
-              <p className="text-xs text-[#E1E4E8] opacity-60 mt-1">Try selecting another category or pulling to refresh from Retrofit.</p>
-              <button
-                onClick={handleManualRefresh}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-500 transition-colors"
-              >
-                Fetch Live Articles
-              </button>
-            </div>
-          ) : (
-            regularArticles.map((art) => {
+  regularArticles.map((art) => {
               const isBookmarked = bookmarkedIds.includes(art.id);
               return (
                 <div
