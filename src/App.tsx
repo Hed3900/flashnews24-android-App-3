@@ -267,12 +267,25 @@ const [articles, setArticles] = useState<Article[]>(INITIAL_ARTICLES);
       handleBroadcastNotification(title, body, 'HIGH', articleId);
     });
     
-loadNativeArticlesCache().then(cached => {
-    if (isOffline && cached && cached.length > 0) {
-        setArticles(cached);
+loadNativeArticlesCache().then(async cached => {
+
+    // Offline అయితే cache మాత్రమే చూపించు
+    if (isOffline) {
+        if (cached && cached.length > 0) {
+            setArticles(cached);
+        }
+        return;
     }
 
-    handleRefreshNews();
+    // Online అయితే Blogger data ముందు load చేయి
+    const liveArticles = await fetchBloggerArticles("All");
+
+    if (liveArticles && liveArticles.length > 0) {
+        setArticles(liveArticles);
+        await saveNativeArticlesCache(liveArticles);
+    } else if (cached && cached.length > 0) {
+        setArticles(cached);
+    }
 });
     loadNativeBookmarks().then(saved => {
       if (saved && saved.length > 0) {
@@ -288,38 +301,45 @@ loadNativeArticlesCache().then(cached => {
           console.log("LIVE:", liveArticles.length);
           if (liveArticles && liveArticles.length > 0) {
     setArticles(prev => {
+  // Merge live + existing
+  const merged = [...liveArticles, ...prev];
 
-        console.log("LIVE:", liveArticles.length);
+  // Remove duplicates
+  const unique = Array.from(
+    new Map(merged.map(item => [item.id, item])).values()
+  );
 
-        if (liveArticles.length === prev.length) {
-            return prev;
-        }
+  // Sort newest first
+  unique.sort(
+    (a, b) =>
+      new Date(b.rawPublishedAt || b.publishedAt).getTime() -
+      new Date(a.rawPublishedAt || a.publishedAt).getTime()
+  );
 
-        const existingIds = new Set(prev.map(a => a.id));
-        const newArrivals = liveArticles.filter(a => !existingIds.has(a.id));
+  // 🔥 Prevent unnecessary re-render (flicker fix)
+  if (
+    prev.length === unique.length &&
+    prev.every((p, i) => p.id === unique[i].id)
+  ) {
+    return prev;
+  }
 
-        if (newArrivals.length > 0) {
-            const newest = newArrivals[0];
-            handleBroadcastNotification(
-                `🚨 NEW BLOGGER POST (${newest.category}): ${newest.title.slice(0,45)}...`,
-                newest.summary || "Real-time feed sync received.",
-                "HIGH",
-                newest.id
-            );
-        }
+  // Notify only for truly new posts
+  const existingIds = new Set(prev.map(a => a.id));
+  const newArrivals = liveArticles.filter(a => !existingIds.has(a.id));
 
-        const unique = Array.from(
-            new Map([...liveArticles, ...prev].map(item => [item.id, item])).values()
-        );
+  if (newArrivals.length > 0) {
+    const newest = newArrivals[0];
+    handleBroadcastNotification(
+      `🚨 NEW BLOGGER POST (${newest.category}): ${newest.title.slice(0, 45)}...`,
+      newest.summary || "Real-time feed sync received.",
+      "HIGH",
+      newest.id
+    );
+  }
 
-        unique.sort(
-            (a, b) =>
-                new Date(b.rawPublishedAt || b.publishedAt).getTime() -
-                new Date(a.rawPublishedAt || a.publishedAt).getTime()
-        );
-
-        return unique;
-    });
+  return unique;
+});
           }
           
         }).catch(() => {});
