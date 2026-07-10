@@ -215,14 +215,14 @@ const [articles, setArticles] = useState<Article[]>([]);
     }
 
     fetchBloggerArticles("All")
-  .then(liveArticles => {
+  .then((liveArticles) => {
     if (liveArticles && liveArticles.length > 0) {
-      setArticles(liveArticles);
+    setArticles(prev => {
+        const aiStories = prev.filter(a => a.id.startsWith("art-ai-"));
         const merged = [...aiStories, ...liveArticles];
-        const unique = Array.from(
-          new Map(merged.map(item => [item.id, item])).values()
-        );
-      
+        return Array.from(new Map(merged.map(item => [item.id, item])).values());
+    });
+        
       addRetrofitLog(
         "GET",
         `${BLOGGER_JSON_FEED_URL}?category=all`,
