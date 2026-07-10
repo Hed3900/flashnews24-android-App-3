@@ -441,9 +441,7 @@ const handleShareApp = async () => {
       }
     } catch (err) {
       addRetrofitLog('POST', 'https://api.flashnews24.io/top-headlines/ai-dispatch', 500, Date.now() - startTime, '0 B');
-    } finally {
-      setIsGeneratingAiNews(false);
-    }
+    } 
   };
 
   const handleSyncLatestBloggerPostPush = async () => {
