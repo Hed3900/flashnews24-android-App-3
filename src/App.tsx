@@ -202,7 +202,9 @@ const [articles, setArticles] = useState<Article[]>([]);
   }, []);
 
   const handleRefreshNews = useCallback(() => {
-    setIsRefreshing(true);
+    if (articles.length === 0) {
+  setIsRefreshing(true);
+    }
     triggerHapticMedium();
     const startTime = Date.now();
     
@@ -252,7 +254,7 @@ const [articles, setArticles] = useState<Article[]>([]);
   .finally(() => {
     setIsRefreshing(false);
   });
-  }, [isOffline, addRetrofitLog]);
+  }, [isOffline, addRetrofitLog, articles.length]);
 
   useEffect(() => {
     handleRefreshNews();
