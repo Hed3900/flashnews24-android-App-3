@@ -290,7 +290,12 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
  */
 export async function fetchBloggerArticles(category: string = 'All', searchQuery: string = ''): Promise<Article[]> {
   let fetchedArticles: Article[] = [];
+console.log("Feed URL:", BLOGGER_JSON_FEED_URL);
+console.log("HTTP Status:", directRes.status);
 
+const data = await directRes.json();
+console.log("feed exists:", !!data.feed);
+console.log("entry count:", data.feed?.entry?.length ?? 0);
   try {
     // 1. First try calling our Express backend /api/news which fetches directly from Blogger
     const proxyRes = await fetch(`/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}`);
