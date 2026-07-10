@@ -50,7 +50,7 @@ const showInterstitial = async () => {
     await AdMob.showInterstitial();
   } catch (err) {
     console.error(err);
-  }
+  
 };
 const [articles, setArticles] = useState<Article[]>([]);
   {
