@@ -34,7 +34,7 @@ const initialArticles = [
     id: 'art-1',
     title: 'Google DeepMind Unveils Gemini 3.5: Next-Gen Autonomous Reasoning Engine',
     summary: 'The new architecture introduces native multimodal tool chaining and real-time reflection loops, outperforming human experts in complex engineering benchmarks.',
-    content: 'In a landmark keynote today, researchers at Google DeepMind revealed the Gemini 3.5 series. The model introduces massive upgrades in real-time latency, native speech synthesis, and autonomous task execution. Early enterprise testers report a 4x increase in software development productivity and automated bug resolution. The new architecture also features enhanced safety guardrails and verifiable citation grounding.',
+    content: 'In a landmark keynote today, researchers at Google DeepMind revealed the Gemini 3.5 series. The model introduces massive upgrades in real-time latency, native speech synthesis, and a[...]',
     author: 'Elena Rostova',
     sourceName: 'TechCrunch 24',
     publishedAt: '10 mins ago',
@@ -49,7 +49,7 @@ const initialArticles = [
     id: 'art-2',
     title: 'Global Markets Rally as Green Energy Adoption Hits Tipping Point in Europe',
     summary: 'Solar and wind energy output officially surpassed fossil fuels across EU grids during Q2, triggering massive institutional investments in clean tech.',
-    content: 'Stock markets across Europe and North America surged today following data from the International Energy Agency showing that renewable sources provided over 52% of total electricity generation last quarter. Solar grid installations grew by 38% year-over-year, driven by breakthrough perovskite panel efficiency and grid-scale battery storage cost drops.',
+    content: 'Stock markets across Europe and North America surged today following data from the International Energy Agency showing that renewable sources provided over 52% of total electricity g[...]',
     author: 'Marcus Vance',
     sourceName: 'Bloomberg News',
     publishedAt: '32 mins ago',
@@ -64,7 +64,7 @@ const initialArticles = [
     id: 'art-3',
     title: 'James Webb Telescope Spots Earliest Water-Rich Atmosphere on Exoplanet K2-18c',
     summary: 'Spectroscopic analysis reveals clear signatures of water vapor and carbon-bearing molecules in the habitable zone of a nearby red dwarf star.',
-    content: 'Astronomers using the James Webb Space Telescope have detected definitive signatures of water vapor, methane, and carbon dioxide in the atmosphere of exoplanet K2-18c, located 120 light-years from Earth. The findings suggest an ocean-covered sub-Neptune world capable of sustaining liquid water on its surface.',
+    content: 'Astronomers using the James Webb Space Telescope have detected definitive signatures of water vapor, methane, and carbon dioxide in the atmosphere of exoplanet K2-18c, located 120 li[...]',
     author: 'Dr. Aris Thorne',
     sourceName: 'Scientific American',
     publishedAt: '1 hour ago',
@@ -79,7 +79,7 @@ const initialArticles = [
     id: 'art-4',
     title: 'Android 16 Developer Preview Brings Real-time Spatial Audio & Satellite SOS',
     summary: 'Google releases the first beta build featuring Jetpack Compose 1.8 optimizations, dynamic material color synthesis, and satellite emergency messaging.',
-    content: 'The Android development ecosystem is buzzing following the release of the Android 16 Developer Preview. Highlights include native spatial audio rendering with dynamic head tracking, automated background battery management powered by on-device AI, and built-in satellite SOS APIs for developers building mission-critical field apps.',
+    content: 'The Android development ecosystem is buzzing following the release of the Android 16 Developer Preview. Highlights include native spatial audio rendering with dynamic head tracking, [...]',
     author: 'Sarah Jenkins',
     sourceName: 'Android Central',
     publishedAt: '2 hours ago',
@@ -94,7 +94,7 @@ const initialArticles = [
     id: 'art-5',
     title: 'Championship Thriller: Underdog FC Tokyo Secures Last-Minute Victory in Extra Time',
     summary: 'A dramatic 94th-minute volley seals a historic 3-2 comeback against the reigning champions in front of a sold-out stadium of 65,000 fans.',
-    content: 'In one of the most memorable matches of the decade, FC Tokyo overturned a 2-0 halftime deficit to defeat the league champions 3-2. Teenager Kenji Sato scored the winner in the 94th minute with a stunning volley from 25 yards out, igniting euphoric celebrations across the stadium.',
+    content: 'In one of the most memorable matches of the decade, FC Tokyo overturned a 2-0 halftime deficit to defeat the league champions 3-2. Teenager Kenji Sato scored the winner in the 94th m[...]',
     author: 'David Beckham Jr.',
     sourceName: 'ESPN Global',
     publishedAt: '3 hours ago',
@@ -109,7 +109,7 @@ const initialArticles = [
     id: 'art-6',
     title: 'Next-Gen Quantum Chip Achieves 99.9% Error-Correction Gate Fidelity',
     summary: 'Physicists demonstrate fault-tolerant topological qubits operating at room temperature, paving the way for commercial quantum supercomputers by 2028.',
-    content: 'A consortium of quantum researchers has announced a major breakthrough in qubit stability. By utilizing topological braiding in diamond nitrogen-vacancy centers, the team achieved a 99.9% two-qubit gate fidelity without requiring liquid helium dilution refrigerators. This milestone removes the biggest hurdle to commercial quantum scaling.',
+    content: 'A consortium of quantum researchers has announced a major breakthrough in qubit stability. By utilizing topological braiding in diamond nitrogen-vacancy centers, the team achieved a[...]',
     author: 'Prof. Chen Wei',
     sourceName: 'Nature Technology',
     publishedAt: '5 hours ago',
@@ -205,7 +205,7 @@ function categorizeBlogger(title: string, content: string, categories: any[] = [
     primary = 'Sports';
   } else if (/\b(science|scientific|space|telescope|earthquake|weather|nasa|astronomy|physics|climate|biology|research|solar|planet|planets|volcano|medical|health|disease|vaccine|hospital|doctor|study|storm|renewable|energy)\b/i.test(combined)) {
     primary = 'Science';
-  } else if (/\b(world|international|global|new york|usa|uk|europe|asia|china|russia|war|conflict|government|police|crash|crashes|fire|fires|emergency|accident|accidents|politics|country|nation|city|blast|attack|attacks|park|flight|boeing|aviation|boat|marseille|colombia|england|leicester|bogotá|france|syria|damascus)\b/i.test(combined)) {
+  } else if (/\b(world|international|global|new york|usa|uk|europe|asia|china|russia|war|conflict|government|police|crash|crashes|fire|fires|emergency|accident|accidents|politics|country|nation|city|cities)\b/i.test(combined)) {
     primary = 'World';
   } else if (tags.length > 0) {
     const secondaryTopics = ['health', 'entertainment', 'aviation', 'environment', 'education', 'politics', 'crime', 'energy', 'lifestyle', 'travel', 'automotive', 'real estate', 'weather'];
@@ -228,16 +228,16 @@ function parseBloggerEntryServer(entry: any, index: number): any {
   const { summary, content, readTimeMinutes } = cleanBloggerHtml(rawHtml);
   const author = entry.author?.[0]?.name?.$t || 'FlashNews24 Live';
 
-const rawPublishedAt = entry.published?.$t || entry.updated?.$t;
-const publishedAt = formatBloggerDate(rawPublishedAt);
+  const rawPublishedAt = entry.published?.$t || entry.updated?.$t;
+  const publishedAt = formatBloggerDate(rawPublishedAt);
 
-const linkObj = entry.link?.find((l: any) => l.rel === 'alternate') || entry.link?.[0];
+  const linkObj = entry.link?.find((l: any) => l.rel === 'alternate') || entry.link?.[0];
   const url = linkObj?.href || 'https://www.flashnews24.site';
   const imageUrl = extractBloggerImage(entry, rawHtml);
   const { primary, tags } = categorizeBlogger(title, content, entry.category);
   const textLower = (title + ' ' + content).toLowerCase();
   let sentiment = 'Neutral';
-  if (textLower.includes('crash') || textLower.includes('emergency') || textLower.includes('alert') || textLower.includes('attack') || textLower.includes('disaster') || textLower.includes('deadly') || textLower.includes('urgent')) sentiment = 'Urgent';
+  if (textLower.includes('crash') || textLower.includes('emergency') || textLower.includes('alert') || textLower.includes('attack') || textLower.includes('disaster') || textLower.includes('deadly')) sentiment = 'Urgent';
   else if (textLower.includes('win') || textLower.includes('victory') || textLower.includes('rally') || textLower.includes('growth') || textLower.includes('success')) sentiment = 'Positive';
   else if (textLower.includes('study') || textLower.includes('research') || textLower.includes('analysis') || textLower.includes('report')) sentiment = 'Analytical';
 
@@ -246,7 +246,22 @@ const linkObj = entry.link?.find((l: any) => l.rel === 'alternate') || entry.lin
   const id = rawId.replace(/[^a-zA-Z0-9-_]/g, '-');
 
   return {
-    id, title, summary, content, author, sourceName: 'FlashNews24.site', rawPublishedAt, publishedAt, imageUrl, category: primary, tags, url, readTimeMinutes, isBreaking, sentiment, isLiveBlogger: true
+    id,
+    title,
+    summary,
+    content,
+    author,
+    sourceName: 'FlashNews24.site',
+    rawPublishedAt,
+    publishedAt,
+    imageUrl,
+    category: primary,
+    tags,
+    url,
+    readTimeMinutes,
+    isBreaking,
+    sentiment,
+    isLiveBlogger: true
   };
 }
 
@@ -254,76 +269,150 @@ const linkObj = entry.link?.find((l: any) => l.rel === 'alternate') || entry.lin
 app.get('/api/news', async (req, res) => {
   const { category, search } = req.query;
   let articles: any[] = [];
+  let sourceType = 'UNKNOWN';
+  let error: string | null = null;
 
   try {
-    const bloggerRes = await fetch(BLOGGER_FEED_URL, {
-      headers: { 'User-Agent': 'FlashNews24-Android-Client/1.0' }
-    });
-    if (bloggerRes.ok) {
-      const data = await bloggerRes.json();
-      console.log("Feed entries:", data.feed?.entry?.length);
-      console.log("Latest:", data.feed?.entry?.[0]?.title?.$t);
-      if (data.feed && data.feed.entry) {
-        articles = data.feed.entry.map((e: any, idx: number) =>
-  parseBloggerEntryServer(e, idx)
-);
+    console.log(`\n📡 [/api/news] Fetching Blogger feed from: ${BLOGGER_FEED_URL}`);
 
-articles.sort((a, b) => {
-  return (
-    new Date(b.rawPublishedAt).getTime() -
-    new Date(a.rawPublishedAt).getTime()
-  );
-});
-      }
+    const fetchOptions = {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'FlashNews24-Android-Client/1.0',
+        'Accept': 'application/json'
+      },
+      timeout: 10000 // 10 second timeout
+    };
+
+    const bloggerRes = await fetch(BLOGGER_FEED_URL, fetchOptions);
+    console.log(`📡 [/api/news] Blogger response status: ${bloggerRes.status} ${bloggerRes.statusText}`);
+    console.log(`📡 [/api/news] Response content-type: ${bloggerRes.headers.get('content-type')}`);
+
+    if (!bloggerRes.ok) {
+      throw new Error(`HTTP ${bloggerRes.status}: ${bloggerRes.statusText}`);
     }
-  } catch (err) {
-    console.error('Error fetching live Blogger feed in backend:', err);
+
+    const rawText = await bloggerRes.text();
+    console.log(`📡 [/api/news] Response body length: ${rawText.length} bytes`);
+
+    if (rawText.length === 0) {
+      throw new Error('Response body is empty');
+    }
+
+    let data;
+    try {
+      data = JSON.parse(rawText);
+      console.log(`✓ JSON parsed successfully`);
+    } catch (parseErr: any) {
+      throw new Error(`JSON parse error: ${parseErr.message}. First 200 chars: ${rawText.substring(0, 200)}`);
+    }
+
+    // Validate feed structure
+    if (!data.feed) {
+      throw new Error('Response missing "feed" property');
+    }
+
+    if (!data.feed.entry) {
+      throw new Error('Response missing "feed.entry" property');
+    }
+
+    if (!Array.isArray(data.feed.entry)) {
+      throw new Error(`"feed.entry" is not an array, got: ${typeof data.feed.entry}`);
+    }
+
+    const entryCount = data.feed.entry.length;
+    console.log(`✓ Found ${entryCount} entries in feed.entry`);
+
+    if (entryCount === 0) {
+      throw new Error('feed.entry array is empty - no posts available');
+    }
+
+    // Parse entries
+    try {
+      articles = data.feed.entry.map((e: any, idx: number) =>
+        parseBloggerEntryServer(e, idx)
+      );
+      console.log(`✓ Successfully parsed ${articles.length} articles`);
+    } catch (parseErr: any) {
+      throw new Error(`Error parsing entries: ${parseErr.message}`);
+    }
+
+    // Sort by publication date
+    articles.sort((a, b) => {
+      const aTime = new Date(a.rawPublishedAt || a.publishedAt).getTime();
+      const bTime = new Date(b.rawPublishedAt || b.publishedAt).getTime();
+      return bTime - aTime;
+    });
+
+    console.log(`✓ Blogger articles sorted by date`);
+    console.log(`✓ Latest article: "${articles[0]?.title}"`);
+    sourceType = 'BLOGGER_LIVE';
+
+  } catch (err: any) {
+    error = err.message || String(err);
+    console.error(`❌ [/api/news] Blogger fetch FAILED: ${error}`);
+    console.error(`❌ Stack: ${err.stack?.substring(0, 300)}`);
+    sourceType = 'FALLBACK';
   }
 
-  // Fallback to initial articles if live fetch fails
+  // FALLBACK: Only use initialArticles if Blogger fetch completely failed
   if (articles.length === 0) {
+    console.warn(`⚠️  [/api/news] Using fallback initialArticles (${initialArticles.length} articles)`);
     articles = [...initialArticles];
   }
 
+  // Apply filters (only filter after we have articles)
   let filtered = articles;
   if (category && category !== 'All') {
     const catStr = (category as string).toLowerCase();
-    filtered = filtered.filter((a: any) => 
+    const beforeFilter = filtered.length;
+    filtered = filtered.filter((a: any) =>
       (typeof a.category === 'string' && a.category.toLowerCase() === catStr) ||
       (a.tags && a.tags.some((tag: string) => tag.includes(catStr)))
     );
+    console.log(`📋 [/api/news] Filtered by category "${category}": ${beforeFilter} → ${filtered.length}`);
   }
+
   if (search) {
     const q = (search as string).toLowerCase();
-    filtered = filtered.filter((a: any) => 
-      a.title.toLowerCase().includes(q) || 
+    const beforeFilter = filtered.length;
+    filtered = filtered.filter((a: any) =>
+      a.title.toLowerCase().includes(q) ||
       a.summary.toLowerCase().includes(q) ||
       a.content.toLowerCase().includes(q) ||
       (a.tags && a.tags.some((t: string) => t.includes(q)))
     );
+    console.log(`🔍 [/api/news] Filtered by search "${search}": ${beforeFilter} → ${filtered.length}`);
   }
 
-  res.json({
-    status: 'ok',
-    source: 'Blogger Live API (flashnews24.site)',
-    totalResults: filtered.length,
+  // Return response
+  const response = {
+    status: articles.length > 0 ? 'ok' : 'error',
+    source: sourceType,
+    error: error || null,
+    totalFetched: articles.length,
+    totalReturned: filtered.length,
     articles: filtered,
     timestamp: new Date().toISOString()
-  });
+  };
+
+  console.log(`✓ [/api/news] Response: ${response.totalReturned} articles, source=${response.source}\n`);
+
+  res.json(response);
 });
 
 // API: Generate Live AI Breaking News
 app.post('/api/news/ai-breaking', async (req, res) => {
   const ai = getAiClient();
   const { topic = 'Technology & AI' } = req.body;
-  
+
   if (!ai) {
     // Fallback if no API key
     const fallbackArticle = {
       id: `art-${Date.now()}`,
       title: `BREAKING: Major Advancement in ${topic} Announced Today`,
       summary: `Industry executives confirm groundbreaking developments in ${topic}, expecting widespread global adoption within months.`,
-      content: `In a surprise announcement earlier today, leading researchers and engineers unveiled next-generation capabilities in ${topic}. The new standards promise 10x performance gains and dramatic cost reductions. Global financial markets and tech leaders have responded with overwhelming optimism as deployment schedules begin immediately.`,
+      content: `In a surprise announcement earlier today, leading researchers and engineers unveiled next-generation capabilities in ${topic}. The new standards promise 10x performance gains and enhanced compatibility across all major platforms worldwide.`,
       author: 'Gemini News Dispatcher',
       sourceName: 'FlashNews24 Live Feed',
       publishedAt: 'Just now',
@@ -366,7 +455,7 @@ app.post('/api/news/ai-breaking', async (req, res) => {
     data.publishedAt = 'Just now';
     data.isBreaking = true;
     data.url = `https://flashnews24.io/articles/${data.id}`;
-    
+
     res.json({ article: data, simulated: false });
   } catch (err: any) {
     console.error('Gemini news generation error:', err);
