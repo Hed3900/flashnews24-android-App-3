@@ -257,8 +257,7 @@ const [articles, setArticles] = useState<Article[]>(INITIAL_ARTICLES);
   }, [isOffline, addRetrofitLog, articles.length]);
 
   useEffect(() => {
-    handleRefreshNews();
-    initCapacitorNativeUI();
+  initCapacitorNativeUI();
 
     const removeNetListenerPromise = initCapacitorNetworkListener((connected) => {
       setIsOffline(!connected);
@@ -272,6 +271,8 @@ loadNativeArticlesCache().then(cached => {
   if (cached && cached.length > 0) {
     setArticles(cached);
   }
+
+  handleRefreshNews();
 });
     loadNativeBookmarks().then(saved => {
       if (saved && saved.length > 0) {
@@ -286,27 +287,35 @@ loadNativeArticlesCache().then(cached => {
         fetchBloggerArticles('All').then(liveArticles => {
           if (liveArticles && liveArticles.length > 0) {
             setArticles(prev => {
-              const existingIds = new Set(prev.map(a => a.id));
-              const newArrivals = liveArticles.filter(a => !existingIds.has(a.id));
-              if (newArrivals.length > 0) {
-                const newest = newArrivals[0];
-                handleBroadcastNotification(
-                  `🚨 NEW BLOGGER POST (${newest.category}): ${newest.title.slice(0, 45)}...`,
-                  newest.summary || 'Real-time feed sync received via Firebase Cloud Messaging.',
-                  'HIGH',
-                  newest.id
-                );
-              }
-              const unique = Array.from(
-  new Map([...liveArticles, ...prev].map(item => [item.id, item])).values()
-);
-unique.sort(
-  (a, b) =>
-    new Date(b.rawPublishedAt || b.publishedAt).getTime() -
-    new Date(a.rawPublishedAt || a.publishedAt).getTime()
-);
-return unique;
-            });
+  if (liveArticles.length === prev.length) {
+    return prev;
+  }
+
+  const existingIds = new Set(prev.map(a => a.id));
+  const newArrivals = liveArticles.filter(a => !existingIds.has(a.id));
+
+  if (newArrivals.length > 0) {
+    const newest = newArrivals[0];
+    handleBroadcastNotification(
+      `🚨 NEW BLOGGER POST (${newest.category}): ${newest.title.slice(0, 45)}...`,
+      newest.summary || 'Real-time feed sync received.',
+      'HIGH',
+      newest.id
+    );
+  }
+
+  const unique = Array.from(
+    new Map([...liveArticles, ...prev].map(item => [item.id, item])).values()
+  );
+
+  unique.sort(
+    (a, b) =>
+      new Date(b.rawPublishedAt || b.publishedAt).getTime() -
+      new Date(a.rawPublishedAt || a.publishedAt).getTime()
+  );
+
+  return unique;
+});
           }
         }).catch(() => {});
       }
