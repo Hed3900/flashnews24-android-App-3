@@ -308,40 +308,46 @@ loadNativeArticlesCache().then(async cached => {
   const unique = Array.from(
     new Map(merged.map(item => [item.id, item])).values()
   );
+const interval = setInterval(() => {
+  if (!isOffline) {
+    fetchBloggerArticles("All")
+      .then(liveArticles => {
+        if (!liveArticles || liveArticles.length === 0) {
+          return;
+        }
 
-  // Sort newest first
-  unique.sort(
-    (a, b) =>
-      new Date(b.rawPublishedAt || b.publishedAt).getTime() -
-      new Date(a.rawPublishedAt || a.publishedAt).getTime()
-  );
+        setArticles(prev => {
+          // Merge Blogger posts with existing AI posts
+          const aiStories = prev.filter(
+            a =>
+              a.id.startsWith("art-ai-") ||
+              a.id.startsWith("art-live-")
+          );
 
-  // 🔥 Prevent unnecessary re-render (flicker fix)
-  
+          const merged = [...aiStories, ...liveArticles];
 
+          // Remove duplicates
+          const unique = Array.from(
+            new Map(merged.map(item => [item.id, item])).values()
+          );
 
+          // Sort newest first
+          unique.sort(
+            (a, b) =>
+              new Date(b.rawPublishedAt || b.publishedAt).getTime() -
+              new Date(a.rawPublishedAt || a.publishedAt).getTime()
+          );
 
+          // Prevent unnecessary re-render
+          if (unique.length === prev.length) {
+            return prev;
+          }
 
-  // Notify only for truly new posts
-  const existingIds = new Set(prev.map(a => a.id));
-const newArrivals = liveArticles.filter(a => !existingIds.has(a.id));
-
-if (newArrivals.length === 0) {
-    return prev;
-}
-
-const newest = newArrivals[0];
-handleBroadcastNotification(
-    `🚨 NEW BLOGGER POST (${newest.category}): ${newest.title.slice(0,45)}...`,
-    newest.summary || "Real-time feed sync received.",
-    "HIGH",
-    newest.id
-);
-
-return unique;
-});
-
-}).catch(() => {});
+          return unique;
+        });
+      })
+      .catch(() => {});
+  }
 }, 45000);
 
 return () => {
