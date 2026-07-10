@@ -319,31 +319,21 @@ const interval = setInterval(() => {
         setArticles(prev => {
           // Merge Blogger posts with existing AI posts
           const aiStories = prev.filter(
-            a =>
-              a.id.startsWith("art-ai-") ||
-              a.id.startsWith("art-live-")
-          );
+  a => a.id.startsWith("art-ai-") || a.id.startsWith("art-live-")
+);
 
-          const merged = [...aiStories, ...liveArticles];
+const merged = [...aiStories, ...liveArticles];
 
-          // Remove duplicates
-          const unique = Array.from(
-            new Map(merged.map(item => [item.id, item])).values()
-          );
+const unique = Array.from(
+  new Map(merged.map(item => [item.id, item])).values()
+);
 
-          // Sort newest first
-          unique.sort(
-            (a, b) =>
-              new Date(b.rawPublishedAt || b.publishedAt).getTime() -
-              new Date(a.rawPublishedAt || a.publishedAt).getTime()
-          );
+// Flicker fix
+if (unique.length === prev.length) {
+  return prev;
+}
 
-          // Prevent unnecessary re-render
-          if (unique.length === prev.length) {
-            return prev;
-          }
-
-          return unique;
+return unique;
         });
       })
       .catch(() => {});
