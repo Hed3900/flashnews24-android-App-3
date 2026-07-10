@@ -219,11 +219,7 @@ const [articles, setArticles] = useState<Article[]>(INITIAL_ARTICLES);
     fetchBloggerArticles("All")
   .then((liveArticles) => {
     if (liveArticles && liveArticles.length > 0) {
-    setArticles(prev => {
-        const aiStories = prev.filter(a => a.id.startsWith("art-ai-"));
-        const merged = [...aiStories, ...liveArticles];
-        return Array.from(new Map(merged.map(item => [item.id, item])).values());
-    });
+    setArticles(liveArticles);
         
       addRetrofitLog(
         "GET",
