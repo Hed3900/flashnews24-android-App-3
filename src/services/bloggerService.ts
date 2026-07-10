@@ -199,6 +199,7 @@ export function parseBloggerEntry(entry: any, index: number): Article {
     author,
     sourceName: 'FlashNews24.site',
     publishedAt,
+    rawPublishedAt: entry.published?.$t || entry.updated?.$t,
     imageUrl,
     category: primary,
     tags,
