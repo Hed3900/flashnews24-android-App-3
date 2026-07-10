@@ -311,7 +311,56 @@ const regularArticles = articles
         )}
 
         {/* Regular Article List */}
-        
+        <div className="space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-xs font-bold text-[#E1E4E8] opacity-60 uppercase tracking-wider">
+              {selectedCategory === 'All' ? 'Latest Feed' : `${selectedCategory} News`}
+            </span>
+            <span className="text-[10px] text-[#E1E4E8] opacity-40">{regularArticles.length} stories cached</span>
+          </div>
+
+          {regularArticles.length === 0 ? (
+  <div className="space-y-3">
+    <ArticleShimmerSkeleton />
+    <ArticleShimmerSkeleton />
+    <ArticleShimmerSkeleton />
+    <ArticleShimmerSkeleton />
+  </div>
+) : regularArticles.length === 0 ? (
+            <div className="text-center py-12 px-4 bg-[#1A1D23] rounded-[24px] border border-dashed border-[#2D333B]">
+              <Sparkles className="w-8 h-8 text-blue-500 mx-auto mb-2 opacity-50" />
+              <h4 className="text-sm font-bold">No articles found in {selectedCategory}</h4>
+              <p className="text-xs text-[#E1E4E8] opacity-60 mt-1">Try selecting another category or pulling to refresh from Retrofit.</p>
+              <button
+                onClick={handleManualRefresh}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-500 transition-colors"
+              >
+                Fetch Live Articles
+              </button>
+            </div>
+          ) : (
+            regularArticles.map((art) => {
+              const isBookmarked = bookmarkedIds.includes(art.id);
+              return (
+                <div
+                  key={art.id}
+                  onClick={() => onSelectArticle(art)}
+                  className="bg-[#1A1D23] rounded-[24px] p-3.5 shadow-2xl border border-[#2D333B] hover:border-blue-500/40 transition-all cursor-pointer flex gap-3.5 group"
+                >
+                  <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-[#0F1115] flex-shrink-0 border border-[#2D333B]/50">
+                    <img
+                      src={art.imageUrl}
+                      alt={art.title}
+                      decoding="async"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                    {art.category === 'AI' && (
+                      <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-blue-600/90 backdrop-blur-sm text-[8px] font-bold text-white flex items-center gap-0.5 uppercase tracking-widest">
+                        <Sparkles className="w-2 h-2" /> AI
+                      </span>
+                    )}
+                  </div>
 
                   <div className="flex-1 flex flex-col justify-between min-w-0">
                     <div>
