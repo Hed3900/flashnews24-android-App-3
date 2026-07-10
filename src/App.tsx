@@ -317,12 +317,15 @@ loadNativeArticlesCache().then(async cached => {
   );
 
   // 🔥 Prevent unnecessary re-render (flicker fix)
-  if (
-    prev.length === unique.length &&
-    prev.every((p, i) => p.id === unique[i].id)
-  ) {
+  const existingIds = new Set(prev.map(a => a.id));
+
+const newArrivals = liveArticles.filter(
+  a => !existingIds.has(a.id)
+);
+
+if (newArrivals.length === 0) {
     return prev;
-  }
+}
 
   // Notify only for truly new posts
   const existingIds = new Set(prev.map(a => a.id));
