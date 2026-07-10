@@ -275,6 +275,7 @@ const [articles, setArticles] = useState<Article[]>([]);
     const interval = setInterval(() => {
       if (!isOffline) {
         fetchBloggerArticles('All').then(liveArticles => {
+          console.log("LIVE ARTICLES:", liveArticles.length, liveArticles);
           if (liveArticles && liveArticles.length > 0) {
             setArticles(prev => {
               const existingIds = new Set(prev.map(a => a.id));
