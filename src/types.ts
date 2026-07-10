@@ -8,6 +8,7 @@ export interface Article {
   author: string;
   sourceName: string;
   publishedAt: string;
+  rawPublishedAt?: string;
   imageUrl: string;
   category: NewsCategory;
   tags?: string[];
