@@ -383,11 +383,9 @@ console.log("Filtered:", filtered.length);
 console.log("FETCHED TOTAL:", fetchedArticles.length);
 console.log("FILTERED TOTAL:", filtered.length);
 return filtered.length > 0
-  ? filtered
-      .sort((a, b) =>
-  new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
-  new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
-)
-      .slice(0, 50)
-  : OFFLINE_BLOGGER_CACHE.slice(0, 50);
+  ? filtered.sort((a, b) =>
+      new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
+      new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
+    )
+  : OFFLINE_BLOGGER_CACHE;
 }
