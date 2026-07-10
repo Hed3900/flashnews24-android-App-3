@@ -380,7 +380,8 @@ console.log("Filtered:", filtered.length);
   new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
   new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
 );
-
+console.log("FETCHED TOTAL:", fetchedArticles.length);
+console.log("FILTERED TOTAL:", filtered.length);
 return filtered.length > 0
   ? filtered
       .sort((a, b) =>
