@@ -1,7 +1,19 @@
 import { Article, NewsCategory } from '../types';
 
 export const BLOGGER_SITE_URL = 'https://www.flashnews24.site';
-export const BLOGGER_JSON_FEED_URL = `${BLOGGER_SITE_URL}/feeds/posts/default?alt=json&max-results=50`;
+export const BLOGGER_JSON_FEED_URL = `${BLOGGER_SITE_URL}/feeds/posts/default?alt=json&max-results=100`;
+
+// Debug logging utility
+const DEBUG = true;
+function debugLog(label: string, data?: any) {
+  if (DEBUG) {
+    if (data !== undefined) {
+      console.log(`[BloggerService] ${label}:`, data);
+    } else {
+      console.log(`[BloggerService] ${label}`);
+    }
+  }
+}
 
 /**
  * Decodes standard HTML entities in Blogger text payloads.
@@ -279,27 +291,47 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 /**
  * Fetches articles directly or via server proxy from flashnews24.site Blogger feed.
  * Guaranteed to return valid Blogger articles without console errors or UI crashes.
+ * 
+ * PRIORITY ORDER:
+ * 1. Backend proxy (/api/news)
+ * 2. Direct client-side fetch from Blogger JSON API
+ * 3. Public CORS proxy (allorigins.win)
+ * 4. ONLY as last resort: OFFLINE_BLOGGER_CACHE if all network requests fail
  */
 export async function fetchBloggerArticles(category: string = 'All', searchQuery: string = ''): Promise<Article[]> {
   let fetchedArticles: Article[] = [];
+  
+  debugLog('Starting fetchBloggerArticles', { category, searchQuery, feedUrl: BLOGGER_JSON_FEED_URL });
 
   // 1. Try backend proxy first
+  debugLog('Attempting backend proxy fetch from /api/news');
   try {
     const proxyRes = await fetch(`/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}`);
+    debugLog('Backend proxy response status', proxyRes.status);
+    
     if (proxyRes.ok) {
       const data = await proxyRes.json();
+      debugLog('Backend proxy JSON parsed successfully', { articlesCount: data?.articles?.length });
+      
       if (data && Array.isArray(data.articles) && data.articles.length > 0) {
         fetchedArticles = data.articles;
+        debugLog('Using backend proxy articles', { count: fetchedArticles.length });
       }
+    } else {
+      debugLog('Backend proxy failed with status', proxyRes.status);
     }
-  } catch {
-    // ignore and try direct fetch
+  } catch (error: any) {
+    debugLog('Backend proxy fetch error', { message: error?.message, type: error?.name });
   }
 
   // 2. Try direct client-side fetch from Blogger JSON API endpoint
   if (fetchedArticles.length === 0) {
+    debugLog('Attempting direct fetch from Blogger API', { url: BLOGGER_JSON_FEED_URL });
     try {
-      const directRes = await fetch(`${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`, {
+      const directUrl = `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`;
+      debugLog('Direct fetch URL (with cache-busting)', directUrl);
+      
+      const directRes = await fetch(directUrl, {
         method: "GET",
         cache: "no-store",
         headers: {
@@ -307,43 +339,98 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
         }
       });
 
+      debugLog('Direct fetch response status', directRes.status);
+      debugLog('Direct fetch response URL', directRes.url);
+
       if (directRes.ok) {
         const feedJson = await directRes.json();
+        debugLog('Direct fetch JSON parsed successfully');
+        
+        // Log feed structure to diagnose parsing issues
+        const hasFeed = !!feedJson?.feed;
+        const hasEntry = !!feedJson?.feed?.entry;
+        const entryCount = Array.isArray(feedJson?.feed?.entry) ? feedJson.feed.entry.length : 0;
+        
+        debugLog('Feed structure check', { hasFeed, hasEntry, entryCount, feedKeys: Object.keys(feedJson || {}) });
+        
         if (feedJson?.feed?.entry && Array.isArray(feedJson.feed.entry)) {
+          debugLog('Found feed entries, parsing...', { count: feedJson.feed.entry.length });
           fetchedArticles = feedJson.feed.entry.map((entry: any, index: number) =>
             parseBloggerEntry(entry, index)
           );
+          debugLog('Successfully parsed live articles', { count: fetchedArticles.length });
+        } else {
+          debugLog('Feed entry structure not found', { 
+            feedPresent: !!feedJson?.feed,
+            entryPresent: !!feedJson?.feed?.entry,
+            entryIsArray: Array.isArray(feedJson?.feed?.entry),
+            responsePreview: JSON.stringify(feedJson).substring(0, 500)
+          });
         }
+      } else {
+        debugLog('Direct fetch failed with HTTP error', { status: directRes.status, statusText: directRes.statusText });
       }
-    } catch {
-      // ignore and try CORS proxy
+    } catch (error: any) {
+      debugLog('Direct fetch error', { 
+        message: error?.message, 
+        type: error?.name,
+        stack: error?.stack?.substring(0, 200)
+      });
     }
   }
 
   // 3. Fallback to public CORS proxy if direct fetch failed
   if (fetchedArticles.length === 0) {
+    debugLog('Attempting CORS proxy fetch via allorigins.win');
     try {
       const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(BLOGGER_JSON_FEED_URL)}`;
+      debugLog('CORS proxy URL', proxyUrl);
+      
       const proxyRes = await fetch(`${proxyUrl}&t=${Date.now()}`, {
         cache: "no-store"
       });
+      
+      debugLog('CORS proxy response status', proxyRes.status);
+      debugLog('CORS proxy response URL', proxyRes.url);
+      
       if (proxyRes.ok) {
         const feedJson = await proxyRes.json();
+        debugLog('CORS proxy JSON parsed successfully');
+        
+        const hasFeed = !!feedJson?.feed;
+        const hasEntry = !!feedJson?.feed?.entry;
+        const entryCount = Array.isArray(feedJson?.feed?.entry) ? feedJson.feed.entry.length : 0;
+        
+        debugLog('CORS feed structure check', { hasFeed, hasEntry, entryCount });
+        
         if (feedJson?.feed?.entry && Array.isArray(feedJson.feed.entry)) {
+          debugLog('Found CORS feed entries, parsing...', { count: feedJson.feed.entry.length });
           fetchedArticles = feedJson.feed.entry.map((entry: any, index: number) =>
             parseBloggerEntry(entry, index)
           );
+          debugLog('Successfully parsed CORS articles', { count: fetchedArticles.length });
+        } else {
+          debugLog('CORS feed entry structure not found', {
+            feedPresent: !!feedJson?.feed,
+            entryPresent: !!feedJson?.feed?.entry,
+            entryIsArray: Array.isArray(feedJson?.feed?.entry)
+          });
         }
+      } else {
+        debugLog('CORS proxy failed with HTTP error', { status: proxyRes.status, statusText: proxyRes.statusText });
       }
-    } catch {
-      // ignore; we'll fall back to offline cache below
+    } catch (error: any) {
+      debugLog('CORS proxy fetch error', { message: error?.message, type: error?.name });
     }
   }
 
-  // If we still don't have any articles, serve offline cache
+  // 4. If we still don't have any articles, serve offline cache as LAST RESORT ONLY
   if (fetchedArticles.length === 0) {
+    debugLog('All fetch attempts failed. Falling back to OFFLINE_BLOGGER_CACHE', { offlineCacheSize: OFFLINE_BLOGGER_CACHE.length });
     return [...OFFLINE_BLOGGER_CACHE];
   }
+
+  debugLog('Live articles successfully fetched', { totalCount: fetchedArticles.length });
 
   // Normalize and sort all fetched articles by publication time
   const sortByDate = (arr: Article[]) => {
@@ -365,6 +452,7 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
       (typeof a.category === 'string' && a.category.toLowerCase() === catLower) ||
       (a.tags && a.tags.some(tag => tag && tag.toLowerCase().includes(catLower)))
     );
+    debugLog('Applied category filter', { category, resultCount: filtered.length });
   }
 
   if (searchQuery && searchQuery.trim() !== '') {
@@ -375,8 +463,12 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
       (a.content && a.content.toLowerCase().includes(q)) ||
       (a.tags && a.tags.some(t => t && t.toLowerCase().includes(q)))
     );
+    debugLog('Applied search filter', { query: searchQuery, resultCount: filtered.length });
   }
 
   // If filtered results are present, return them sorted; otherwise return the full live feed.
-  return filtered.length > 0 ? sortByDate(filtered) : fetchedArticles;
+  const finalResult = filtered.length > 0 ? sortByDate(filtered) : fetchedArticles;
+  debugLog('Returning final articles', { count: finalResult.length, isFiltered: filtered.length > 0 });
+  
+  return finalResult;
 }
