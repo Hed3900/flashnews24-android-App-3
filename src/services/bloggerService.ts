@@ -317,10 +317,7 @@ console.log("entry count:", data.feed?.entry?.length ?? 0);
     if (directRes.ok) {
         const feedJson = await directRes.json();
 
-        // 👇 ఇక్కడ add చేయి
-        console.log(feedJson);
-        console.log(feedJson.feed?.entry?.length);
-
+      
         if (feedJson?.feed?.entry) {
             fetchedArticles = feedJson.feed.entry.map((entry: any, index: number) =>
                 parseBloggerEntry(entry, index)
