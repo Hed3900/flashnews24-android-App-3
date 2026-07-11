@@ -241,9 +241,9 @@ const handleRefreshNews = useCallback(() => {
         setTimeout(() => {
           console.log("After 2 sec:", liveArticles.length);
         }, 2000);
-
+console.log("LIVE ARTICLES:", liveArticles.length);
         saveNativeArticlesCache(liveArticles);
-
+console.log("STATE ARTICLES:", liveArticles);
         addRetrofitLog(
           "GET",
           `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
