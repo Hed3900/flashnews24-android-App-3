@@ -291,9 +291,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 export async function fetchBloggerArticles(category: string = 'All', searchQuery: string = ''): Promise<Article[]> {
   let fetchedArticles: Article[] = [];
 
-const data = await directRes.json();
-console.log("feed exists:", !!data.feed);
-console.log("entry count:", data.feed?.entry?.length ?? 0);
+
   try {
     // 1. First try calling our Express backend /api/news which fetches directly from Blogger
     const proxyRes = await fetch(`/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}`);
@@ -316,7 +314,9 @@ console.log("entry count:", data.feed?.entry?.length ?? 0);
 
     if (directRes.ok) {
         const feedJson = await directRes.json();
-
+const data = await directRes.json();
+console.log("feed exists:", !!data.feed);
+console.log("entry count:", data.feed?.entry?.length ?? 0);
       
         if (feedJson?.feed?.entry) {
             fetchedArticles = feedJson.feed.entry.map((entry: any, index: number) =>
@@ -338,7 +338,10 @@ console.log("entry count:", data.feed?.entry?.length ?? 0);
 });
       if (proxyRes.ok) {
         const feedJson = await proxyRes.json();
-        if (feedJson?.feed?.entry) {
+        if (
+  feedJson?.feed?.entry &&
+  Array.isArray(feedJson.feed.entry)
+) {
           fetchedArticles = feedJson.feed.entry.map((entry: any, index: number) => 
             parseBloggerEntry(entry, index)
           );
@@ -380,11 +383,6 @@ console.log("entry count:", data.feed?.entry?.length ?? 0);
 );
 
 return filtered.length > 0
-  ? filtered
-      .sort((a, b) =>
-  new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
-  new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
-)
-      .slice(0, 50)
-  : OFFLINE_BLOGGER_CACHE.slice(0, 50);
+  ? filtered.sort(...)
+  : OFFLINE_BLOGGER_CACHE;
 }
