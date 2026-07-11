@@ -342,7 +342,7 @@ loadNativeArticlesCache().then(cache => {
                 new Date(b.rawPublishedAt || b.publishedAt).getTime() -
                 new Date(a.rawPublishedAt || a.publishedAt).getTime()
             );
-console.log("UNIQUE ARTICLES =", unique.length);
+
             saveNativeArticlesCache(unique);
 
             return unique;
@@ -393,7 +393,7 @@ useEffect(() => {
   useEffect(() => {
     if (articles.length > 0) {
       saveNativeArticlesCache(articles);
-      console.log("CACHE ARTICLES =", cache.length);
+      
     }
   }, [articles]);
 
