@@ -233,7 +233,7 @@ const [articles, setArticles] = useState<Article[]>([]);
             new Date(b.rawPublishedAt || b.publishedAt).getTime() -
             new Date(a.rawPublishedAt || a.publishedAt).getTime()
         );
-
+console.log("Live Articles:", liveArticles.length);
         setArticles(liveArticles);
         saveNativeArticlesCache(liveArticles);
 
