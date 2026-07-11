@@ -237,41 +237,39 @@ const [articles, setArticles] = useState<Article[]>([]);
       );
 
       setArticles(liveArticles);
-    }
-  
 
+      setTimeout(() => {
+        console.log("After 2 sec:", liveArticles.length);
+      }, 2000);
 
-setTimeout(() => {
-  console.log("After 2 sec:", liveArticles.length);
-}, 2000);
-        saveNativeArticlesCache(liveArticles);
+      saveNativeArticlesCache(liveArticles);
 
-        addRetrofitLog(
-          "GET",
-          `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
-          200,
-          Date.now() - startTime,
-          "48.2 KB"
-        );
-      } else {
-        addRetrofitLog(
-          "GET",
-          `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
-          304,
-          Date.now() - startTime,
-          "0 B"
-        );
-      }
-    })
-    .catch(() => {
       addRetrofitLog(
         "GET",
-        BLOGGER_JSON_FEED_URL,
-        500,
+        `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
+        200,
+        Date.now() - startTime,
+        "48.2 KB"
+      );
+    } else {
+      addRetrofitLog(
+        "GET",
+        `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
+        304,
         Date.now() - startTime,
         "0 B"
       );
-    })
+    }
+  })
+  .catch(() => {
+    addRetrofitLog(
+      "GET",
+      BLOGGER_JSON_FEED_URL,
+      500,
+      Date.now() - startTime,
+      "0 B"
+    );
+  });
     .finally(() => {
       setIsRefreshing(false);
     });
