@@ -204,75 +204,93 @@ const [articles, setArticles] = useState<Article[]>([]);
   }, []);
 
   const handleRefreshNews = useCallback(() => {
-    if (articles.length === 0) {
+  if (isRefreshing) return;
+
   setIsRefreshing(true);
-    }
-    triggerHapticMedium();
-    const startTime = Date.now();
-    
-    if (isOffline) {
-      setTimeout(() => {
-        setIsRefreshing(false);
-        addRetrofitLog('GET', BLOGGER_JSON_FEED_URL, 503, Date.now() - startTime, '0 B');
-      }, 500);
-      return;
-    }
+  triggerHapticMedium();
 
-    fetchBloggerArticles("All")
-  .then((liveArticles) => {
-    if (liveArticles && liveArticles.length > 0) {
-    setArticles(liveArticles);
-        
+  const startTime = Date.now();
+
+  if (isOffline) {
+    setTimeout(() => {
+      setIsRefreshing(false);
       addRetrofitLog(
         "GET",
-        `${BLOGGER_JSON_FEED_URL}?category=all`,
-        200,
+        BLOGGER_JSON_FEED_URL,
+        503,
         Date.now() - startTime,
-        "48.2 KB"
+        "0 B"
       );
-    } else {
+    }, 500);
+    return;
+  }
+
+  fetchBloggerArticles(selectedCategory)
+    .then((liveArticles) => {
+      if (liveArticles && liveArticles.length > 0) {
+        liveArticles.sort(
+          (a, b) =>
+            new Date(b.rawPublishedAt || b.publishedAt).getTime() -
+            new Date(a.rawPublishedAt || a.publishedAt).getTime()
+        );
+
+        setArticles(liveArticles);
+        saveNativeArticlesCache(liveArticles);
+
+        addRetrofitLog(
+          "GET",
+          `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
+          200,
+          Date.now() - startTime,
+          "48.2 KB"
+        );
+      } else {
+        addRetrofitLog(
+          "GET",
+          `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
+          304,
+          Date.now() - startTime,
+          "0 B"
+        );
+      }
+    })
+    .catch(() => {
       addRetrofitLog(
         "GET",
-        `${BLOGGER_JSON_FEED_URL}?category=all`,
-        304,
+        BLOGGER_JSON_FEED_URL,
+        500,
         Date.now() - startTime,
-        "12.4 KB"
+        "0 B"
       );
-    }
-  })
-  .catch(() => {
-    addRetrofitLog(
-      "GET",
-      BLOGGER_JSON_FEED_URL,
-      500,
-      Date.now() - startTime,
-      "0 B"
-    );
-  })
-  .finally(() => {
-    setIsRefreshing(false);
-  });
-  }, [isOffline, addRetrofitLog, articles.length]);
+    })
+    .finally(() => {
+      setIsRefreshing(false);
+    });
+}, [
+  selectedCategory,
+  isOffline,
+  isRefreshing,
+  addRetrofitLog
+]);
 
-  useEffect(() => {
-    handleRefreshNews();
-    initCapacitorNativeUI();
+useEffect(() => {
+  handleRefreshNews();
+  initCapacitorNativeUI();
 
-    const removeNetListenerPromise = initCapacitorNetworkListener((connected) => {
+  const removeNetListenerPromise =
+    initCapacitorNetworkListener((connected) => {
       setIsOffline(!connected);
     });
 
-    initCapacitorPushNotifications((title, body, articleId) => {
-      handleBroadcastNotification(title, body, 'HIGH', articleId);
-    });
+  initCapacitorPushNotifications((title, body, articleId) => {
+    handleBroadcastNotification(title, body, "HIGH", articleId);
+  });
 
-    loadNativeBookmarks().then(saved => {
-      if (saved && saved.length > 0) {
-        setBookmarkedIds(saved);
-      }
-    });
-
-    
+  loadNativeBookmarks().then((saved) => {
+    if (saved?.length) {
+      setBookmarkedIds(saved);
+    }
+  });
 
     const interval = setInterval(() => {
       if (!isOffline) {
