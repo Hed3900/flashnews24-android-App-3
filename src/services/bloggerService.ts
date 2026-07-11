@@ -435,17 +435,13 @@ if (proxyRes.ok) {
   }
 
   // Latest first
-  filtered.sort((a, b) => {
-    const da = new Date(
-      (a as any).rawPublishedAt ?? a.publishedAt
-    ).getTime();
+filtered.sort(
+  (a, b) =>
+    new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
+    new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
+);
 
-    const db = new Date(
-      (b as any).rawPublishedAt ?? b.publishedAt
-    ).getTime();
+console.log("FETCHED =", fetchedArticles.length);
+console.log("FILTERED =", filtered.length);
 
-    return db - da;
-  });
-
-  return filtered.slice(0, 500);
-  }
+return filtered.slice(0, 500); // leda 500 test cheyyalante 500
