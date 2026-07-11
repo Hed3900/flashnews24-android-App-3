@@ -396,7 +396,10 @@ const proxyRes = await fetch(`${proxyUrl}&t=${Date.now()}`, {
 
 return filtered.length > 0
   ? filtered
-      .sort(...)
+      .sort((a, b) =>
+        new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
+        new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
+      )
       .slice(0, 50)
   : OFFLINE_BLOGGER_CACHE.slice(0, 50);
 }
