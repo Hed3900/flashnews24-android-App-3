@@ -322,7 +322,7 @@ app.get('/api/news', async (req, res) => {
 
     const entryCount = data.feed.entry.length;
     console.log(`✓ Found ${entryCount} entries in feed.entry`);
-
+console.log("SERVER FEED =", entryCount);
     if (entryCount === 0) {
       throw new Error('feed.entry array is empty - no posts available');
     }
