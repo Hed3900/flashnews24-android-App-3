@@ -2,7 +2,7 @@ import { Article, NewsCategory } from '../types';
 
 export const BLOGGER_SITE_URL = 'https://www.flashnews24.site';
 export const BLOGGER_JSON_FEED_URL =
-`${BLOGGER_SITE_URL}/feeds/posts/default?alt=json&max-results=50`;
+`${BLOGGER_SITE_URL}/feeds/posts/default?alt=json&max-results=500`;
 
 /**
  * Decodes standard HTML entities in Blogger text payloads.
@@ -302,17 +302,17 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   // 1. Backend API
   try {
     const proxyRes = await fetch(
-      `/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}&_=${Date.now()}`,
-      { cache: "no-store" }
-    );
+  `/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}&max-results=500&t=${Date.now()}`,
+  { cache: "no-store" }
+);
 
-    if (proxyRes.ok) {
-      const data = await proxyRes.json();
+if (proxyRes.ok) {
+  const data = await proxyRes.json();
 
-      if (data?.articles && Array.isArray(data.articles)) {
-        fetchedArticles = data.articles;
-      }
-    }
+  if (data?.articles && Array.isArray(data.articles)) {
+    fetchedArticles = data.articles;
+  }
+}
   } catch (e) {
     console.warn("Backend unavailable", e);
   }
