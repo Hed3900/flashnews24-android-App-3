@@ -386,10 +386,7 @@ const parsed = json.feed.entry.map((entry: any, index: number) => {
 console.log("Parsed articles:", parsed.filter(Boolean).length);
 
 fetchedArticles = parsed.filter((a): a is Article => a !== null);
-              }
-            })
-            .filter((a): a is Article => a !== null);
-          console.log("Feed entries:", json.feed.entry.length);
+              
         }
       }
     } catch (e) {
