@@ -291,8 +291,8 @@ useEffect(() => {
     }
   });
 loadNativeArticlesCache().then(cache => {
-  if (cache && cache.length > 0 && articles.length === 0) {
-    setArticles(cache);
+  if (cache && cache.length > 0) {
+    setArticles(prev => prev.length === 0 ? cache : prev);
   }
 });
     const interval = setInterval(() => {
