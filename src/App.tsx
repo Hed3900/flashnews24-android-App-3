@@ -291,7 +291,7 @@ useEffect(() => {
     }
   });
 loadNativeArticlesCache().then(cache => {
-  if (cache && cache.length > 0) {
+  if (cache && cache.length > 0 && articles.length === 0) {
     setArticles(cache);
   }
 });
