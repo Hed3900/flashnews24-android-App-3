@@ -288,121 +288,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
  * Fetches articles directly or via server proxy from flashnews24.site Blogger feed.
  * Guaranteed to return valid Blogger articles without console errors or UI crashes.
  */
-export async function fetchBloggerArticles(category: string = 'All', searchQuery: string = ''): Promise<Article[]> {
-  let fetchedArticles: Article[] = [];
-
-
-  try {
-  // 1. First try calling our Express backend
-  const proxyRes = await fetch(
-    `/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}`
-  );
-
-  if (proxyRes.ok) {
-    const data = await proxyRes.json();
-
-    if (data && Array.isArray(data.articles) && data.articles.length > 0) {
-      fetchedArticles = data.articles;
-    }
-  }
-} catch (e) {
-  console.warn("Backend proxy fetch retry needed...", e);
-}
-
-// 2. Try direct client-side fetch from Blogger JSON endpoint
-if (fetchedArticles.length === 0) {
-  try {
-    const directRes = await fetch(
-      `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
-      {
-        cache: "no-store",
-      }
-    );
-
-    if (directRes.ok) {
-      const feedJson = await directRes.json();
-
-      console.log("feed exists:", !!feedJson?.feed);
-      console.log(
-        "entry count:",
-        feedJson?.feed?.entry?.length ?? 0
-      );
-export async function fetchBloggerArticles(
-  category: string = "All",
-  searchQuery: string = ""
-): Promise<Article[]> {
-
-  let fetchedArticles: Article[] = [];
-
-  // 1. Backend API
-  try {
-    const proxyRes = await fetch(
-      `/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}&_=${Date.now()}`,
-      { cache: "no-store" }
-    );
-
-    if (proxyRes.ok) {
-      const data = await proxyRes.json();
-
-      if (Array.isArray(data?.articles)) {
-        fetchedArticles = data.articles;
-      }
-    }
-  } catch (e) {
-    console.warn("Backend unavailable", e);
-  }
-
-  // 2. Blogger Feed
-  if (fetchedArticles.length === 0) {
-    try {
-      const res = await fetch(
-        `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
-        { cache: "no-store" }
-      );
-
-      if (res.ok) {
-        const json = await res.json();
-
-        if (Array.isArray(json?.feed?.entry)) {
-          fetchedArticles = json.feed.entry
-            .map((entry: any, index: number) => {
-              try {
-                return parseBloggerEntry(entry, index);
-              } catch {
-                return null;
-              }
-            })
-            .filter(Boolean) as Article[];
-        }
-      }
-    } catch (e) {
-      console.warn("Direct Blogger fetch failed", e);
-    }
-  }
-
-  // 3. AllOrigins fallback
-  if (fetchedArticles.length === 0) {
-    try {
-      const url =
-        "https://api.allorigins.win/raw?url=" +
-        encodeURIComponent(BLOGGER_JSON_FEED_URL);
-
-      const res = await fetch(`${url}&t=${Date.now()}`, {
-        cache: "no-store",
-      });
-
-      if (res.ok) {
-        const json = await res.json();
-
-        if (Array.isArray(json?.feed?.entry)) {
-          fetchedArticles = json.feed.entry
-            .map((entry: any, index: number) => {
-              try {
-                return parseBloggerEntry(entry, index);
-              } catch {
-                return null;
-              }
-export async function fetchBloggerArticles(
+  export async function fetchBloggerArticles(
   category: string = "All",
   searchQuery: string = ""
 ): Promise<Article[]> {
@@ -545,4 +431,4 @@ export async function fetchBloggerArticles(
   });
 
   return filtered.slice(0, 50);
-}
+  }
