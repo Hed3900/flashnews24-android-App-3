@@ -238,7 +238,7 @@ const [articles, setArticles] = useState<Article[]>([]);
 
       setArticles(liveArticles);
     }
-  });
+  
 
 
 setTimeout(() => {
