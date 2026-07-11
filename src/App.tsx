@@ -203,7 +203,7 @@ const [articles, setArticles] = useState<Article[]>([]);
     setRetrofitLogs(prev => [newLog, ...prev]);
   }, []);
 
-  const handleRefreshNews = useCallback(() => {
+const handleRefreshNews = useCallback(() => {
   if (isRefreshing) return;
 
   setIsRefreshing(true);
@@ -226,50 +226,50 @@ const [articles, setArticles] = useState<Article[]>([]);
   }
 
   fetchBloggerArticles(selectedCategory)
-  .then((liveArticles) => {
-    console.log("FETCH COUNT =", liveArticles.length);
+    .then((liveArticles) => {
+      console.log("FETCH COUNT =", liveArticles.length);
 
-    if (liveArticles && liveArticles.length > 0) {
-      liveArticles.sort(
-        (a, b) =>
-          new Date(b.rawPublishedAt || b.publishedAt).getTime() -
-          new Date(a.rawPublishedAt || a.publishedAt).getTime()
-      );
+      if (liveArticles && liveArticles.length > 0) {
+        liveArticles.sort(
+          (a, b) =>
+            new Date(b.rawPublishedAt || b.publishedAt).getTime() -
+            new Date(a.rawPublishedAt || a.publishedAt).getTime()
+        );
 
-      setArticles(liveArticles);
+        setArticles(liveArticles);
 
-      setTimeout(() => {
-        console.log("After 2 sec:", liveArticles.length);
-      }, 2000);
+        setTimeout(() => {
+          console.log("After 2 sec:", liveArticles.length);
+        }, 2000);
 
-      saveNativeArticlesCache(liveArticles);
+        saveNativeArticlesCache(liveArticles);
 
+        addRetrofitLog(
+          "GET",
+          `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
+          200,
+          Date.now() - startTime,
+          "48.2 KB"
+        );
+      } else {
+        addRetrofitLog(
+          "GET",
+          `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
+          304,
+          Date.now() - startTime,
+          "0 B"
+        );
+      }
+    })
+    .catch(() => {
       addRetrofitLog(
         "GET",
-        `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
-        200,
-        Date.now() - startTime,
-        "48.2 KB"
-      );
-    } else {
-      addRetrofitLog(
-        "GET",
-        `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
-        304,
+        BLOGGER_JSON_FEED_URL,
+        500,
         Date.now() - startTime,
         "0 B"
       );
-    }
-  })
-  .catch(() => {
-    addRetrofitLog(
-      "GET",
-      BLOGGER_JSON_FEED_URL,
-      500,
-      Date.now() - startTime,
-      "0 B"
-    );
-  });
+    })
     .finally(() => {
       setIsRefreshing(false);
     });
