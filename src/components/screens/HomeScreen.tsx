@@ -128,7 +128,6 @@ const regularArticles = articles
       new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
       new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
   )
-  .slice(0, 50);
   const handleManualRefresh = () => {
     setIsPulling(true);
     onRefresh();
