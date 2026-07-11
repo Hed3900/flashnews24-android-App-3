@@ -226,6 +226,7 @@ const [articles, setArticles] = useState<Article[]>([]);
   }
 
   fetchBloggerArticles(selectedCategory)
+    console.log("FETCH COUNT =", liveArticles.length);
     .then((liveArticles) => {
       if (liveArticles && liveArticles.length > 0) {
         liveArticles.sort(
