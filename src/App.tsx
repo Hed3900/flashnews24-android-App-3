@@ -237,7 +237,6 @@ console.log("Live Articles:", liveArticles.length);
         setArticles(liveArticles);
         console.log("Before setArticles:", liveArticles.length);
 
-setArticles(liveArticles);
 
 setTimeout(() => {
   console.log("After 2 sec:", liveArticles.length);
