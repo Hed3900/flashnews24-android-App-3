@@ -299,18 +299,12 @@ loadNativeArticlesCache().then(cache => {
     const interval = setInterval(() => {
   if (!isOffline) {
     fetchBloggerArticles(selectedCategory)
-  .then((liveArticles) => {
+  then((liveArticles) => {
 
-    console.log("LIVE ARTICLES:", liveArticles.length);
-    console.log(liveArticles);
+  console.log("LIVE ARTICLES:", liveArticles.length);
+  console.log(liveArticles);
 
-    if (liveArticles && liveArticles.length > 0) {
-      setArticles((prev) => {
-        // existing code
-      });
-    }
-  })
-  .catch(console.error);
+  if (liveArticles && liveArticles.length > 0) {
         if (liveArticles && liveArticles.length > 0) {
           setArticles((prev) => {
             const existingIds = new Set(prev.map((a) => a.id));
