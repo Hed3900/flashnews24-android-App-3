@@ -402,8 +402,84 @@ export async function fetchBloggerArticles(
               } catch {
                 return null;
               }
+export async function fetchBloggerArticles(
+  category: string = "All",
+  searchQuery: string = ""
+): Promise<Article[]> {
+  let fetchedArticles: Article[] = [];
+
+  // 1. Backend API
+  try {
+    const proxyRes = await fetch(
+      `/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}&_=${Date.now()}`,
+      { cache: "no-store" }
+    );
+
+    if (proxyRes.ok) {
+      const data = await proxyRes.json();
+
+      if (data?.articles && Array.isArray(data.articles)) {
+        fetchedArticles = data.articles;
+      }
+    }
+  } catch (e) {
+    console.warn("Backend unavailable", e);
+  }
+
+  // 2. Blogger Feed
+  if (fetchedArticles.length === 0) {
+    try {
+      const res = await fetch(
+        `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
+        { cache: "no-store" }
+      );
+
+      if (res.ok) {
+        const json = await res.json();
+
+        if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
+          fetchedArticles = json.feed.entry
+            .map((entry: any, index: number) => {
+              try {
+                return parseBloggerEntry(entry, index);
+              } catch (err) {
+                console.error(err);
+                return null;
+              }
             })
-            .filter(Boolean) as Article[];
+            .filter((a): a is Article => a !== null);
+        }
+      }
+    } catch (e) {
+      console.warn("Direct Blogger fetch failed", e);
+    }
+  }
+
+  // 3. AllOrigins fallback
+  if (fetchedArticles.length === 0) {
+    try {
+      const url =
+        "https://api.allorigins.win/raw?url=" +
+        encodeURIComponent(BLOGGER_JSON_FEED_URL);
+
+      const res = await fetch(`${url}&t=${Date.now()}`, {
+        cache: "no-store",
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+
+        if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
+          fetchedArticles = json.feed.entry
+            .map((entry: any, index: number) => {
+              try {
+                return parseBloggerEntry(entry, index);
+              } catch (err) {
+                console.error(err);
+                return null;
+              }
+            })
+            .filter((a): a is Article => a !== null);
         }
       }
     } catch (e) {
@@ -416,7 +492,7 @@ export async function fetchBloggerArticles(
     fetchedArticles = [...OFFLINE_BLOGGER_CACHE];
   }
 
-  // Remove duplicate IDs
+  // Remove duplicates
   fetchedArticles = Array.from(
     new Map(fetchedArticles.map((a) => [a.id, a])).values()
   );
@@ -424,11 +500,11 @@ export async function fetchBloggerArticles(
   // Category filter
   let filtered = fetchedArticles;
 
-  if (category !== "All") {
+  if (category && category !== "All") {
     const cat = category.toLowerCase();
 
     filtered = filtered.filter((a) => {
-      const articleCategory = (a.category || "").toLowerCase();
+      const articleCategory = (a.category ?? "").toLowerCase();
 
       const tagMatch =
         Array.isArray(a.tags) &&
@@ -439,15 +515,15 @@ export async function fetchBloggerArticles(
   }
 
   // Search filter
-  if (searchQuery.trim()) {
+  if (searchQuery.trim().length > 0) {
     const q = searchQuery.toLowerCase();
 
     filtered = filtered.filter((a) =>
       [
-        a.title,
-        a.summary,
-        a.content,
-        ...(a.tags || [])
+        a.title ?? "",
+        a.summary ?? "",
+        a.content ?? "",
+        ...(a.tags ?? []),
       ]
         .join(" ")
         .toLowerCase()
@@ -457,10 +533,16 @@ export async function fetchBloggerArticles(
 
   // Latest first
   filtered.sort((a, b) => {
-    const da = new Date((a as any).rawPublishedAt || a.publishedAt).getTime();
-    const db = new Date((b as any).rawPublishedAt || b.publishedAt).getTime();
+    const da = new Date(
+      (a as any).rawPublishedAt ?? a.publishedAt
+    ).getTime();
+
+    const db = new Date(
+      (b as any).rawPublishedAt ?? b.publishedAt
+    ).getTime();
+
     return db - da;
   });
 
   return filtered.slice(0, 50);
-      }
+}
