@@ -235,15 +235,14 @@ const handleRefreshNews = useCallback(() => {
             new Date(b.rawPublishedAt || b.publishedAt).getTime() -
             new Date(a.rawPublishedAt || a.publishedAt).getTime()
         );
-
+console.log("LIVE ARTICLES:", liveArticles.length);
         setArticles(liveArticles);
-
+console.log("STATE ARTICLES:", liveArticles);
         setTimeout(() => {
           console.log("After 2 sec:", liveArticles.length);
         }, 2000);
-console.log("LIVE ARTICLES:", liveArticles.length);
         saveNativeArticlesCache(liveArticles);
-console.log("STATE ARTICLES:", liveArticles);
+
         addRetrofitLog(
           "GET",
           `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
