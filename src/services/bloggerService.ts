@@ -330,35 +330,35 @@ console.log("entry count:", data.feed?.entry?.length ?? 0);
   }
 
   // 3. Fallback to public CORS proxy if direct fetch failed
-  if (fetchedArticles.length === 0) {
+if (fetchedArticles.length === 0) {
     try {
-      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(BLOGGER_JSON_FEED_URL)}`;
-      const proxyRes = await fetch(`${proxyUrl}&t=${Date.now()}`, {
-  cache: "no-store"
-});
-      if (Array.isArray(feedJson?.feed?.entry)) {
-    try {
-        fetchedArticles = feedJson.feed.entry
-            .map((entry: any, index: number) => {
-                try {
-                    return parseBloggerEntry(entry, index);
-                } catch (e) {
-                    console.error("Failed to parse entry:", entry?.title?.$t, e);
-                    return null;
-                }
-            })
-            .filter(Boolean) as Article[];
+        const proxyUrl = ...;
+        const proxyRes = await fetch(...);
 
-        console.log("Fetched articles:", fetchedArticles.length);
-    } catch (e) {
-        console.error("Mapping failed:", e);
+        if (proxyRes.ok) {
+            const feedJson = await proxyRes.json();
+
+            if (Array.isArray(feedJson?.feed?.entry)) {
+                try {
+                    fetchedArticles = feedJson.feed.entry
+                        .map((entry: any, index: number) => {
+                            try {
+                                return parseBloggerEntry(entry, index);
+                            } catch (e) {
+                                console.error("Failed to parse entry:", entry?.title?.$t, e);
+                                return null;
+                            }
+                        })
+                        .filter(Boolean) as Article[];
+                } catch (e) {
+                    console.error("Mapping failed:", e);
+                }
+            }
+        }
+    } catch (proxyErr) {
+        console.warn("All live network proxies unavailable, serving offline Blogger cache.");
     }
 }
-      }
-    } catch (proxyErr) {
-      console.warn('All live network proxies unavailable, serving offline Blogger cache.');
-    }
-  }
 
   // 4. Guaranteed offline Blogger cache fallback (Never throw or log console.error)
   if (fetchedArticles.length === 0) {
