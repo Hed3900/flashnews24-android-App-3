@@ -344,7 +344,7 @@ loadNativeArticlesCache().then(cache => {
       })
       .catch(console.error);
   }
-}, 10000);
+}, 600000);
 
 return () => {
   clearInterval(interval);
