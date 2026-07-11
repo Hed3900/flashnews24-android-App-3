@@ -339,7 +339,12 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
         .filter((a): a is Article => a !== null);
 
     console.log("Parsed articles:", fetchedArticles.length);
-}
+        }
+      }
+    } catch (e) {
+      console.warn("Direct Blogger fetch failed", e);
+    }
+  }
 
   // 3. AllOrigins fallback
   if (fetchedArticles.length === 0) {
