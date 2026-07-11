@@ -291,43 +291,64 @@ useEffect(() => {
       setBookmarkedIds(saved);
     }
   });
-
+loadNativeArticlesCache().then(cache => {
+  if (cache && cache.length > 0) {
+    setArticles(cache);
+  }
+});
     const interval = setInterval(() => {
       if (!isOffline) {
-        fetchBloggerArticles('All').then(liveArticles => {
-          console.log("LIVE ARTICLES:", liveArticles.length, liveArticles);
-          if (liveArticles && liveArticles.length > 0) {
-            setArticles(prev => {
-              const existingIds = new Set(prev.map(a => a.id));
-              const newArrivals = liveArticles.filter(a => !existingIds.has(a.id));
-              if (newArrivals.length > 0) {
-                const newest = newArrivals[0];
-                handleBroadcastNotification(
-                  `🚨 NEW BLOGGER POST (${newest.category}): ${newest.title.slice(0, 45)}...`,
-                  newest.summary || 'Real-time feed sync received via Firebase Cloud Messaging.',
-                  'HIGH',
-                  newest.id
-                );
-              }
-              const unique = Array.from(
-  new Map([...liveArticles, ...prev].map(item => [item.id, item])).values()
-);
-unique.sort(
-  (a, b) =>
-    new Date(b.rawPublishedAt || b.publishedAt).getTime() -
-    new Date(a.rawPublishedAt || a.publishedAt).getTime()
-);
-return unique;
-            });
-          }
-        }).catch(() => {});
-      }
-    }, 45000);
-    return () => {
-      clearInterval(interval);
-      removeNetListenerPromise.then(remove => remove());
-    };
-  }, [handleRefreshNews, isOffline]);
+    const interval = setInterval(() => {
+  if (!isOffline) {
+    fetchBloggerArticles(selectedCategory)
+      .then((liveArticles) => {
+        if (liveArticles && liveArticles.length > 0) {
+          setArticles((prev) => {
+            const existingIds = new Set(prev.map((a) => a.id));
+
+            const newArrivals = liveArticles.filter(
+              (a) => !existingIds.has(a.id)
+            );
+
+            if (newArrivals.length > 0) {
+              const newest = newArrivals[0];
+
+              handleBroadcastNotification(
+                `🚨 NEW BLOGGER POST (${newest.category}): ${newest.title.slice(0, 45)}...`,
+                newest.summary ||
+                  "Real-time feed sync received via Firebase Cloud Messaging.",
+                "HIGH",
+                newest.id
+              );
+            }
+
+            const unique = Array.from(
+              new Map(
+                [...liveArticles, ...prev].map((item) => [item.id, item])
+              ).values()
+            );
+
+            unique.sort(
+              (a, b) =>
+                new Date(b.rawPublishedAt || b.publishedAt).getTime() -
+                new Date(a.rawPublishedAt || a.publishedAt).getTime()
+            );
+
+            saveNativeArticlesCache(unique);
+
+            return unique;
+          });
+        }
+      })
+      .catch(console.error);
+  }
+}, 10000);
+
+return () => {
+  clearInterval(interval);
+  removeNetListenerPromise.then((remove) => remove());
+};
+}, [handleRefreshNews, isOffline, selectedCategory]);
   
 useEffect(() => {
   const initAds = async () => {
@@ -431,7 +452,7 @@ const handleShareApp = async () => {
     // Auto hide banner after 6 seconds
     setTimeout(() => {
       setActiveBanner(curr => curr?.id === newNotif.id ? null : curr);
-    }, 6000);
+    }, 3000);
   };
 
   const handleGenerateAiBreakingArticle = async (topic: string) => {
@@ -474,27 +495,41 @@ const handleShareApp = async () => {
   try {
     const liveArticles = await fetchBloggerArticles('All');
 
-    if (liveArticles && liveArticles.length > 0) {
-      const latest = liveArticles[0];
+if (liveArticles && liveArticles.length > 0) {
 
-      console.log("LIVE:", liveArticles.length);
-console.log("STATE BEFORE:", articles.length);
+  setArticles(prev => {
+    const merged = Array.from(
+      new Map([...liveArticles, ...prev].map(item => [item.id, item])).values()
+    );
 
-      addRetrofitLog(
-        'GET',
-        `${BLOGGER_JSON_FEED_URL}?category=all&fcm_trigger=1`,
-        200,
-        Date.now() - startTime,
-        '48.2 KB'
-      );
+    merged.sort(
+      (a, b) =>
+        new Date(b.rawPublishedAt || b.publishedAt).getTime() -
+        new Date(a.rawPublishedAt || a.publishedAt).getTime()
+    );
 
-      handleBroadcastNotification(
-        `🚨 NEW BLOGGER POST (${latest.category}): ${latest.title.slice(0, 45)}...`,
-        latest.summary || 'Real-time Blogger headline synced via Retrofit and Room.',
-        'HIGH',
-        latest.id
-      );
-    }
+    return merged;
+  });
+
+  saveNativeArticlesCache(liveArticles);
+
+  const latest = liveArticles[0];
+
+  addRetrofitLog(
+    "GET",
+    `${BLOGGER_JSON_FEED_URL}?category=all&fcm_trigger=1`,
+    200,
+    Date.now() - startTime,
+    "48.2 KB"
+  );
+
+  handleBroadcastNotification(
+    `🚨 NEW BLOGGER POST (${latest.category}): ${latest.title.slice(0,45)}...`,
+    latest.summary || "Real-time Blogger headline synced.",
+    "HIGH",
+    latest.id
+  );
+}
   } catch (err) {
     addRetrofitLog(
       'GET',
