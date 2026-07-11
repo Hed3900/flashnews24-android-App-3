@@ -445,3 +445,4 @@ console.log("FETCHED =", fetchedArticles.length);
 console.log("FILTERED =", filtered.length);
 
 return filtered.slice(0, 500); // leda 500 test cheyyalante 500
+  }
