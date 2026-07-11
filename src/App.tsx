@@ -299,6 +299,8 @@ loadNativeArticlesCache().then(cache => {
     const interval = setInterval(() => {
   if (!isOffline) {
     fetchBloggerArticles(selectedCategory)
+      console.log("LIVE ARTICLES:", liveArticles.length);
+console.log(liveArticles);
       .then((liveArticles) => {
         if (liveArticles && liveArticles.length > 0) {
           setArticles((prev) => {
