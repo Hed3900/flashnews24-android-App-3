@@ -304,7 +304,7 @@ loadNativeArticlesCache().then(cache => {
   console.log("LIVE ARTICLES:", liveArticles.length);
   console.log(liveArticles);
 
-  if (liveArticles && liveArticles.length > 0) {
+
         if (liveArticles && liveArticles.length > 0) {
           setArticles((prev) => {
             const existingIds = new Set(prev.map((a) => a.id));
