@@ -235,6 +235,7 @@ const handleRefreshNews = useCallback(() => {
             new Date(b.rawPublishedAt || b.publishedAt).getTime() -
             new Date(a.rawPublishedAt || a.publishedAt).getTime()
         );
+        alert("FETCH COUNT = " + liveArticles.length);
 console.log("LIVE ARTICLES:", liveArticles.length);
         setArticles(liveArticles);
 console.log("STATE ARTICLES:", liveArticles);
