@@ -440,5 +440,5 @@ if (proxyRes.ok) {
     return db - da;
   });
 
-  return filtered.slice(0, 50);
+  return filtered.slice(0, 500);
   }
