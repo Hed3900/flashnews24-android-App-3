@@ -338,7 +338,7 @@ if (proxyRes.ok) {
         if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
 
     console.log("Feed entries:", json.feed.entry.length);
-
+alert("FEED ENTRIES = " + json.feed.entry.length);
     fetchedArticles = json.feed.entry
         .map((entry: any, index: number) => {
             try {
