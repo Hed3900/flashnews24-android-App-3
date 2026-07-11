@@ -342,14 +342,14 @@ loadNativeArticlesCache().then(cache => {
       })
       .catch(console.error);
   }
-}, 10000);
+    }, 10000);
 
-return () => {
-  clearInterval(interval);
-  removeNetListenerPromise.then((remove) => remove());
-};
+    return () => {
+      clearInterval(interval);
+      removeNetListenerPromise.then(remove => remove());
+    };
 }, [handleRefreshNews, isOffline, selectedCategory]);
-  
+
 useEffect(() => {
   const initAds = async () => {
     try {
