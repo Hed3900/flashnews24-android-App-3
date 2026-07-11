@@ -111,19 +111,23 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const breakingArticles = articles.filter(a => a.isBreaking);
 const regularArticles = articles
-  .filter(a => {
-    if (selectedCategory === 'All') {
-      return !a.isBreaking;
+  .filter((a) => {
+    if (selectedCategory === "All") {
+      return true;
     }
-    const catLower = selectedCategory.toLowerCase();
-    const matchCategory =
-      typeof a.category === 'string' &&
-      a.category.toLowerCase() === catLower;
-    const matchTags =
-      a.tags?.some(tag => tag.toLowerCase().includes(catLower));
 
-    return matchCategory || matchTags;
+    const catLower = selectedCategory.toLowerCase();
+
+    return (
+      (a.category || "").toLowerCase() === catLower ||
+      a.tags?.some(tag => tag.toLowerCase().includes(catLower))
+    );
   })
+  .sort(
+    (a, b) =>
+      new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
+      new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
+  )
   .slice(0, 50);
   const handleManualRefresh = () => {
     setIsPulling(true);
