@@ -226,16 +226,19 @@ const [articles, setArticles] = useState<Article[]>([]);
   }
 
   fetchBloggerArticles(selectedCategory)
+  .then((liveArticles) => {
     console.log("FETCH COUNT =", liveArticles.length);
-    .then((liveArticles) => {
-      if (liveArticles && liveArticles.length > 0) {
-        liveArticles.sort(
-          (a, b) =>
-            new Date(b.rawPublishedAt || b.publishedAt).getTime() -
-            new Date(a.rawPublishedAt || a.publishedAt).getTime()
-        );
-        setArticles(liveArticles);
-        console.log("Before setArticles:", liveArticles.length);
+
+    if (liveArticles && liveArticles.length > 0) {
+      liveArticles.sort(
+        (a, b) =>
+          new Date(b.rawPublishedAt || b.publishedAt).getTime() -
+          new Date(a.rawPublishedAt || a.publishedAt).getTime()
+      );
+
+      setArticles(liveArticles);
+    }
+  });
 
 
 setTimeout(() => {
