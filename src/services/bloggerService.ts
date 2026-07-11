@@ -115,7 +115,13 @@ function formatPublishedDate(dateStr: string): string {
  * Categorizes a Blogger entry into standard tabs based on tags and keywords.
  */
 function categorizeBloggerEntry(title: string, content: string, categories: any[] = []): { primary: NewsCategory; tags: string[] } {
-  const tags = categories.map((c: any) => (c.term || '').toLowerCase().trim()).filter(Boolean);
+  const tags = categories
+  .map((c: any) =>
+    typeof c === "string"
+      ? c.toLowerCase().trim()
+      : (c.term || "").toLowerCase().trim()
+  )
+  .filter(Boolean);
   const combined = (title + ' ' + content + ' ' + tags.join(' ')).toLowerCase();
 
   let primary: NewsCategory = 'All';
@@ -376,6 +382,7 @@ if (proxyRes.ok) {
               }
             })
             .filter((a): a is Article => a !== null);
+          console.log("Feed entries:", json.feed.entry.length);
         }
       }
     } catch (e) {
