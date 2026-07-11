@@ -181,7 +181,12 @@ export function parseBloggerEntry(entry: any, index: number): Article {
   const url = linkObj?.href || BLOGGER_SITE_URL;
 
   const imageUrl = extractImageUrl(entry, rawHtml);
-  const { primary, tags } = categorizeBloggerEntry(title, content, entry.category);
+  const labels = Array.isArray(entry.category)
+  ? entry.category.map((c: any) => c.term)
+  : [];
+
+const { primary, tags } =
+  categorizeBloggerEntry(title, content, labels);
   const sentiment = determineSentiment(title, content);
 
   // Make first 2 articles or breaking-tagged articles show as breaking news
