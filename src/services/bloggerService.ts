@@ -293,113 +293,134 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
 
 
   try {
-    // 1. First try calling our Express backend /api/news which fetches directly from Blogger
-    const proxyRes = await fetch(`/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}`);
-    if (proxyRes.ok) {
-      const data = await proxyRes.json();
-      if (data && Array.isArray(data.articles) && data.articles.length > 0) {
-    fetchedArticles = data.articles;
-      }
-    }
-  } catch (e) {
-    console.warn('Backend proxy fetch retry needed...', e);
-  }
+  // 1. First try calling our Express backend
+  const proxyRes = await fetch(
+    `/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}`
+  );
 
-  // 2. Try direct client-side fetch from Blogger JSON API endpoint
-  if (fetchedArticles.length === 0) {
-    try {
-    const directRes = await fetch(`${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`, {
-        cache: "no-store"
-    });
+  if (proxyRes.ok) {
+    const data = await proxyRes.json();
+
+    if (data && Array.isArray(data.articles) && data.articles.length > 0) {
+      fetchedArticles = data.articles;
+    }
+  }
+} catch (e) {
+  console.warn("Backend proxy fetch retry needed...", e);
+}
+
+// 2. Try direct client-side fetch from Blogger JSON endpoint
+if (fetchedArticles.length === 0) {
+  try {
+    const directRes = await fetch(
+      `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
+      {
+        cache: "no-store",
+      }
+    );
 
     if (directRes.ok) {
-        const feedJson = await directRes.json();
+      const feedJson = await directRes.json();
 
-console.log("feed exists:", !!feedJson.feed);
-console.log("entry count:", feedJson.feed?.entry?.length ?? 0);
-      
-        if (feedJson?.feed?.entry) {
-            fetchedArticles = feedJson.feed.entry.map((entry: any, index: number) =>
-                parseBloggerEntry(entry, index)
-            );
-        }
+      console.log("feed exists:", !!feedJson?.feed);
+      console.log(
+        "entry count:",
+        feedJson?.feed?.entry?.length ?? 0
+      );
+
+      if (Array.isArray(feedJson?.feed?.entry)) {
+        fetchedArticles = feedJson.feed.entry.map(
+          (entry: any, index: number) =>
+            parseBloggerEntry(entry, index)
+        );
+      }
     }
-} catch (err) {
-    console.warn("Direct fetch fallback triggered...");
-}
+  } catch (err) {
+    console.warn("Direct fetch fallback triggered...", err);
   }
-
+}
   // 3. Fallback to public CORS proxy if direct fetch failed
 if (fetchedArticles.length === 0) {
-    try {
-        const proxyUrl =
-`https://api.allorigins.win/raw?url=${encodeURIComponent(BLOGGER_JSON_FEED_URL)}`;
+  try {
+    const proxyUrl =
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(BLOGGER_JSON_FEED_URL)}`;
 
-const proxyRes = await fetch(`${proxyUrl}&t=${Date.now()}`, {
-  cache: "no-store"
-});
+    const proxyRes = await fetch(`${proxyUrl}&t=${Date.now()}`, {
+      cache: "no-store",
+    });
 
-        if (proxyRes.ok) {
-            const feedJson = await proxyRes.json();
+    if (proxyRes.ok) {
+      const feedJson = await proxyRes.json();
 
-            if (Array.isArray(feedJson?.feed?.entry)) {
-                try {
-                    fetchedArticles = feedJson.feed.entry
-                        .map((entry: any, index: number) => {
-                            try {
-                                return parseBloggerEntry(entry, index);
-                            } catch (e) {
-                                console.error("Failed to parse entry:", entry?.title?.$t, e);
-                                return null;
-                            }
-                        })
-                        .filter(Boolean) as Article[];
-                } catch (e) {
-                    console.error("Mapping failed:", e);
-                }
+      if (Array.isArray(feedJson?.feed?.entry)) {
+        fetchedArticles = feedJson.feed.entry
+          .map((entry: any, index: number) => {
+            try {
+              return parseBloggerEntry(entry, index);
+            } catch (e) {
+              console.error("Failed to parse entry:", e);
+              return null;
             }
-        }
-    } catch (proxyErr) {
-        console.warn("All live network proxies unavailable, serving offline Blogger cache.");
+          })
+          .filter(Boolean) as Article[];
+      }
     }
+  } catch (proxyErr) {
+    console.warn(
+      "All live network proxies unavailable, serving offline Blogger cache."
+    );
+  }
 }
 
-  // 4. Guaranteed offline Blogger cache fallback (Never throw or log console.error)
-  if (fetchedArticles.length === 0) {
-    fetchedArticles = [...OFFLINE_BLOGGER_CACHE];
-  }
+// 4. Offline fallback
+if (fetchedArticles.length === 0) {
+  fetchedArticles = [...OFFLINE_BLOGGER_CACHE];
+}
 
-  // Apply filtering if needed
-  let filtered = fetchedArticles;
-  if (category && category !== 'All') {
-    const catLower = category.toLowerCase();
-    filtered = filtered.filter(a => 
-      (typeof a.category === 'string' && a.category.toLowerCase() === catLower) ||
-      (a.tags && a.tags.some(tag => tag.includes(catLower)))
-    );
-  }
+// Apply category filter
+let filtered = fetchedArticles;
 
-  if (searchQuery && searchQuery.trim() !== '') {
-    const q = searchQuery.toLowerCase().trim();
-    filtered = filtered.filter(a => 
-      a.title.toLowerCase().includes(q) || 
-      a.summary.toLowerCase().includes(q) || 
+if (category && category !== "All") {
+  const catLower = category.toLowerCase();
+
+  filtered = filtered.filter(
+    (a) =>
+      (typeof a.category === "string" &&
+        a.category.toLowerCase() === catLower) ||
+      (a.tags &&
+        a.tags.some((tag) =>
+          tag.toLowerCase().includes(catLower)
+        ))
+  );
+}
+
+// Apply search filter
+if (searchQuery.trim()) {
+  const q = searchQuery.toLowerCase();
+
+  filtered = filtered.filter(
+    (a) =>
+      a.title.toLowerCase().includes(q) ||
+      a.summary.toLowerCase().includes(q) ||
       a.content.toLowerCase().includes(q) ||
-      (a.tags && a.tags.some(t => t.includes(q)))
-    );
-  }
-  
-  fetchedArticles.sort((a, b) =>
-  new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
-  new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
+      (a.tags &&
+        a.tags.some((tag) =>
+          tag.toLowerCase().includes(q)
+        ))
+  );
+}
+
+// Sort latest first
+filtered.sort(
+  (a, b) =>
+    new Date(
+      (b as any).rawPublishedAt || b.publishedAt
+    ).getTime() -
+    new Date(
+      (a as any).rawPublishedAt || a.publishedAt
+    ).getTime()
 );
 
-return filtered.length > 0
-  ? filtered
-      .sort((a, b) =>
-        new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
-        new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
-      )
-      .slice(0, 50)
-  : OFFLINE_BLOGGER_CACHE.slice(0, 50);
+// Return maximum 50 articles
+return filtered.slice(0, 50);
 }
