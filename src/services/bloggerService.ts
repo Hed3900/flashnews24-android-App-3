@@ -324,22 +324,22 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
         const json = await res.json();
 
         if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
-          fetchedArticles = json.feed.entry
-            .map((entry: any, index: number) => {
-              try {
+
+    console.log("Feed entries:", json.feed.entry.length);
+
+    fetchedArticles = json.feed.entry
+        .map((entry: any, index: number) => {
+            try {
                 return parseBloggerEntry(entry, index);
-              } catch (err) {
+            } catch (err) {
                 console.error(err);
                 return null;
-              }
-            })
-            .filter((a): a is Article => a !== null);
-        }
-      }
-    } catch (e) {
-      console.warn("Direct Blogger fetch failed", e);
-    }
-  }
+            }
+        })
+        .filter((a): a is Article => a !== null);
+
+    console.log("Parsed articles:", fetchedArticles.length);
+}
 
   // 3. AllOrigins fallback
   if (fetchedArticles.length === 0) {
