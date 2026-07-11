@@ -336,16 +336,24 @@ console.log("entry count:", data.feed?.entry?.length ?? 0);
       const proxyRes = await fetch(`${proxyUrl}&t=${Date.now()}`, {
   cache: "no-store"
 });
-      if (proxyRes.ok) {
-        const feedJson = await proxyRes.json();
-        if (
-  feedJson?.feed?.entry &&
-  Array.isArray(feedJson.feed.entry)
-) {
-          fetchedArticles = feedJson.feed.entry.map((entry: any, index: number) => 
-            parseBloggerEntry(entry, index)
-          );
-        }
+      if (Array.isArray(feedJson?.feed?.entry)) {
+    try {
+        fetchedArticles = feedJson.feed.entry
+            .map((entry: any, index: number) => {
+                try {
+                    return parseBloggerEntry(entry, index);
+                } catch (e) {
+                    console.error("Failed to parse entry:", entry?.title?.$t, e);
+                    return null;
+                }
+            })
+            .filter(Boolean) as Article[];
+
+        console.log("Fetched articles:", fetchedArticles.length);
+    } catch (e) {
+        console.error("Mapping failed:", e);
+    }
+}
       }
     } catch (proxyErr) {
       console.warn('All live network proxies unavailable, serving offline Blogger cache.');
@@ -383,6 +391,8 @@ console.log("entry count:", data.feed?.entry?.length ?? 0);
 );
 
 return filtered.length > 0
-  ? filtered.sort(...)
-  : OFFLINE_BLOGGER_CACHE;
+  ? filtered
+      .sort(...)
+      .slice(0, 50)
+  : OFFLINE_BLOGGER_CACHE.slice(0, 50);
 }
