@@ -316,6 +316,7 @@ if (proxyRes.ok) {
   const data = await proxyRes.json();
 
   if (data?.articles && Array.isArray(data.articles)) {
+    alert("BACKEND = " + data.articles.length);
     fetchedArticles = data.articles;
   }
 }
