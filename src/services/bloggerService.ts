@@ -372,7 +372,7 @@ if (proxyRes.ok) {
         const json = await res.json();
 
         if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
-          console.log("Feed entries:", json.feed.entry.length);
+          alert("FEED ENTRIES = " + json.feed.entry.length);
 
 const parsed = json.feed.entry.map((entry: any, index: number) => {
   try {
@@ -386,6 +386,7 @@ const parsed = json.feed.entry.map((entry: any, index: number) => {
 console.log("Parsed articles:", parsed.filter(Boolean).length);
 
 fetchedArticles = parsed.filter((a): a is Article => a !== null);
+          alert("PARSED = " + parsed.length);
               
         }
       }
