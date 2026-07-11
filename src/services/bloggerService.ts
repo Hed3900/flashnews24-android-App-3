@@ -316,7 +316,7 @@ if (proxyRes.ok) {
   const data = await proxyRes.json();
 
   if (data?.articles && Array.isArray(data.articles)) {
-    alert("BACKEND = " + data.articles.length);
+    
     fetchedArticles = data.articles;
   }
 }
@@ -337,8 +337,7 @@ if (proxyRes.ok) {
 
         if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
 
-    console.log("Feed entries:", json.feed.entry.length);
-alert("FEED ENTRIES = " + json.feed.entry.length);
+    
     fetchedArticles = json.feed.entry
         .map((entry: any, index: number) => {
             try {
@@ -350,7 +349,7 @@ alert("FEED ENTRIES = " + json.feed.entry.length);
         })
         .filter((a): a is Article => a !== null);
 
-    console.log("Parsed articles:", fetchedArticles.length);
+    
         }
       }
     } catch (e) {
@@ -373,7 +372,7 @@ alert("FEED ENTRIES = " + json.feed.entry.length);
         const json = await res.json();
 
         if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
-          alert("FEED ENTRIES = " + json.feed.entry.length);
+          
 
 const parsed = json.feed.entry.map((entry: any, index: number) => {
   try {
@@ -384,10 +383,10 @@ const parsed = json.feed.entry.map((entry: any, index: number) => {
   }
 });
 
-console.log("Parsed articles:", parsed.filter(Boolean).length);
+
 
 fetchedArticles = parsed.filter((a): a is Article => a !== null);
-          alert("PARSED = " + parsed.length);
+          
               
         }
       }
@@ -447,8 +446,7 @@ filtered.sort(
     new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
 );
 
-console.log("FETCHED =", fetchedArticles.length);
-console.log("FILTERED =", filtered.length);
+
 
 return filtered.slice(0, 500); // leda 500 test cheyyalante 500
   }
