@@ -314,9 +314,9 @@ export async function fetchBloggerArticles(category: string = 'All', searchQuery
 
     if (directRes.ok) {
         const feedJson = await directRes.json();
-const data = await directRes.json();
-console.log("feed exists:", !!data.feed);
-console.log("entry count:", data.feed?.entry?.length ?? 0);
+
+console.log("feed exists:", !!feedJson.feed);
+console.log("entry count:", feedJson.feed?.entry?.length ?? 0);
       
         if (feedJson?.feed?.entry) {
             fetchedArticles = feedJson.feed.entry.map((entry: any, index: number) =>
@@ -332,8 +332,12 @@ console.log("entry count:", data.feed?.entry?.length ?? 0);
   // 3. Fallback to public CORS proxy if direct fetch failed
 if (fetchedArticles.length === 0) {
     try {
-        const proxyUrl = ...;
-        const proxyRes = await fetch(...);
+        const proxyUrl =
+`https://api.allorigins.win/raw?url=${encodeURIComponent(BLOGGER_JSON_FEED_URL)}`;
+
+const proxyRes = await fetch(`${proxyUrl}&t=${Date.now()}`, {
+  cache: "no-store"
+});
 
         if (proxyRes.ok) {
             const feedJson = await proxyRes.json();
