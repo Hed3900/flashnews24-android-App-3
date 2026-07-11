@@ -360,7 +360,7 @@ app.get('/api/news', async (req, res) => {
     console.warn(`⚠️  [/api/news] Using fallback initialArticles (${initialArticles.length} articles)`);
     articles = [...initialArticles];
   }
-
+console.log("SERVER ARTICLES =", articles.length);
   // Apply filters (only filter after we have articles)
   let filtered = articles;
   if (category && category !== 'All') {
@@ -384,7 +384,7 @@ app.get('/api/news', async (req, res) => {
     );
     console.log(`🔍 [/api/news] Filtered by search "${search}": ${beforeFilter} → ${filtered.length}`);
   }
-
+console.log("SERVER FILTERED =", filtered.length);
   // Return response
   const response = {
     status: articles.length > 0 ? 'ok' : 'error',
@@ -392,6 +392,7 @@ app.get('/api/news', async (req, res) => {
     error: error || null,
     totalFetched: articles.length,
     totalReturned: filtered.length,
+    
     articles: filtered,
     timestamp: new Date().toISOString()
   };
