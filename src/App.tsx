@@ -269,7 +269,6 @@ const [articles, setArticles] = useState<Article[]>([]);
 }, [
   selectedCategory,
   isOffline,
-  isRefreshing,
   addRetrofitLog
 ]);
 
