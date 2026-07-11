@@ -372,13 +372,20 @@ if (proxyRes.ok) {
         const json = await res.json();
 
         if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
-          fetchedArticles = json.feed.entry
-            .map((entry: any, index: number) => {
-              try {
-                return parseBloggerEntry(entry, index);
-              } catch (err) {
-                console.error(err);
-                return null;
+          console.log("Feed entries:", json.feed.entry.length);
+
+const parsed = json.feed.entry.map((entry: any, index: number) => {
+  try {
+    return parseBloggerEntry(entry, index);
+  } catch (err) {
+    console.error("PARSE ERROR:", err, entry?.title?.$t);
+    return null;
+  }
+});
+
+console.log("Parsed articles:", parsed.filter(Boolean).length);
+
+fetchedArticles = parsed.filter((a): a is Article => a !== null);
               }
             })
             .filter((a): a is Article => a !== null);
