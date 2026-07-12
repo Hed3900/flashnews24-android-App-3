@@ -238,9 +238,10 @@ const handleRefreshNews = useCallback(() => {
         
 
         setArticles(liveArticles);
-        alert("FINAL ARTICLES = " + filtered.length);
-        saveNativeArticlesCache(liveArticles);
 
+alert("LIVE ARTICLES = " + liveArticles.length);
+
+saveNativeArticlesCache(liveArticles);
         addRetrofitLog(
           "GET",
           `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
