@@ -395,7 +395,7 @@ const parsed = json.feed.entry.map((entry: any, index: number) => {
 
 fetchedArticles = parsed.filter((a): a is Article => a !== null);
           
-              
+             
         }
       }
     } catch (e) {
