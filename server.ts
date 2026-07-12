@@ -122,7 +122,7 @@ const initialArticles = [
   }
 ];
 
-const BLOGGER_FEED_URL = 'https://www.flashnews24.site/feeds/posts/default?alt=json&max-results=500&start-index=1';
+const BLOGGER_FEED_URL = 'https://flashnews24.site/feeds/4592212551421716018/posts/default?alt=json&max-results=500';
 
 function decodeBloggerEntities(text: string): string {
   if (!text) return '';
@@ -232,7 +232,7 @@ function parseBloggerEntryServer(entry: any, index: number): any {
   const publishedAt = formatBloggerDate(rawPublishedAt);
 
   const linkObj = entry.link?.find((l: any) => l.rel === 'alternate') || entry.link?.[0];
-  const url = linkObj?.href || 'https://www.flashnews24.site';
+  const url = linkObj?.href || 'https://flashnews24.site';
   const imageUrl = extractBloggerImage(entry, rawHtml);
   const { primary, tags } = categorizeBlogger(title, content, entry.category);
   const textLower = (title + ' ' + content).toLowerCase();
