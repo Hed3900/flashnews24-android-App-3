@@ -376,14 +376,15 @@ console.log(json);
         
       }
     } catch (e: any) {
-  console.error(e);
+  catch (e: any) {
+  console.error("DIRECT BLOGGER FETCH FAILED", e);
 
+  alert("DIRECT FETCH FAILED");
   alert("NAME: " + e.name);
   alert("MESSAGE: " + e.message);
-  alert("STACK: " + e.stack);
 
-  console.warn("Direct Blogger fetch failed", e);
-      }
+  throw e;
+}
 }
   // 3. AllOrigins fallback
   if (fetchedArticles.length === 0) {
@@ -418,9 +419,15 @@ fetchedArticles = parsed.filter((a): a is Article => a !== null);
              
         }
       }
-    } catch (e) {
-      console.warn("AllOrigins failed", e);
-    }
+    } catch (e: any) {
+  console.error("ALLORIGINS FAILED", e);
+
+  alert("ALLORIGINS FAILED");
+  alert("NAME: " + e.name);
+  alert("MESSAGE: " + e.message);
+
+  throw e;
+}
   }
 
   // 4. Offline cache
