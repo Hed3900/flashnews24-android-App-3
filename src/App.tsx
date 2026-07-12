@@ -239,7 +239,13 @@ const handleRefreshNews = useCallback(() => {
 
         setArticles(liveArticles);
 
-        
+        fetch("https://jsonplaceholder.typicode.com/posts/1")
+  .then(async (r) => {
+    alert("STATUS = " + r.status);
+    const j = await r.json();
+    alert(j.title);
+  })
+  .catch((e) => alert(String(e)));
         saveNativeArticlesCache(liveArticles);
 
         addRetrofitLog(
@@ -420,9 +426,7 @@ useEffect(() => {
     console.log("AdMob Error:", err);
   }
 };
-  fetch("https://www.google.com")
-  .then(() => alert("Google OK"))
-  .catch((e) => alert(String(e)));
+  
 
   const handleShareArticle = async (article: Article) => {
   try {
