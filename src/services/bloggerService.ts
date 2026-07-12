@@ -355,7 +355,7 @@ console.log(json);
         .filter((a): a is Article => a !== null);
 }
     alert("PARSED = " + fetchedArticles.length);
-        }
+        
       }
     } catch (e) {
       console.warn("Direct Blogger fetch failed", e);
