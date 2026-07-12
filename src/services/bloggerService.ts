@@ -337,7 +337,6 @@ try {
   `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
   {
     cache: "no-store",
-    mode: "cors",
     headers: {
       Accept: "application/json",
     },
@@ -365,10 +364,14 @@ console.log(json);
     alert("PARSED = " + fetchedArticles.length);
         
       }
-    } catch (e) {
-    alert("BLOGGER FETCH FAILED");
-    alert(String(e));
-    console.warn("Direct Blogger fetch failed", e);
+    } catch (e: any) {
+  console.error(e);
+
+  alert(e?.name);
+  alert(e?.message);
+  alert(JSON.stringify(e));
+
+  console.warn("Direct Blogger fetch failed", e);
 }
   }
 
