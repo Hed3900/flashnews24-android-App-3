@@ -320,7 +320,8 @@ try {
 
   if (res.ok) {
     const data = await res.json();
-
+console.log(json.feed.entry[0]);
+alert(json.feed.entry[0].title.$t);
     if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
       fetchedArticles = data.feed.entry
         .map((entry: any, index: number) => {
