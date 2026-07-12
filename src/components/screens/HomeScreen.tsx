@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Article, NewsCategory } from '../../types';
 import { Search, RotateCcw, Bookmark, Share2, Sparkles, Clock, Flame, WifiOff, ChevronRight, Zap, Menu } from 'lucide-react';
@@ -129,7 +130,11 @@ const regularArticles = articles
       new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
   )
   .slice(0, 500);
-  alert("HOME ARTICLES = " + articles.length);
+  alert(
+  "ALL=" + articles.length +
+  " BREAKING=" + breakingArticles.length +
+  " REGULAR=" + regularArticles.length
+);
   const handleManualRefresh = () => {
     setIsPulling(true);
     onRefresh();
