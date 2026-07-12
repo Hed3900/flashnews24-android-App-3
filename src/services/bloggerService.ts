@@ -421,6 +421,8 @@ fetchedArticles = Array.from(
 // Category filter
 let filtered = fetchedArticles;
 
+alert("FINAL ARTICLES = " + filtered.length);
+
 if (category && category !== "All") {
   const cat = category.toLowerCase();
 
