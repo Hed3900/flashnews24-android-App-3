@@ -320,8 +320,9 @@ try {
 
   if (res.ok) {
     const data = await res.json();
-console.log(json.feed.entry[0]);
-alert(json.feed.entry[0].title.$t);
+
+console.log(data.feed.entry[0]);
+alert(data.feed.entry[0].title.$t);
     if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
       fetchedArticles = data.feed.entry
         .map((entry: any, index: number) => {
@@ -377,13 +378,12 @@ console.log(json);
     } catch (e: any) {
   console.error(e);
 
-  alert(e?.name);
-  alert(e?.message);
-  alert(JSON.stringify(e));
+  alert("NAME: " + e.name);
+  alert("MESSAGE: " + e.message);
+  alert("STACK: " + e.stack);
 
   console.warn("Direct Blogger fetch failed", e);
-}
-  }
+      }
 
   // 3. AllOrigins fallback
   if (fetchedArticles.length === 0) {
