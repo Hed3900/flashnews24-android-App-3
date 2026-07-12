@@ -305,6 +305,8 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
   throw new Error("TEST");
 
+  let fetchedArticles: Article[] = [];
+
             // 1. Backend API
 try {
   const res = await fetch(
