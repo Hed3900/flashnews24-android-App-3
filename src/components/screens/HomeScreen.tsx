@@ -426,4 +426,3 @@ const regularArticles = articles
     </div>
   );
 };
-
