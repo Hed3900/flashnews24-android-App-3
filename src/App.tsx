@@ -239,10 +239,7 @@ const handleRefreshNews = useCallback(() => {
 
         setArticles([...liveArticles]);
 
-setTimeout(() => {
-  console.log("STATE =", liveArticles.length);
-  alert("STATE = " + liveArticles.length);
-}, 1000);
+
 
 saveNativeArticlesCache(liveArticles);
         addRetrofitLog(
