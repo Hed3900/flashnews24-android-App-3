@@ -303,12 +303,13 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   searchQuery: string = ""
 ): Promise<Article[]> {
 
-  throw new Error("TEST");
+  
 
   let fetchedArticles: Article[] = [];
 
             // 1. Backend API
 try {
+  alert("URL = " + BLOGGER_JSON_FEED_URL);
   const res = await fetch(
     `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
     {
