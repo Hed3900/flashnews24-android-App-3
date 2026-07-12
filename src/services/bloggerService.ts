@@ -307,21 +307,21 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
   // 1. Backend API
   try {
-  alert(window.location.origin);
+  
 
   const proxyRes = await fetch(
     `/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}&max-results=500&t=${Date.now()}`,
     { cache: "no-store" }
   );
 
-  alert("PROXY OK = " + proxyRes.ok);
+  
 
   if (proxyRes.ok) {
-    const text = await proxyRes.text();
+    const data = await proxyRes.json();
 
-    alert(text);
-
-    return [];
+if (data?.articles && Array.isArray(data.articles)) {
+    fetchedArticles = data.articles;
+}
   }
 } catch (e) {
   console.warn("Backend unavailable", e);
@@ -341,7 +341,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
         if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
 
-    alert("FEED ENTRIES = " + json.feed.entry.length);
+   
     fetchedArticles = json.feed.entry
         .map((entry: any, index: number) => {
             try {
