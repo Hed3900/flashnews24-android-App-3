@@ -40,7 +40,7 @@ const initialArticles = [
     publishedAt: '10 mins ago',
     imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
     category: 'AI',
-    url: 'https://flashnews24.io/articles/gemini-3-5-unveiled',
+    url: 'https://flashnews24.site/articles/gemini-3-5-unveiled',
     readTimeMinutes: 4,
     isBreaking: true,
     sentiment: 'Urgent'
@@ -55,7 +55,7 @@ const initialArticles = [
     publishedAt: '32 mins ago',
     imageUrl: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&auto=format&fit=crop&q=80',
     category: 'Business',
-    url: 'https://flashnews24.io/articles/green-energy-tipping-point',
+    url: 'https://flashnews24.site/articles/green-energy-tipping-point',
     readTimeMinutes: 5,
     isBreaking: false,
     sentiment: 'Positive'
@@ -70,7 +70,7 @@ const initialArticles = [
     publishedAt: '1 hour ago',
     imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&auto=format&fit=crop&q=80',
     category: 'Science',
-    url: 'https://flashnews24.io/articles/jwst-water-atmosphere',
+    url: 'https://flashnews24.site/articles/jwst-water-atmosphere',
     readTimeMinutes: 6,
     isBreaking: false,
     sentiment: 'Analytical'
@@ -85,7 +85,7 @@ const initialArticles = [
     publishedAt: '2 hours ago',
     imageUrl: 'https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?w=800&auto=format&fit=crop&q=80',
     category: 'Tech',
-    url: 'https://flashnews24.io/articles/android-16-preview',
+    url: 'https://flashnews24.site/articles/android-16-preview',
     readTimeMinutes: 3,
     isBreaking: false,
     sentiment: 'Positive'
@@ -100,7 +100,7 @@ const initialArticles = [
     publishedAt: '3 hours ago',
     imageUrl: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800&auto=format&fit=crop&q=80',
     category: 'Sports',
-    url: 'https://flashnews24.io/articles/fc-tokyo-thriller',
+    url: 'https://flashnews24.site/articles/fc-tokyo-thriller',
     readTimeMinutes: 4,
     isBreaking: false,
     sentiment: 'Positive'
@@ -115,7 +115,7 @@ const initialArticles = [
     publishedAt: '5 hours ago',
     imageUrl: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&auto=format&fit=crop&q=80',
     category: 'Tech',
-    url: 'https://flashnews24.io/articles/quantum-chip-fidelity',
+    url: 'https://flashnews24.site/articles/quantum-chip-fidelity',
     readTimeMinutes: 5,
     isBreaking: false,
     sentiment: 'Analytical'
