@@ -305,7 +305,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 ): Promise<Article[]> {
   let fetchedArticles: Article[] = [];
 
-// 1. Backend API
+            // 1. Backend API
 try {
   const res = await fetch(
     `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
@@ -321,8 +321,6 @@ try {
   if (res.ok) {
     const data = await res.json();
 
-console.log(data.feed.entry[0]);
-alert(data.feed.entry[0].title.$t);
     if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
       fetchedArticles = data.feed.entry
         .map((entry: any, index: number) => {
@@ -335,12 +333,12 @@ alert(data.feed.entry[0].title.$t);
         })
         .filter((a: any): a is Article => a !== null);
     }
-  
+  }
 } catch (e) {
   console.warn("Backend unavailable", e);
 }
 
-  // 2. Blogger Feed
+// 2. Blogger Feed
 if (fetchedArticles.length === 0) {
   try {
     const res = await fetch(
@@ -350,7 +348,7 @@ if (fetchedArticles.length === 0) {
         headers: {
           Accept: "application/json",
         },
-      
+      }
     );
 
     if (res.ok) {
@@ -409,58 +407,56 @@ if (fetchedArticles.length === 0) {
     console.warn("AllOrigins fallback failed", e);
   }
 }
-  // 4. Offline cache
-  if (fetchedArticles.length === 0) {
-    fetchedArticles = [...OFFLINE_BLOGGER_CACHE];
-  }
 
-  // Remove duplicates
-  fetchedArticles = Array.from(
-    new Map(fetchedArticles.map((a) => [a.id, a])).values()
+// 4. Offline cache
+if (fetchedArticles.length === 0) {
+  fetchedArticles = [...OFFLINE_BLOGGER_CACHE];
+}
+
+// Remove duplicates
+fetchedArticles = Array.from(
+  new Map(fetchedArticles.map((a) => [a.id, a])).values()
+);
+
+// Category filter
+let filtered = fetchedArticles;
+
+if (category && category !== "All") {
+  const cat = category.toLowerCase();
+
+  filtered = filtered.filter((a) => {
+    const articleCategory = (a.category ?? "").toLowerCase();
+
+    const tagMatch =
+      Array.isArray(a.tags) &&
+      a.tags.some((t) => t.toLowerCase().includes(cat));
+
+    return articleCategory === cat || tagMatch;
+  });
+}
+
+// Search filter
+if (searchQuery.trim().length > 0) {
+  const q = searchQuery.toLowerCase();
+
+  filtered = filtered.filter((a) =>
+    [
+      a.title ?? "",
+      a.summary ?? "",
+      a.content ?? "",
+      ...(a.tags ?? []),
+    ]
+      .join(" ")
+      .toLowerCase()
+      .includes(q)
   );
+}
 
-  // Category filter
-  let filtered = fetchedArticles;
-
-  if (category && category !== "All") {
-    const cat = category.toLowerCase();
-
-    filtered = filtered.filter((a) => {
-      const articleCategory = (a.category ?? "").toLowerCase();
-
-      const tagMatch =
-        Array.isArray(a.tags) &&
-        a.tags.some((t) => t.toLowerCase().includes(cat));
-
-      return articleCategory === cat || tagMatch;
-    });
-  }
-
-  // Search filter
-  if (searchQuery.trim().length > 0) {
-    const q = searchQuery.toLowerCase();
-
-    filtered = filtered.filter((a) =>
-      [
-        a.title ?? "",
-        a.summary ?? "",
-        a.content ?? "",
-        ...(a.tags ?? []),
-      ]
-        .join(" ")
-        .toLowerCase()
-        .includes(q)
-    );
-  }
-
-  // Latest first
+// Latest first
 filtered.sort(
   (a, b) =>
     new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
     new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
 );
 
-
-
-return filtered.slice(0, 500); // leda 500 test cheyyalante 500
-  }
+return filtered.slice(0, 500);
