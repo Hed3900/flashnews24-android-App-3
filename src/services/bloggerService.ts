@@ -376,7 +376,6 @@ console.log(json);
         
       }
     } catch (e: any) {
-  catch (e: any) {
   console.error("DIRECT BLOGGER FETCH FAILED", e);
 
   alert("DIRECT FETCH FAILED");
