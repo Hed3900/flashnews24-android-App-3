@@ -259,15 +259,18 @@ const handleRefreshNews = useCallback(() => {
         );
       }
     })
-    .catch(() => {
-      addRetrofitLog(
-        "GET",
-        BLOGGER_JSON_FEED_URL,
-        500,
-        Date.now() - startTime,
-        "0 B"
-      );
-    })
+    .catch((err) => {
+  console.error("FETCH ERROR:", err);
+  alert(String(err));
+
+  addRetrofitLog(
+    "GET",
+    BLOGGER_JSON_FEED_URL,
+    500,
+    Date.now() - startTime,
+    "0 B"
+  );
+})
     .finally(() => {
       setIsRefreshing(false);
     });
