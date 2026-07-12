@@ -352,9 +352,11 @@ if (fetchedArticles.length === 0) {
     );
 
     if (res.ok) {
-      const json = await res.json();
+      const data = await res.json();
 
-      if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
+alert("BLOGGER ENTRIES = " + (data.feed?.entry?.length || 0));
+
+if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
         fetchedArticles = json.feed.entry
           .map((entry: any, index: number) => {
             try {
