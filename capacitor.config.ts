@@ -5,9 +5,14 @@ const config: CapacitorConfig = {
   appName: 'FlashNews24',
   webDir: 'dist',
   server: {
-    androidScheme: 'https',
-    cleartext: true
-  },
+  androidScheme: "https",
+  cleartext: true,
+  allowNavigation: [
+    "flashnews24.site",
+    "*.flashnews24.site",
+    "www.flashnews24.site"
+  ]
+},
   plugins: {
     PushNotifications: {
       presentationOptions: ["badge", "sound", "alert"],
