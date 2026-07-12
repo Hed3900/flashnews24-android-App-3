@@ -319,9 +319,9 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   if (proxyRes.ok) {
     const data = await proxyRes.json();
 
-if (data?.articles && Array.isArray(data.articles)) {
-    fetchedArticles = data.articles;
-}
+    if (data?.articles && Array.isArray(data.articles)) {
+        fetchedArticles = data.articles;
+    }
   }
 } catch (e) {
   console.warn("Backend unavailable", e);
