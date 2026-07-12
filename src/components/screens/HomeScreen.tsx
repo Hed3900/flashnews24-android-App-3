@@ -111,10 +111,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const breakingArticles = articles.filter(a => a.isBreaking);
 const regularArticles = articles
+  .filter(a => !a.isBreaking)
   .filter(a => {
-    if (selectedCategory === 'All') {
-      return true;
-    }
+    if (selectedCategory === "All") return true;
 
     const catLower = selectedCategory.toLowerCase();
 
