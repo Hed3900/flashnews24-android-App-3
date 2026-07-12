@@ -338,7 +338,8 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
       if (res.ok) {
         const json = await res.json();
-
+alert("ENTRIES = " + (json.feed?.entry?.length ?? 0));
+console.log(json);
         if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
 
    
@@ -353,7 +354,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
         })
         .filter((a): a is Article => a !== null);
 
-    
+    alert("PARSED = " + fetchedArticles.length);
         }
       }
     } catch (e) {
