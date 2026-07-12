@@ -227,7 +227,7 @@ const handleRefreshNews = useCallback(() => {
 
   fetchBloggerArticles(selectedCategory)
     .then((liveArticles) => {
-      console.log("FETCH COUNT =", liveArticles.length);
+      
 
       if (liveArticles && liveArticles.length > 0) {
         liveArticles.sort(
@@ -235,13 +235,11 @@ const handleRefreshNews = useCallback(() => {
             new Date(b.rawPublishedAt || b.publishedAt).getTime() -
             new Date(a.rawPublishedAt || a.publishedAt).getTime()
         );
-        alert("FETCH COUNT = " + liveArticles.length);
-console.log("LIVE ARTICLES:", liveArticles.length);
+        
+
         setArticles(liveArticles);
-console.log("STATE ARTICLES:", liveArticles);
-        setTimeout(() => {
-          console.log("After 2 sec:", liveArticles.length);
-        }, 2000);
+
+        
         saveNativeArticlesCache(liveArticles);
 
         addRetrofitLog(
