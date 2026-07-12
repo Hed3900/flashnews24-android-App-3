@@ -350,7 +350,7 @@ if (fetchedArticles.length === 0) {
         headers: {
           Accept: "application/json",
         },
-      }
+      
     );
 
     if (res.ok) {
