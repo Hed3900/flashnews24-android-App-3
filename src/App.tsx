@@ -237,7 +237,7 @@ const handleRefreshNews = useCallback(() => {
         );
         
 
-        setArticles(liveArticles);
+        setArticles([...liveArticles]);
 
 setTimeout(() => {
   console.log("STATE =", liveArticles.length);
