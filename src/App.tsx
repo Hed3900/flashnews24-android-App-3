@@ -306,7 +306,7 @@ loadNativeArticlesCache().then(cache => {
     setArticles(prev => prev.length === 0 ? cache : prev);
   }
 });
-    const interval = setInterval(() => {
+   /* const interval = setInterval(() => {
   if (!isOffline) {
     fetchBloggerArticles(selectedCategory)
   .then((liveArticles) => {
@@ -354,12 +354,12 @@ loadNativeArticlesCache().then(cache => {
       })
       .catch(console.error);
   }
-}, 600000);
+}, 600000);*/
 
-return () => {
+/*return () => {
   clearInterval(interval);
   removeNetListenerPromise.then((remove) => remove());
-};
+};*/
 }, [handleRefreshNews, isOffline, selectedCategory]);
 
 useEffect(() => {
