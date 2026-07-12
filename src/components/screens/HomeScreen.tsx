@@ -346,7 +346,8 @@ const regularArticles = articles
     </button>
   </div>
 ) : (
-  regularArticles.map((art) => {
+  regularArticles.map((art, index) => {
+  alert("MAP " + index + " : " + art.title);
               const isBookmarked = bookmarkedIds.includes(art.id);
               return (
                 <div
