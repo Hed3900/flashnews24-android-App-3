@@ -280,7 +280,7 @@ const regularArticles = articles
                           alt={art.title}
                           decoding="async"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          loading="lazy"
+                          
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#0F1115] via-[#0F1115]/40 to-transparent"></div>
                         <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md bg-blue-600 text-white font-bold text-[9px] tracking-widest uppercase shadow">
@@ -361,7 +361,7 @@ const regularArticles = articles
                       alt={art.title}
                       decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
+                      
                     />
                     {art.category === 'AI' && (
                       <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-blue-600/90 backdrop-blur-sm text-[8px] font-bold text-white flex items-center gap-0.5 uppercase tracking-widest">
