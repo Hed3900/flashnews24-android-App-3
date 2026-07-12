@@ -331,10 +331,14 @@ if (fetchedArticles.length === 0) {
   
 try {
   const res = await fetch(
-"https://www.google.com",
-{
-  cache: "no-store",
-}
+  `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
+  {
+    cache: "no-store",
+    mode: "cors",
+    headers: {
+      Accept: "application/json",
+    },
+  }
 );
   alert("STATUS = " + res.status);
       if (res.ok) {
