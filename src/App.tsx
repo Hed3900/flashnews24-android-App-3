@@ -238,6 +238,7 @@ const handleRefreshNews = useCallback(() => {
         
 
         setArticles(liveArticles);
+        alert("FINAL ARTICLES = " + filtered.length);
         saveNativeArticlesCache(liveArticles);
 
         addRetrofitLog(
