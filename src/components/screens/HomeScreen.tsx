@@ -356,13 +356,7 @@ const regularArticles = articles
                   className="bg-[#1A1D23] rounded-[24px] p-3.5 shadow-2xl border border-[#2D333B] hover:border-blue-500/40 transition-all cursor-pointer flex gap-3.5 group"
                 >
                   <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-[#0F1115] flex-shrink-0 border border-[#2D333B]/50">
-                    <img
-                      src={art.imageUrl}
-                      alt={art.title}
-                      decoding="async"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      
-                    />
+                    <div className="w-full h-full bg-blue-500"></div>
                     {art.category === 'AI' && (
                       <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-blue-600/90 backdrop-blur-sm text-[8px] font-bold text-white flex items-center gap-0.5 uppercase tracking-widest">
                         <Sparkles className="w-2 h-2" /> AI
