@@ -311,10 +311,10 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   `/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}&max-results=500&t=${Date.now()}`,
   { cache: "no-store" }
 );
-
+alert("PROXY OK = " + proxyRes.ok);
 if (proxyRes.ok) {
   const data = await proxyRes.json();
-
+alert("BACKEND ARTICLES = " + (data.articles?.length ?? 0));
   if (data?.articles && Array.isArray(data.articles)) {
     
     fetchedArticles = data.articles;
