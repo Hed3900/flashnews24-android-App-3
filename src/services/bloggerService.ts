@@ -384,7 +384,7 @@ console.log(json);
 
   console.warn("Direct Blogger fetch failed", e);
       }
-
+}
   // 3. AllOrigins fallback
   if (fetchedArticles.length === 0) {
     try {
