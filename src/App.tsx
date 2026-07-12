@@ -238,14 +238,6 @@ const handleRefreshNews = useCallback(() => {
         
 
         setArticles(liveArticles);
-
-        fetch("https://jsonplaceholder.typicode.com/posts/1")
-  .then(async (r) => {
-    alert("STATUS = " + r.status);
-    const j = await r.json();
-    alert(j.title);
-  })
-  .catch((e) => alert(String(e)));
         saveNativeArticlesCache(liveArticles);
 
         addRetrofitLog(
