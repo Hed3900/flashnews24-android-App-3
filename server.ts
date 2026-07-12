@@ -419,7 +419,7 @@ app.post('/api/news/ai-breaking', async (req, res) => {
       publishedAt: 'Just now',
       imageUrl: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&auto=format&fit=crop&q=80',
       category: 'Tech',
-      url: `https://flashnews24.io/articles/live-${Date.now()}`,
+      url: `https://flashnews24.site/articles/live-${Date.now()}`,
       readTimeMinutes: 3,
       isBreaking: true,
       sentiment: 'Urgent'
@@ -455,7 +455,7 @@ app.post('/api/news/ai-breaking', async (req, res) => {
     data.id = `art-ai-${Date.now()}`;
     data.publishedAt = 'Just now';
     data.isBreaking = true;
-    data.url = `https://flashnews24.io/articles/${data.id}`;
+    data.url = `https://flashnews24.site/articles/${data.id}`;
 
     res.json({ article: data, simulated: false });
   } catch (err: any) {
