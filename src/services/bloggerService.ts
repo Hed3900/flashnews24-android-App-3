@@ -330,21 +330,12 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
   // 2. Blogger Feed
 if (fetchedArticles.length === 0) {
-  try {
-    alert("FETCH START");
-
-    const res = await fetch(
-      `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
-      { cache: "no-store" }
-    );
-
-    alert("FETCH SUCCESS");
-  } catch (err: any) {
-    alert("FETCH ERROR");
-    alert(String(err));
-  }
-}
-
+  
+try {
+  const res = await fetch(
+    `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
+    { cache: "no-store" }
+  );
       if (res.ok) {
         const json = await res.json();
 alert("ENTRIES = " + (json.feed?.entry?.length ?? 0));
@@ -362,7 +353,7 @@ console.log(json);
             }
         })
         .filter((a): a is Article => a !== null);
-
+}
     alert("PARSED = " + fetchedArticles.length);
         }
       }
