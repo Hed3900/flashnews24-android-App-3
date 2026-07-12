@@ -333,9 +333,11 @@ if (fetchedArticles.length === 0) {
   
 try {
   const res = await fetch(
-    `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
-    { cache: "no-store" }
-  );
+"https://www.flashnews24.site/feeds/posts/default?alt=json&max-results=500",
+{
+  cache: "no-store"
+}
+);
   alert("STATUS = " + res.status);
       if (res.ok) {
         const json = await res.json();
