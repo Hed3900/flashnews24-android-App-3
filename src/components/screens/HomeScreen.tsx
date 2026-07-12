@@ -276,12 +276,12 @@ const regularArticles = articles
                     >
                       <div className="relative h-36 w-full overflow-hidden bg-gray-800">
                         <img
-                          src={art.imageUrl}
-                          alt={art.title}
-                          decoding="async"
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          
-                        />
+  src={art.imageUrl}
+  alt={art.title}
+  onError={() => alert(art.imageUrl)}
+  decoding="async"
+  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+/>
                         <div className="absolute inset-0 bg-gradient-to-t from-[#0F1115] via-[#0F1115]/40 to-transparent"></div>
                         <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md bg-blue-600 text-white font-bold text-[9px] tracking-widest uppercase shadow">
                           BREAKING
