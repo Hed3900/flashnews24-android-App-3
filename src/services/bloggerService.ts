@@ -336,6 +336,7 @@ try {
     `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
     { cache: "no-store" }
   );
+  alert("STATUS = " + res.status);
       if (res.ok) {
         const json = await res.json();
 alert("ENTRIES = " + (json.feed?.entry?.length ?? 0));
