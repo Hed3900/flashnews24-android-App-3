@@ -331,11 +331,14 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   // 2. Blogger Feed
   if (fetchedArticles.length === 0) {
     try {
+alert(BLOGGER_JSON_FEED_URL);
+
       const res = await fetch(
         `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
         { cache: "no-store" }
       );
-
+alert("STATUS = " + res.status);
+alert("OK = " + res.ok);
       if (res.ok) {
         const json = await res.json();
 alert("ENTRIES = " + (json.feed?.entry?.length ?? 0));
