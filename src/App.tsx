@@ -225,7 +225,7 @@ const handleRefreshNews = useCallback(() => {
     return;
   }
 
-  fetchBloggerArticles(selectedCategory)
+  fetchBloggerArticles("All")
     .then((liveArticles) => {
       
 
@@ -308,7 +308,7 @@ loadNativeArticlesCache().then(cache => {
 });
    /* const interval = setInterval(() => {
   if (!isOffline) {
-    fetchBloggerArticles(selectedCategory)
+    fetchBloggerArticles("All")
   .then((liveArticles) => {
 
   
