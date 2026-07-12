@@ -359,8 +359,10 @@ console.log(json);
         
       }
     } catch (e) {
-      console.warn("Direct Blogger fetch failed", e);
-    }
+    alert("BLOGGER FETCH FAILED");
+    alert(String(e));
+    console.warn("Direct Blogger fetch failed", e);
+}
   }
 
   // 3. AllOrigins fallback
