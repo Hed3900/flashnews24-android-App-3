@@ -218,7 +218,7 @@ This project includes shrinker Proguard rules, clean package namespace \`com.fla
                 <Terminal className="w-4 h-4 text-blue-400" />
                 OkHttp Logging Interceptor Output
               </span>
-              <span className="text-[10px] text-[#E1E4E8] opacity-60 font-mono">Host: api.flashnews24.io</span>
+              <span className="text-[10px] text-[#E1E4E8] opacity-60 font-mono">Host: api.flashnews24.site</span>
             </div>
 
             {retrofitLogs.length === 0 ? (
