@@ -468,11 +468,16 @@ const handleShareApp = async () => {
     setIsGeneratingAiNews(true);
     const startTime = Date.now();
     try {
-      const res = await fetch('/api/news/ai-breaking', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic })
-      });
+      const res = await fetch(
+  'https://api.flashnews24.site/api/news/ai-breaking',
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ topic })
+  }
+);
       const data = await res.json();
       if (data.article) {
         setArticles(prev => [data.article, ...prev]);
