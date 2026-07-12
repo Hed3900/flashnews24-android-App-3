@@ -110,6 +110,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   }, [selectedCategory, activeCategories, onSelectCategory]);
 
   const breakingArticles = articles.filter(a => a.isBreaking);
+
 const regularArticles = articles
   .filter(a => !a.isBreaking)
   .filter(a => {
@@ -126,7 +127,7 @@ const regularArticles = articles
     (a, b) =>
       new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
       new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
-  )
+  );
   .slice(0, 500);
   alert("HOME ARTICLES = " + articles.length);
   const handleManualRefresh = () => {
