@@ -329,20 +329,21 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   
 
   // 2. Blogger Feed
-  if (fetchedArticles.length === 0) {
-    try {
-  alert("FETCH START");
+if (fetchedArticles.length === 0) {
+  try {
+    alert("FETCH START");
 
-  const res = await fetch(
-    `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
-    { cache: "no-store" }
-  );
+    const res = await fetch(
+      `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
+      { cache: "no-store" }
+    );
 
-  alert("FETCH SUCCESS");
-} catch (err: any) {
-  alert("FETCH ERROR");
-  alert(String(err));
-    }
+    alert("FETCH SUCCESS");
+  } catch (err: any) {
+    alert("FETCH ERROR");
+    alert(String(err));
+  }
+}
 
       if (res.ok) {
         const json = await res.json();
