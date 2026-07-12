@@ -335,7 +335,7 @@ alert(data.feed.entry[0].title.$t);
         })
         .filter((a: any): a is Article => a !== null);
     }
-  }
+  
 } catch (e) {
   console.warn("Backend unavailable", e);
 }
