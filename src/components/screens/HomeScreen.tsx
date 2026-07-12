@@ -130,11 +130,7 @@ const regularArticles = articles
       new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
   )
   .slice(0, 500);
-  alert(
-  "ALL=" + articles.length +
-  " BREAKING=" + breakingArticles.length +
-  " REGULAR=" + regularArticles.length
-);
+  
   const handleManualRefresh = () => {
     setIsPulling(true);
     onRefresh();
@@ -347,7 +343,7 @@ const regularArticles = articles
   </div>
 ) : (
   regularArticles.map((art, index) => {
-  alert("MAP " + index + " : " + art.title);
+  
               const isBookmarked = bookmarkedIds.includes(art.id);
               return (
                 <div
