@@ -2,6 +2,7 @@ import { Article, NewsCategory } from '../types';
 
 export const BLOGGER_JSON_FEED_URL =
 "https://www.flashnews24.site/feeds/posts/default?alt=json&max-results=500";
+alert(BLOGGER_JSON_FEED_URL);
 
 /**
  * Decodes standard HTML entities in Blogger text payloads.
