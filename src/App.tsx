@@ -305,8 +305,7 @@ loadNativeArticlesCache().then(cache => {
     fetchBloggerArticles(selectedCategory)
   then((liveArticles) => {
 
-  console.log("LIVE ARTICLES:", liveArticles.length);
-  console.log(liveArticles);
+  
 
 
         if (liveArticles && liveArticles.length > 0) {
