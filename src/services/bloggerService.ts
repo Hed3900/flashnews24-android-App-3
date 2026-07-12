@@ -359,7 +359,7 @@ if (fetchedArticles.length === 0) {
 alert("BLOGGER ENTRIES = " + (data.feed?.entry?.length || 0));
 
 if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
-        fetchedArticles = json.feed.entry
+        fetchedArticles = data.feed.entry
           .map((entry: any, index: number) => {
             try {
               return parseBloggerEntry(entry, index);
