@@ -420,6 +420,9 @@ useEffect(() => {
     console.log("AdMob Error:", err);
   }
 };
+  fetch("https://www.google.com")
+  .then(() => alert("Google OK"))
+  .catch((e) => alert(String(e)));
 
   const handleShareArticle = async (article: Article) => {
   try {
