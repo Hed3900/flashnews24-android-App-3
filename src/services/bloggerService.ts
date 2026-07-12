@@ -303,30 +303,30 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 ): Promise<Article[]> {
   let fetchedArticles: Article[] = [];
 
-  // 1. Backend API
-  try {
-  
-
+// 1. Backend API
+try {
   const res = await fetch(BLOGGER_JSON_FEED_URL, {
-  cache: "no-store",
-});
+    cache: "no-store",
+  });
 
-  
+  if (res.ok) {
+    const data = await res.json();
 
-if (res.ok) {
-  const data = await res.json();
-
-  if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
-    fetchedArticles = data.feed.entry
-      .map((entry: any, index: number) => {
-        try {
-          return parseBloggerEntry(entry, index);
-        } catch {
-          return null;
-        }
-      })
-      .filter((a: any) => a !== null);
+    if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
+      fetchedArticles = data.feed.entry
+        .map((entry: any, index: number) => {
+          try {
+            return parseBloggerEntry(entry, index);
+          } catch (err) {
+            console.error(err);
+            return null;
+          }
+        })
+        .filter((a: any): a is Article => a !== null);
+    }
   }
+} catch (e) {
+  console.warn("Backend unavailable", e);
 }
 
   // 2. Blogger Feed
