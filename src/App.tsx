@@ -304,7 +304,7 @@ loadNativeArticlesCache().then(cache => {
     const interval = setInterval(() => {
   if (!isOffline) {
     fetchBloggerArticles(selectedCategory)
-  then((liveArticles) => {
+  .then((liveArticles) => {
 
   
 
