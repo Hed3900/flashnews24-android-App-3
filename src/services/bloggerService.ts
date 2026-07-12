@@ -313,7 +313,8 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 );
 alert("PROXY OK = " + proxyRes.ok);
 if (proxyRes.ok) {
-  const data = await proxyRes.json();
+  const text = await proxyRes.text();
+alert(text);
 alert("BACKEND ARTICLES = " + (data.articles?.length ?? 0));
   if (data?.articles && Array.isArray(data.articles)) {
     
