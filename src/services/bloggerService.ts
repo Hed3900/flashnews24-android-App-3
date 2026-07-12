@@ -320,7 +320,7 @@ try {
 
   if (res.ok) {
     const data = await res.json();
-
+alert("BLOGGER ENTRIES = " + (data.feed?.entry?.length || 0));
     if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
       fetchedArticles = data.feed.entry
         .map((entry: any, index: number) => {
