@@ -302,7 +302,8 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   category: string = "All",
   searchQuery: string = ""
 ): Promise<Article[]> {
-  let fetchedArticles: Article[] = [];
+
+  throw new Error("TEST");
 
             // 1. Backend API
 try {
