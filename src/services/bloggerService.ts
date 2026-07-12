@@ -342,93 +342,73 @@ alert(data.feed.entry[0].title.$t);
 
   // 2. Blogger Feed
 if (fetchedArticles.length === 0) {
-  
-try {
-  const res = await fetch(
-  `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
-  {
-    cache: "no-store",
-    headers: {
-      Accept: "application/json",
-    },
-  }
-);
-  alert("STATUS = " + res.status);
-      if (res.ok) {
-        const json = await res.json();
-alert("ENTRIES = " + (json.feed?.entry?.length ?? 0));
-console.log(json);
-        if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
-
-   
-    fetchedArticles = json.feed.entry
-        .map((entry: any, index: number) => {
-            try {
-                return parseBloggerEntry(entry, index);
-            } catch (err) {
-                console.error(err);
-                return null;
-            }
-        })
-        .filter((a): a is Article => a !== null);
-}
-    alert("PARSED = " + fetchedArticles.length);
-        
-      }
-    } catch (e: any) {
-  console.error("DIRECT BLOGGER FETCH FAILED", e);
-
-  alert("DIRECT FETCH FAILED");
-  alert("NAME: " + e.name);
-  alert("MESSAGE: " + e.message);
-
-  throw e;
-}
-
-  // 3. AllOrigins fallback
-  if (fetchedArticles.length === 0) {
-    try {
-      const url =
-        "https://api.allorigins.win/raw?url=" +
-        encodeURIComponent(BLOGGER_JSON_FEED_URL);
-
-      const res = await fetch(`${url}&t=${Date.now()}`, {
-        cache: "no-store",
-      });
-
-      if (res.ok) {
-        const json = await res.json();
-
-        if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
-          
-
-const parsed = json.feed.entry.map((entry: any, index: number) => {
   try {
-    return parseBloggerEntry(entry, index);
-  } catch (err) {
-    console.error("PARSE ERROR:", err, entry?.title?.$t);
-    return null;
-  }
-});
-
-
-
-fetchedArticles = parsed.filter((a): a is Article => a !== null);
-          
-             
-        }
+    const res = await fetch(
+      `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
+      {
+        cache: "no-store",
+        headers: {
+          Accept: "application/json",
+        },
       }
-    } catch (e: any) {
-  console.error("ALLORIGINS FAILED", e);
+    );
 
-  alert("ALLORIGINS FAILED");
-  alert("NAME: " + e.name);
-  alert("MESSAGE: " + e.message);
+    if (res.ok) {
+      const json = await res.json();
 
-  throw e;
-}
+      if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
+        fetchedArticles = json.feed.entry
+          .map((entry: any, index: number) => {
+            try {
+              return parseBloggerEntry(entry, index);
+            } catch (err) {
+              console.error(err);
+              return null;
+            }
+          })
+          .filter((a: any): a is Article => a !== null);
+      }
+    }
+  } catch (e: any) {
+    console.error("DIRECT BLOGGER FETCH FAILED", e);
+    console.warn("Direct Blogger fetch failed", e);
   }
+}
 
+// 3. AllOrigins fallback
+if (fetchedArticles.length === 0) {
+  try {
+    const url =
+      "https://api.allorigins.win/raw?url=" +
+      encodeURIComponent(BLOGGER_JSON_FEED_URL);
+
+    const res = await fetch(`${url}&t=${Date.now()}`, {
+      cache: "no-store",
+    });
+
+    if (res.ok) {
+      const json = await res.json();
+
+      if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
+        const parsed = json.feed.entry
+          .map((entry: any, index: number) => {
+            try {
+              return parseBloggerEntry(entry, index);
+            } catch (err) {
+              console.error("PARSE ERROR:", err);
+              return null;
+            }
+          })
+          .filter((a: any): a is Article => a !== null);
+
+        fetchedArticles = parsed;
+      }
+    }
+  } catch (e: any) {
+    console.error("ALLORIGINS FAILED", e);
+    console.warn("AllOrigins fallback failed", e);
+  }
+}
   // 4. Offline cache
   if (fetchedArticles.length === 0) {
     fetchedArticles = [...OFFLINE_BLOGGER_CACHE];
