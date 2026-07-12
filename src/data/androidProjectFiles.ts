@@ -649,7 +649,7 @@ class FlashNewsMessagingService : FirebaseMessagingService() {
     }
 
     private fun sendRegistrationToServer(token: String) {
-        // HTTP POST to https://api.flashnews24.io/register-fcm
+        // HTTP POST to https://api.flashnews24.site/register-fcm
     }
 }`
   }
