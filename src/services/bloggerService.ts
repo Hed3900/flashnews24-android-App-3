@@ -333,12 +333,17 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
     try {
 alert(BLOGGER_JSON_FEED_URL);
 
-      const res = await fetch(
-        `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
-        { cache: "no-store" }
-      );
+      alert("BEFORE FETCH");
+
+const res = await fetch(
+  `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
+  { cache: "no-store" }
+);
+
+alert("AFTER FETCH");
 alert("STATUS = " + res.status);
 alert("OK = " + res.ok);
+
       if (res.ok) {
         const json = await res.json();
 alert("ENTRIES = " + (json.feed?.entry?.length ?? 0));
