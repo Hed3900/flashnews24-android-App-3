@@ -326,9 +326,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 } catch (e) {
   console.warn("Backend unavailable", e);
   }
-  } catch (e) {
-    console.warn("Backend unavailable", e);
-  }
+  
 
   // 2. Blogger Feed
   if (fetchedArticles.length === 0) {
