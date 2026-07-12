@@ -333,9 +333,9 @@ if (fetchedArticles.length === 0) {
   
 try {
   const res = await fetch(
-"https://www.flashnews24.site/feeds/posts/default?alt=json&max-results=500",
+"https://www.google.com",
 {
-  cache: "no-store"
+  cache: "no-store",
 }
 );
   alert("STATUS = " + res.status);
