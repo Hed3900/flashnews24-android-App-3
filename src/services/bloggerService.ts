@@ -309,7 +309,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
             // 1. Backend API
 try {
-  alert("URL = " + BLOGGER_JSON_FEED_URL);
+  
   const res = await fetch(
     `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
     {
@@ -323,7 +323,7 @@ try {
 
   if (res.ok) {
     const data = await res.json();
-alert(JSON.stringify(data).slice(0, 500));
+
     if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
       fetchedArticles = data.feed.entry
         .map((entry: any, index: number) => {
@@ -335,7 +335,7 @@ alert(JSON.stringify(data).slice(0, 500));
           }
         })
         .filter((a: any): a is Article => a !== null);
-      alert("PARSED = " + fetchedArticles.length);
+      
     }
   }
 } catch (e) {
@@ -358,7 +358,7 @@ if (fetchedArticles.length === 0) {
     if (res.ok) {
       const data = await res.json();
 
-alert("BLOGGER ENTRIES = " + (data.feed?.entry?.length || 0));
+
 
 if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
         fetchedArticles = data.feed.entry
@@ -427,7 +427,6 @@ fetchedArticles = Array.from(
 // Category filter
 let filtered = fetchedArticles;
 
-alert("FINAL ARTICLES = " + filtered.length);
 
 if (category && category !== "All") {
   const cat = category.toLowerCase();
