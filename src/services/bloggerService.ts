@@ -303,16 +303,12 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
             // 1. Backend API
 try {
-  const res = await fetch(
-    `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
-    {
-      cache: "no-store",
-      mode: "cors",
-      headers: {
-        Accept: "application/json",
-      },
-    }
-  );
+  const res = await fetch(`${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`, {
+  cache: "no-store",
+  headers: {
+    Accept: "application/json",
+  },
+});
 
   if (res.ok) {
     const data2 = await res.json();
