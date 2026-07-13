@@ -336,7 +336,7 @@ alert("Feed entries = " + (data.feed?.entry?.length || 0));
             }
           })
           .filter(Boolean) as Article[];
-alert("Parsed articles = " + fetchedArticles.length);
+alert("DIVYA TEST 999");
         if (fetchedArticles.length > 0) {
           break;
         }
