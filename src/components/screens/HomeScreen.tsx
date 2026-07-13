@@ -345,7 +345,7 @@ regularArticles.length === 0 ? (
   
               const isBookmarked = bookmarkedIds.includes(art.id);
               return (
-                <div>
+                <div
                   key={art.id}
                   onClick={() => onSelectArticle(art)}
                   className="bg-[#1A1D23] rounded-[24px] p-3.5 shadow-2xl border border-[#2D333B] hover:border-blue-500/40 transition-all cursor-pointer flex gap-3.5 group"
