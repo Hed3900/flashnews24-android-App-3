@@ -323,7 +323,7 @@ const regularArticles = articles
             </span>
             <span className="text-[10px] text-[#E1E4E8] opacity-40">{regularArticles.length} stories cached</span>
           </div>
-alert("CHECK = " + (regularArticles.length === 0));
+false ? ({regularArticles.length === 0 ? (
   <div className="text-center py-12 px-4 bg-[#1A1D23] rounded-[24px] border border-dashed border-[#2D333B]">
     <Sparkles className="w-8 h-8 text-blue-500 mx-auto mb-2 opacity-50" />
     <h4 className="text-sm font-bold">
@@ -345,7 +345,7 @@ alert("CHECK = " + (regularArticles.length === 0));
   alert("RENDERING: " + art.title);
               const isBookmarked = bookmarkedIds.includes(art.id);
               return (
-                <div
+                <div>
                   key={art.id}
                   onClick={() => onSelectArticle(art)}
                   className="bg-[#1A1D23] rounded-[24px] p-3.5 shadow-2xl border border-[#2D333B] hover:border-blue-500/40 transition-all cursor-pointer flex gap-3.5 group"
