@@ -200,7 +200,7 @@ const { primary, tags } =
   // Unique ID from Blogger post ID or fallback
   const rawId = entry.id?.$t || `blogger-${index}-${Date.now()}`;
   const id = rawId.replace(/[^a-zA-Z0-9-_]/g, '-');
-alert("PARSED OK: " + title);
+
   return {
     id,
     title,
@@ -323,9 +323,10 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
       if (!res.ok) continue;
 
       const data = await res.json();
-
+console.log("TOTAL ENTRIES:", data.feed?.entry?.length);
       if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
         fetchedArticles = data.feed.entry
+          console.log("RAW ENTRIES:", data.feed.entry.length);
           .map((entry: any, index: number) => {
             try {
     const article = parseBloggerEntry(entry, index);
