@@ -335,7 +335,7 @@ try {
 } catch (e) {
   console.warn("Backend unavailable", e);
 }
-
+alert("Backend = " + fetchedArticles.length);
 // 2. Blogger Feed
 if (fetchedArticles.length === 0) {
   try {
@@ -372,7 +372,7 @@ if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
     console.warn("Direct Blogger fetch failed", e);
   }
 }
-
+alert("Direct Blogger = " + fetchedArticles.length);
 // 3. AllOrigins fallback
 if (fetchedArticles.length === 0) {
   try {
@@ -405,6 +405,7 @@ if (fetchedArticles.length === 0) {
   } catch (e: any) {
     console.error("ALLORIGINS FAILED", e);
     console.warn("AllOrigins fallback failed", e);
+    alert("AllOrigins = " + fetchedArticles.length);
   }
 }
 
@@ -459,6 +460,6 @@ filtered.sort(
     new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
     new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
 );
-
+alert("Final Return = " + filtered.length);
 return filtered.slice(0, 500);
   }
