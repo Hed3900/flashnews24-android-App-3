@@ -406,7 +406,7 @@ useEffect(() => {
 
   setSelectedArticle(article);
   setActiveScreen("detail");
-
+alert("AllOrigins = " + fetchedArticles.length);
   try {
     await AdMob.prepareInterstitial({
       adId: "ca-app-pub-3288039417600063/1445588386",
@@ -466,6 +466,7 @@ const handleShareApp = async () => {
   const handleGenerateAiBreakingArticle = async (topic: string) => {
     setIsGeneratingAiNews(true);
     const startTime = Date.now();
+    alert("Final Return = " + filtered.length);
     try {
       const res = await fetch(
   'https://api.flashnews24.site/api/news/ai-breaking',
