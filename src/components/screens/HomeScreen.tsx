@@ -130,7 +130,7 @@ const regularArticles = articles
       new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
   )
   .slice(0, 500);
-  
+  alert("REGULAR = " + regularArticles.length);
   const handleManualRefresh = () => {
     setIsPulling(true);
     onRefresh();
