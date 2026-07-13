@@ -303,7 +303,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
             // 1. Backend API
 try {
-  console.log("ENTRY COUNT:", data.feed.entry.length);
+  console.log("ENTRY COUNT:", data2.feed.entry.length);
   const res = await fetch(
     `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
     {
@@ -318,8 +318,8 @@ try {
   if (res.ok) {
     const data = await res.json();
 
-    if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
-      fetchedArticles = data.feed.entry
+    if (data2?.feed?.entry && Array.isArray(data2.feed.entry)) {
+      fetchedArticles = data2.feed.entry
         .map((entry: any, index: number) => {
           try {
             return parseBloggerEntry(entry, index);
