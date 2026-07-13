@@ -235,16 +235,8 @@ const handleRefreshNews = useCallback(() => {
             new Date(b.rawPublishedAt || b.publishedAt).getTime() -
             new Date(a.rawPublishedAt || a.publishedAt).getTime()
         );
-        alert("LIVE ARTICLES = " + liveArticles.length);
-
+        
 setArticles([...liveArticles]);
-alert(JSON.stringify(liveArticles.map(a => ({
-  title: a.title,
-  isBreaking: a.isBreaking
-}))));
-alert("SET ARTICLES DONE");
-
-
 
 saveNativeArticlesCache(liveArticles);
         
