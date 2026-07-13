@@ -325,20 +325,19 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
       const data = await res.json();
 console.log("TOTAL ENTRIES:", data.feed?.entry?.length);
       if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
-        fetchedArticles = data.feed.entry
-          console.log("RAW ENTRIES:", data.feed.entry.length);
-          .map((entry: any, index: number) => {
-            try {
-    const article = parseBloggerEntry(entry, index);
-    
-    return article;
-} catch (err) {
-    console.error("ENTRY FAILED:", entry?.title?.$t, err);
-    return null;
-            }
-          })
-          .filter((a): a is Article => a !== null && a !== undefined);
+        console.log("RAW ENTRIES:", data.feed.entry.length);
 
+fetchedArticles = data.feed.entry
+  .map((entry: any, index: number) => {
+    try {
+      const article = parseBloggerEntry(entry, index);
+      return article;
+    } catch (err) {
+      console.error("ENTRY FAILED:", entry?.title?.$t, err);
+      return null;
+    }
+  })
+  .filter((a): a is Article => a != null);
         if (fetchedArticles.length > 0) {
           break;
         }
