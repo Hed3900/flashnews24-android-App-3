@@ -331,8 +331,9 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
             try {
               return parseBloggerEntry(entry, index);
             } catch (err) {
-              console.error(err);
-              return null;
+              console.error("ENTRY FAILED:", entry?.title?.$t, err);
+alert("ENTRY FAILED: " + (entry?.title?.$t || "Unknown"));
+throw err;
             }
           })
           .filter(Boolean) as Article[];
