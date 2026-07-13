@@ -298,13 +298,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
  * Fetches articles directly or via server proxy from flashnews24.site Blogger feed.
  * Guaranteed to return valid Blogger articles without console errors or UI crashes.
  */
-  export async function fetchBloggerArticles(
-  category: string = "All",
-  searchQuery: string = ""
-): Promise<Article[]> {
-
-  
-
+  export async function fetchBloggerArticles(category: string = 'All', searchQuery: string = ''): Promise<Article[]> {
   let fetchedArticles: Article[] = [];
 
             // 1. Backend API
