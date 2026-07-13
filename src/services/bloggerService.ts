@@ -1,8 +1,7 @@
 import { Article, NewsCategory } from '../types';
 
 export const BLOGGER_SITE_URL = 'https://www.flashnews24.site';
-export const BLOGGER_JSON_FEED_URL =
-`${BLOGGER_SITE_URL}/feeds/posts/default?alt=json&max-results=500`;
+export const BLOGGER_JSON_FEED_URL =`${BLOGGER_SITE_URL}/feeds/posts/default?alt=json&max-results=500`;
 
 /**
  * Decodes standard HTML entities in Blogger text payloads.
@@ -324,7 +323,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
       if (!res.ok) continue;
 
       const data = await res.json();
-alert("Feed entries = " + (data.feed?.entry?.length || 0));
+
       if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
         fetchedArticles = data.feed.entry
           .map((entry: any, index: number) => {
@@ -338,7 +337,7 @@ alert("Feed entries = " + (data.feed?.entry?.length || 0));
             }
           })
           .filter(Boolean) as Article[];
-alert("DIVYA TEST 999");
+
         if (fetchedArticles.length > 0) {
           break;
         }
