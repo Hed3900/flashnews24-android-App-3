@@ -299,62 +299,33 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
  * Fetches articles directly or via server proxy from flashnews24.site Blogger feed.
  * Guaranteed to return valid Blogger articles without console errors or UI crashes.
  */
-  export async function fetchBloggerArticles(category: string = 'All', searchQuery: string = ''): Promise<Article[]> {
+  export async function fetchBloggerArticles(
+  category: string = "All",
+  searchQuery: string = ""
+): Promise<Article[]> {
+
   let fetchedArticles: Article[] = [];
 
-            // 1. Backend API
-try {
-const res = await fetch(BLOGGER_JSON_FEED_URL, {
-  cache: "no-store",
-  mode: "cors",
-  headers: {
-    Accept: "application/json",
-  },
-});
+  const urls = [
+    BLOGGER_JSON_FEED_URL,
+    `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(BLOGGER_JSON_FEED_URL)}`
+  ];
 
-alert("Status = " + res.status);
-
-  if (res.ok) {
-    const data2 = await res.json();
-console.log("ENTRY COUNT:", data2?.feed?.entry?.length ?? 0);
-    if (data2?.feed?.entry && Array.isArray(data2.feed.entry)) {
-      fetchedArticles = data2.feed.entry
-        .map((entry: any, index: number) => {
-          try {
-            return parseBloggerEntry(entry, index);
-          } catch (err) {
-            console.error(err);
-            return null;
-          }
-        })
-        .filter((a: any): a is Article => a !== null);
-      
-    }
-  }
-} catch (e) {
-  alert("Backend Error: " + String(e));
-  console.warn("Backend unavailable", e);
-}
-alert("Backend = " + fetchedArticles.length);
-// 2. Blogger Feed
-if (fetchedArticles.length === 0) {
-  try {
-    const res = await fetch(
-      `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
-      {
+  for (const url of urls) {
+    try {
+      const res = await fetch(url, {
         cache: "no-store",
         headers: {
-          Accept: "application/json",
-        },
-      }
-    );
+          Accept: "application/json"
+        }
+      });
 
-    if (res.ok) {
+      if (!res.ok) continue;
+
       const data = await res.json();
 
-
-
-if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
+      if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
         fetchedArticles = data.feed.entry
           .map((entry: any, index: number) => {
             try {
@@ -364,103 +335,65 @@ if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
               return null;
             }
           })
-          .filter((a: any): a is Article => a !== null);
+          .filter(Boolean) as Article[];
+
+        if (fetchedArticles.length > 0) {
+          break;
+        }
       }
+
+    } catch (e) {
+      console.warn(e);
     }
-  } catch (e: any) {
-    alert("Direct Error: " + String(e));
-    console.error("DIRECT BLOGGER FETCH FAILED", e);
-    console.warn("Direct Blogger fetch failed", e);
   }
-}
-alert("Direct Blogger = " + fetchedArticles.length);
-// 3. AllOrigins fallback
-if (fetchedArticles.length === 0) {
-  try {
-    const url =
-      "https://api.allorigins.win/raw?url=" +
-      encodeURIComponent(BLOGGER_JSON_FEED_URL);
 
-    const res = await fetch(`${url}&t=${Date.now()}`, {
-      cache: "no-store",
-    });
-
-    if (res.ok) {
-      const json = await res.json();
-
-      if (json?.feed?.entry && Array.isArray(json.feed.entry)) {
-        const parsed = json.feed.entry
-          .map((entry: any, index: number) => {
-            try {
-              return parseBloggerEntry(entry, index);
-            } catch (err) {
-              console.error("PARSE ERROR:", err);
-              return null;
-            }
-          })
-          .filter((a: any): a is Article => a !== null);
-
-        fetchedArticles = parsed;
-      }
-    }
-  } catch (e: any) {
-    console.error("ALLORIGINS FAILED", e);
-    console.warn("AllOrigins fallback failed", e);
-    alert("AllOrigins = " + fetchedArticles.length);
+  if (fetchedArticles.length === 0) {
+    fetchedArticles = [...OFFLINE_BLOGGER_CACHE];
   }
-}
-
-// 4. Offline cache
-if (fetchedArticles.length === 0) {
-  fetchedArticles = [...OFFLINE_BLOGGER_CACHE];
-}
-
-// Remove duplicates
-fetchedArticles = Array.from(
-  new Map(fetchedArticles.map((a) => [a.id, a])).values()
-);
-
-// Category filter
-let filtered = fetchedArticles;
-
-
-if (category && category !== "All") {
-  const cat = category.toLowerCase();
-
-  filtered = filtered.filter((a) => {
-    const articleCategory = (a.category ?? "").toLowerCase();
-
-    const tagMatch =
-      Array.isArray(a.tags) &&
-      a.tags.some((t) => t.toLowerCase().includes(cat));
-
-    return articleCategory === cat || tagMatch;
-  });
-}
-
-// Search filter
-if (searchQuery.trim().length > 0) {
-  const q = searchQuery.toLowerCase();
-
-  filtered = filtered.filter((a) =>
-    [
-      a.title ?? "",
-      a.summary ?? "",
-      a.content ?? "",
-      ...(a.tags ?? []),
-    ]
-      .join(" ")
-      .toLowerCase()
-      .includes(q)
+      // Remove duplicates
+  fetchedArticles = Array.from(
+    new Map(fetchedArticles.map(a => [a.id, a])).values()
   );
-}
 
-// Latest first
-filtered.sort(
-  (a, b) =>
-    new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
-    new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
-);
-alert("Final Return = " + filtered.length);
-return filtered.slice(0, 500);
+  // Category filter
+  let filtered = fetchedArticles;
+
+  if (category && category !== "All") {
+    const cat = category.toLowerCase();
+
+    filtered = filtered.filter((a) => {
+      const articleCategory = (a.category ?? "").toLowerCase();
+
+      const tagMatch =
+        Array.isArray(a.tags) &&
+        a.tags.some((t) => t.toLowerCase().includes(cat));
+
+      return articleCategory === cat || tagMatch;
+    });
+  }
+
+  // Search filter
+  if (searchQuery.trim().length > 0) {
+    const q = searchQuery.toLowerCase();
+
+    filtered = filtered.filter((a) =>
+      [
+        a.title ?? "",
+        a.summary ?? "",
+        a.content ?? "",
+        ...(a.tags ?? []),
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(q)
+    );
+  }
+      // Latest first
+  filtered.sort(
+    (a, b) =>
+      new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
+      new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
+  );
+
+  return filtered.slice(0, 500);
   }
