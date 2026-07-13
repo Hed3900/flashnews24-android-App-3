@@ -237,7 +237,7 @@ const regularArticles = articles
       {(isRefreshing || isPulling) && (
         <div className="bg-gradient-to-r from-blue-600/20 via-indigo-600/10 to-transparent text-blue-400 text-xs py-2 px-4 font-semibold flex items-center justify-center gap-2.5 animate-pulse border-b border-blue-500/20">
           <RotateCcw className="w-3.5 h-3.5 animate-spin text-blue-400" />
-          <span>Syncing Blogger Live Feed (flashnews24.site) via Retrofit & Room DB...</span>
+          
         </div>
       )}
 
