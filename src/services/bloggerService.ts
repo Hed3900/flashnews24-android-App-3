@@ -333,6 +333,7 @@ try {
     }
   }
 } catch (e) {
+  alert("Backend Error: " + String(e));
   console.warn("Backend unavailable", e);
 }
 alert("Backend = " + fetchedArticles.length);
@@ -368,6 +369,7 @@ if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
       }
     }
   } catch (e: any) {
+    alert("Direct Error: " + String(e));
     console.error("DIRECT BLOGGER FETCH FAILED", e);
     console.warn("Direct Blogger fetch failed", e);
   }
