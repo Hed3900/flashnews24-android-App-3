@@ -279,7 +279,7 @@ saveNativeArticlesCache(liveArticles);
       setIsRefreshing(false);
     });
 }, [
-  selectedCategory,
+  
   isOffline,
   addRetrofitLog
 ]);
