@@ -321,11 +321,9 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
       });
 
       if (!res.ok) continue;
-
       const data = await res.json();
-console.log("TOTAL ENTRIES:", data.feed?.entry?.length);
       if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
-        console.log("RAW ENTRIES:", data.feed.entry.length);
+        
 
 fetchedArticles = data.feed.entry
   .map((entry: any, index: number) => {
