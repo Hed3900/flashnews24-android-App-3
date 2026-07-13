@@ -1,4 +1,4 @@
-importance { Article, NewsCategory } from '../types';
+import { Article, NewsCategory } from '../types';
 
 export const BLOGGER_SITE_URL = 'https://www.flashnews24.site';
 export const BLOGGER_JSON_FEED_URL =
