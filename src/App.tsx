@@ -228,7 +228,7 @@ const handleRefreshNews = useCallback(() => {
   fetchBloggerArticles("All")
   .then(liveArticles => {
 
-    alert("FETCHED = " + liveArticles.length);
+    
 
     if (liveArticles && liveArticles.length > 0) {
 
