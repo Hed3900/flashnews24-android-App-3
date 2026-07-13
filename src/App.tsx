@@ -225,59 +225,32 @@ const handleRefreshNews = useCallback(() => {
     return;
   }
 
-  fetchBloggerArticles("All")
-    .then((liveArticles) => {
-      
+  fetchBloggerArticles('All')
+      .then(liveArticles => {
+        if (liveArticles && liveArticles.length > 0) {
+          setArticles(prev => {
+            const aiStories = prev.filter(a => a.id.startsWith('art-ai-') || a.id.startsWith('art-live-'));
+            const merged = [...aiStories, ...liveArticles];
+            const unique = Array.from(new Map(merged.map(item => [item.id, item])).values());
+            return unique;
+          });
+          addRetrofitLog('GET', `${BLOGGER_JSON_FEED_URL}?category=all`, 200, Date.now() - startTime, '48.2 KB');
+        } else {
+          addRetrofitLog('GET', `${BLOGGER_JSON_FEED_URL}?category=all`, 304, Date.now() - startTime, '12.4 KB');
+        }
+      })
+      .catch(err => {
+        addRetrofitLog('GET', BLOGGER_JSON_FEED_URL, 500, Date.now() - startTime, '0 B');
+      })
+      .finally(() => {
+        setIsRefreshing(false);
+      });
+  }, [isOffline, addRetrofitLog]);
 
-      if (liveArticles && liveArticles.length > 0) {
-        liveArticles.sort(
-          (a, b) =>
-            new Date(b.rawPublishedAt || b.publishedAt).getTime() -
-            new Date(a.rawPublishedAt || a.publishedAt).getTime()
-        );
-        setArticles([...liveArticles]);
-        
-        addRetrofitLog(
-          "GET",
-          `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
-          200,
-          Date.now() - startTime,
-          "48.2 KB"
-        );
-      } else {
-        addRetrofitLog(
-          "GET",
-          `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
-          304,
-          Date.now() - startTime,
-          "0 B"
-        );
-      }
-    })
-    .catch((err) => {
-  console.error("FETCH ERROR:", err);
-  alert(String(err));
+  useEffect(() => {
+    handleRefreshNews();
+    initCapacitorNativeUI();
 
-  addRetrofitLog(
-    "GET",
-    BLOGGER_JSON_FEED_URL,
-    500,
-    Date.now() - startTime,
-    "0 B"
-  );
-})
-    .finally(() => {
-      setIsRefreshing(false);
-    });
-}, [
-  
-  isOffline,
-  addRetrofitLog
-]);
-
-useEffect(() => {
-  handleRefreshNews();
-  initCapacitorNativeUI();
 
   const removeNetListenerPromise =
     initCapacitorNetworkListener((connected) => {
