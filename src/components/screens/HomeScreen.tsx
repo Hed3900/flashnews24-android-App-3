@@ -343,7 +343,7 @@ const regularArticles = articles
   </div>
 ) : (
   regularArticles.map((art, index) => {
-  
+  alert("RENDERING: " + art.title);
               const isBookmarked = bookmarkedIds.includes(art.id);
               return (
                 <div
