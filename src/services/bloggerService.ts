@@ -201,7 +201,7 @@ const { primary, tags } =
   // Unique ID from Blogger post ID or fallback
   const rawId = entry.id?.$t || `blogger-${index}-${Date.now()}`;
   const id = rawId.replace(/[^a-zA-Z0-9-_]/g, '-');
-
+alert("PARSED OK: " + title);
   return {
     id,
     title,
@@ -336,7 +336,7 @@ alert("Feed entries = " + (data.feed?.entry?.length || 0));
             }
           })
           .filter(Boolean) as Article[];
-
+alert("Parsed articles = " + fetchedArticles.length);
         if (fetchedArticles.length > 0) {
           break;
         }
