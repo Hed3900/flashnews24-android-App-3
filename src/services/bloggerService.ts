@@ -27,7 +27,7 @@ function decodeHtmlEntities(text: string): string {
 /**
  * Converts Blogger HTML content into clean paragraphs separated by double newlines,
  * stripping tags so native UI components can render paragraphs natively without WebView.
- */
+ */console.log("ENTRY COUNT:", data.feed.entry.length);
 function cleanBloggerHtmlToParagraphs(html: string): { summary: string; content: string; readTimeMinutes: number } {
   if (!html) return { summary: 'No summary available.', content: 'No content available.', readTimeMinutes: 1 };
 
