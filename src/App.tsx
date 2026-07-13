@@ -238,7 +238,10 @@ const handleRefreshNews = useCallback(() => {
         alert("LIVE ARTICLES = " + liveArticles.length);
 
 setArticles([...liveArticles]);
-
+alert(JSON.stringify(liveArticles.map(a => ({
+  title: a.title,
+  isBreaking: a.isBreaking
+}))));
 alert("SET ARTICLES DONE");
 
 
