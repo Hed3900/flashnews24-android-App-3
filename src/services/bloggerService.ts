@@ -331,8 +331,9 @@ fetchedArticles = data.feed.entry
       const article = parseBloggerEntry(entry, index);
       return article;
     } catch (err) {
-      console.error("ENTRY FAILED:", entry?.title?.$t, err);
-      return null;
+  alert("FAILED: " + (entry?.title?.$t || "Unknown"));
+  console.error("ENTRY FAILED:", entry?.title?.$t, err);
+  return null;
     }
   })
   .filter((a): a is Article => a != null);
