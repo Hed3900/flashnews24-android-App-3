@@ -329,10 +329,13 @@ alert("Feed entries = " + (data.feed?.entry?.length || 0));
         fetchedArticles = data.feed.entry
           .map((entry: any, index: number) => {
             try {
-  return parseBloggerEntry(entry, index);
+    const article = parseBloggerEntry(entry, index);
+    alert(article.title);
+    return article;
 } catch (err) {
-  console.error("ENTRY FAILED:", entry?.title?.$t, err);
-  return null;
+    console.error("ENTRY FAILED:", entry?.title?.$t, err);
+    return null;
+            }
             }
           })
           .filter(Boolean) as Article[];
