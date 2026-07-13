@@ -336,7 +336,6 @@ alert("Feed entries = " + (data.feed?.entry?.length || 0));
     console.error("ENTRY FAILED:", entry?.title?.$t, err);
     return null;
             }
-            }
           })
           .filter(Boolean) as Article[];
 alert("DIVYA TEST 999");
