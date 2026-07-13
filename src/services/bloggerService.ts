@@ -304,7 +304,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
             // 1. Backend API
 try {
-const res = await fetch(BLOGGER_JSON_FEED_URL);
+const res = await fetch(BLOGGER_JSON_FEED_URL);{
 alert("Status = " + res.status);
   cache: "no-store",
   headers: {
