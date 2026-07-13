@@ -335,6 +335,7 @@ alert(JSON.stringify(data).slice(0, 500));
           }
         })
         .filter((a: any): a is Article => a !== null);
+      alert("PARSED = " + fetchedArticles.length);
     }
   }
 } catch (e) {
