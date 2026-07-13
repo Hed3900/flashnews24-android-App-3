@@ -329,14 +329,14 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
           .map((entry: any, index: number) => {
             try {
     const article = parseBloggerEntry(entry, index);
-    alert(article.title);
+    
     return article;
 } catch (err) {
     console.error("ENTRY FAILED:", entry?.title?.$t, err);
     return null;
             }
           })
-          .filter(Boolean) as Article[];
+          .filter((a): a is Article => a !== null && a !== undefined);
 
         if (fetchedArticles.length > 0) {
           break;
