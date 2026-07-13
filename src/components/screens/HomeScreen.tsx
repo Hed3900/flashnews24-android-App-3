@@ -112,25 +112,23 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const breakingArticles = articles.filter(a => a.isBreaking);
 
-const regularArticles = React.useMemo(() => {
-  return articles
-    .filter(a => !a.isBreaking)
-    .filter(a => {
-      if (selectedCategory === "All") return true;
+const regularArticles = articles
+  .filter(a => !a.isBreaking)
+  .filter(a => {
+    if (selectedCategory === "All") return true;
 
-      const catLower = selectedCategory.toLowerCase();
+    const catLower = selectedCategory.toLowerCase();
 
-      return (
-        (a.category || "").toLowerCase() === catLower ||
-        a.tags?.some(tag => tag.toLowerCase().includes(catLower))
-      );
-    })
-    .sort(
-      (a, b) =>
-        new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
-        new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
+    return (
+      (a.category || "").toLowerCase() === catLower ||
+      a.tags?.some(tag => tag.toLowerCase().includes(catLower))
     );
-}, [articles, selectedCategory]);
+  })
+  .sort(
+    (a, b) =>
+      new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
+      new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
+  );
   
   const handleManualRefresh = () => {
     setIsPulling(true);
