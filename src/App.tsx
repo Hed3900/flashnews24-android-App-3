@@ -236,16 +236,6 @@ const handleRefreshNews = useCallback(() => {
             new Date(a.rawPublishedAt || a.publishedAt).getTime()
         );
         
-
-        alert("LIVE ARTICLES = " + liveArticles.length);
-
-setArticles([...liveArticles]);
-
-alert("SET ARTICLES DONE");
-
-
-
-saveNativeArticlesCache(liveArticles);
         addRetrofitLog(
           "GET",
           `${BLOGGER_JSON_FEED_URL}?category=${selectedCategory}`,
