@@ -297,7 +297,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 /**
  * Fetches articles directly or via server proxy from flashnews24.site Blogger feed.
  * Guaranteed to return valid Blogger articles without console errors or UI crashes.
- */console.log("ENTRY COUNT:", data.feed.entry.length);
+ */
   export async function fetchBloggerArticles(
   category: string = "All",
   searchQuery: string = ""
@@ -309,7 +309,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
             // 1. Backend API
 try {
-  
+  console.log("ENTRY COUNT:", data.feed.entry.length);
   const res = await fetch(
     `${BLOGGER_JSON_FEED_URL}&t=${Date.now()}`,
     {
