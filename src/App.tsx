@@ -235,7 +235,15 @@ const handleRefreshNews = useCallback(() => {
             new Date(b.rawPublishedAt || b.publishedAt).getTime() -
             new Date(a.rawPublishedAt || a.publishedAt).getTime()
         );
-        setArticles([...liveArticles]);
+        alert("LIVE ARTICLES = " + liveArticles.length);
+
+setArticles([...liveArticles]);
+
+alert("SET ARTICLES DONE");
+
+
+
+saveNativeArticlesCache(liveArticles);
         
         addRetrofitLog(
           "GET",
@@ -406,7 +414,7 @@ useEffect(() => {
 
   setSelectedArticle(article);
   setActiveScreen("detail");
-alert("AllOrigins = " + fetchedArticles.length);
+
   try {
     await AdMob.prepareInterstitial({
       adId: "ca-app-pub-3288039417600063/1445588386",
