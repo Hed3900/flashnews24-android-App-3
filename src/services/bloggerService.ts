@@ -216,7 +216,7 @@ const { primary, tags } =
     tags,
     url,
     readTimeMinutes,
-    isBreaking,
+    isBreaking: false,
     sentiment,
     isLiveBlogger: true
   };
