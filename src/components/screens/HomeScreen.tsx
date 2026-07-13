@@ -323,6 +323,7 @@ const regularArticles = articles
             </span>
             <span className="text-[10px] text-[#E1E4E8] opacity-40">{regularArticles.length} stories cached</span>
           </div>
+          false ? (
 {regularArticles.length === 0 ? (
   <div className="text-center py-12 px-4 bg-[#1A1D23] rounded-[24px] border border-dashed border-[#2D333B]">
     <Sparkles className="w-8 h-8 text-blue-500 mx-auto mb-2 opacity-50" />
