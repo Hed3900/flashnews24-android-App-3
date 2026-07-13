@@ -237,7 +237,11 @@ const handleRefreshNews = useCallback(() => {
         );
         
 
-        setArticles([...liveArticles]);
+        alert("LIVE ARTICLES = " + liveArticles.length);
+
+setArticles([...liveArticles]);
+
+alert("SET ARTICLES DONE");
 
 
 
