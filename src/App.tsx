@@ -203,30 +203,18 @@ const [articles, setArticles] = useState<Article[]>([]);
     setRetrofitLogs(prev => [newLog, ...prev]);
   }, []);
 
-const handleRefreshNews = useCallback(() => {
-  if (isRefreshing) return;
-
-  setIsRefreshing(true);
-  triggerHapticMedium();
-
-  const startTime = Date.now();
-
-  if (isOffline) {
-    setTimeout(() => {
-      setIsRefreshing(false);
-      addRetrofitLog(
-        "GET",
-        BLOGGER_JSON_FEED_URL,
-        503,
-        Date.now() - startTime,
-        "0 B"
-      );
-    }, 500);
-    return;
-  }
-
-  alert("handleRefreshNews reached");
-
+  const handleRefreshNews = useCallback(() => {
+    setIsRefreshing(true);
+    triggerHapticMedium();
+    const startTime = Date.now();
+    
+    if (isOffline) {
+      setTimeout(() => {
+        setIsRefreshing(false);
+        addRetrofitLog('GET', BLOGGER_JSON_FEED_URL, 503, Date.now() - startTime, '0 B');
+      }, 500);
+      return;
+    }
 fetchBloggerArticles('All')
       .then(liveArticles => {
         if (liveArticles && liveArticles.length > 0) {
