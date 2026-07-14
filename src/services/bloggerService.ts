@@ -325,15 +325,14 @@ const res = await fetch(url, {
 
 alert("HTTP: " + res.status);
 
-const body = await res.text();
-alert(body);
-
 if (!res.ok) continue;
+
 const data = await res.json();
-      alert("Feed: " + (data.feed ? "YES" : "NO"));
+
+alert("Feed: " + (data.feed ? "YES" : "NO"));
 alert("Contents: " + (data.contents ? "YES" : "NO"));
-      alert("Keys: " + Object.keys(data).join(","));
-console.log(data);
+alert("Keys: " + Object.keys(data).join(","));
+
 const feed =
   data?.feed ??
   data?.contents?.feed ??
