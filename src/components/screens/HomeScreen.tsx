@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Article, NewsCategory } from '../../types';
 import { Search, RotateCcw, Bookmark, Share2, Sparkles, Clock, Flame, WifiOff, ChevronRight, Zap, Menu } from 'lucide-react';
