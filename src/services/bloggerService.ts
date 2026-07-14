@@ -301,7 +301,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   export async function fetchBloggerArticles(category: string = 'All', searchQuery: string = ''): Promise<Article[]> {
   let fetchedArticles: Article[] = [];
 
-  try {
+  /*try {
     // 1. First try calling our Express backend /api/news which fetches directly from Blogger
     const proxyRes = await fetch(`/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}`);
     if (proxyRes.ok) {
@@ -313,11 +313,15 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   } catch (e) {
     console.warn('Backend proxy fetch retry needed...', e);
   }
-
+*/
   // 2. Try direct client-side fetch from Blogger JSON API endpoint
   if (fetchedArticles.length === 0) {
     try {
-      const directRes = await fetch(BLOGGER_JSON_FEED_URL);
+      alert(BLOGGER_JSON_FEED_URL);
+
+const directRes = await fetch(BLOGGER_JSON_FEED_URL);
+
+alert("Direct fetch success");
       if (directRes.ok) {
         const feedJson = await directRes.json();
         if (feedJson?.feed?.entry) {
