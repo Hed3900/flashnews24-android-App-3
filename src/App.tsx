@@ -227,77 +227,52 @@ const handleRefreshNews = useCallback(() => {
 
   alert("handleRefreshNews reached");
 
-fetchBloggerArticles("All")
-  .then(liveArticles => {
-
-    
-
-    if (liveArticles && liveArticles.length > 0) {
-
-      setArticles(liveArticles);
-
-      saveNativeArticlesCache(liveArticles);
-
-      addRetrofitLog(
-        "GET",
-        `${BLOGGER_JSON_FEED_URL}?category=all`,
-        200,
-        Date.now() - startTime,
-        "48.2 KB"
-      );
-
-    } else {
-
-      addRetrofitLog(
-        "GET",
-        `${BLOGGER_JSON_FEED_URL}?category=all`,
-        304,
-        Date.now() - startTime,
-        "12.4 KB"
-      );
-
-    }
-  })
-  .catch(err => {
-    console.error(err);
-
-    addRetrofitLog(
-      "GET",
-      BLOGGER_JSON_FEED_URL,
-      500,
-      Date.now() - startTime,
-      "0 B"
-    );
-  })
-  .finally(() => {
-    setIsRefreshing(false);
-  });
+fetchBloggerArticles('All')
+      .then(liveArticles => {
+        if (liveArticles && liveArticles.length > 0) {
+          setArticles(prev => {
+            const aiStories = prev.filter(a => a.id.startsWith('art-ai-') || a.id.startsWith('art-live-'));
+            const merged = [...aiStories, ...liveArticles];
+            const unique = Array.from(new Map(merged.map(item => [item.id, item])).values());
+            return unique;
+          });
+          addRetrofitLog('GET', `${BLOGGER_JSON_FEED_URL}?category=all`, 200, Date.now() - startTime, '48.2 KB');
+        } else {
+          addRetrofitLog('GET', `${BLOGGER_JSON_FEED_URL}?category=all`, 304, Date.now() - startTime, '12.4 KB');
+        }
+      })
+      .catch(err => {
+        addRetrofitLog('GET', BLOGGER_JSON_FEED_URL, 500, Date.now() - startTime, '0 B');
+      })
+      .finally(() => {
+        setIsRefreshing(false);
+      });
   }, [isOffline, addRetrofitLog]);
 
   useEffect(() => {
     handleRefreshNews();
     initCapacitorNativeUI();
 
-
-  const removeNetListenerPromise =
-    initCapacitorNetworkListener((connected) => {
+    const removeNetListenerPromise = initCapacitorNetworkListener((connected) => {
       setIsOffline(!connected);
     });
 
-  initCapacitorPushNotifications((title, body, articleId) => {
-    handleBroadcastNotification(title, body, "HIGH", articleId);
-  });
+    initCapacitorPushNotifications((title, body, articleId) => {
+      handleBroadcastNotification(title, body, 'HIGH', articleId);
+    });
 
-  loadNativeBookmarks().then((saved) => {
-    if (saved?.length) {
-      setBookmarkedIds(saved);
-    }
-  });
-loadNativeArticlesCache().then(cache => {
-  if (cache && cache.length > 0) {
-    setArticles(prev => prev.length === 0 ? cache : prev);
-  }
-});
+    loadNativeBookmarks().then(saved => {
+      if (saved && saved.length > 0) {
+        setBookmarkedIds(saved);
+      }
+    });
+
+    loadNativeArticlesCache().then(cached => {
+      if (cached && cached.length > 0) {
+        setArticles(cached);
+      }
+    });
+
    /* const interval = setInterval(() => {
   if (!isOffline) {
     fetchBloggerArticles("All")
