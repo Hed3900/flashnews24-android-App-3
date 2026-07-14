@@ -302,7 +302,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   category: string = "All",
   searchQuery: string = ""
 ): Promise<Article[]> {
-alert("fetchBloggerArticles started");
+
   let fetchedArticles: Article[] = [];
 
   const urls = [
@@ -316,7 +316,7 @@ alert("fetchBloggerArticles started");
   for (const url of urls) {
   try {
 
-    alert(url);
+    
 
     const response = await CapacitorHttp.request({
     url,
@@ -326,7 +326,7 @@ alert("fetchBloggerArticles started");
     }
 });
 
-alert("Status: " + response.status);
+
 
 if (response.status !== 200) {
     continue;
@@ -334,7 +334,7 @@ if (response.status !== 200) {
 
 const json = response.data;
 
-alert("Entries: " + (json.feed?.entry?.length || 0));
+
 
 const feed =
   json.feed ??
@@ -352,15 +352,14 @@ const feed =
         })
         .filter(Boolean) as Article[];
 
-    alert("Parsed: " + fetchedArticles.length);
-
+    
     if (fetchedArticles.length > 0) {
         break;
     }
       }
 
     } catch (e: any) {
-  alert(String(e));
+  
   console.error(e);
   }
   }
