@@ -309,36 +309,40 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   ];
 
   for (const url of urls) {
-    try {
-  console.log("Fetching:", url);
+  try {
+    const response = await fetch(url);
 
-  const response = await fetch(url);
-
-  console.log("Status:", response.status);
-  console.log("OK:", response.ok);
-  console.log("Content-Type:", response.headers.get("content-type"));
-
-  const text = await response.text();
-
-  console.log("Body Length:", text.length);
-  console.log("First 500 chars:", text.substring(0, 500));
-
-  const data = JSON.parse(text);
-
-  console.log("Feed Exists:", !!data.feed);
-  console.log("Entries:", data.feed?.entry?.length || 0);
-
-} catch (err) {
-  console.error("FETCH ERROR:", err);
-  throw err;
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
     }
-  if (fetchedArticles.length === 0) {
-    return [];
+
+    const data = await response.json();
+
+    const feed =
+      data?.feed ??
+      data?.contents?.feed ??
+      null;
+
+    if (feed?.entry && Array.isArray(feed.entry)) {
+      fetchedArticles = feed.entry
+        .map((entry: any, index: number) => {
+          try {
+            return parseBloggerEntry(entry, index);
+          } catch (err) {
+            console.error("ENTRY FAILED:", err);
+            return null;
+          }
+        })
+        .filter((a): a is Article => a !== null);
+
+      if (fetchedArticles.length > 0) {
+        break;
+      }
+    }
+  } catch (err) {
+    console.error("FETCH ERROR:", err);
   }
-      // Remove duplicates
-  fetchedArticles = Array.from(
-    new Map(fetchedArticles.map(a => [a.id, a])).values()
-  );
+  }
 
   // Category filter
   let filtered = fetchedArticles;
