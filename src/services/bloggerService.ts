@@ -305,29 +305,89 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
   let fetchedArticles: Article[] = [];
 
-  try {
-    const response = await fetch(
-      "https://www.flashnews24.site/feeds/posts/default?alt=json&max-results=500",
-      {
+  const urls = [
+    "https://flashnews24.site/feeds/posts/default?alt=json&max-results=500",
+    "https://www.flashnews24.site/feeds/posts/default?alt=json&max-results=500",
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(
+      "https://flashnews24.site/feeds/posts/default?alt=json&max-results=500"
+    )}`
+  ];
+
+  for (const url of urls) {
+    try {
+
+      const response = await fetch(url, {
         method: "GET",
         cache: "no-store",
+        headers: {
+          Accept: "application/json"
+        }
+      });
+
+      if (!response.ok) continue;
+
+      const json = await response.json();
+
+      const feed =
+        json.feed ??
+        json.contents?.feed ??
+        null;
+
+      if (feed?.entry && Array.isArray(feed.entry)) {
+
+        fetchedArticles = feed.entry
+          .map((entry: any, index: number) => {
+            try {
+              return parseBloggerEntry(entry, index);
+            } catch {
+              return null;
+            }
+          })
+          .filter(Boolean) as Article[];
+
+        if (fetchedArticles.length > 0) break;
       }
-    );
 
-    if (!response.ok) throw new Error("HTTP " + response.status);
-
-    const json = await response.json();
-
-    if (json.feed?.entry) {
-      fetchedArticles = json.feed.entry.map((entry: any, index: number) =>
-        parseBloggerEntry(entry, index)
-      );
+    } catch (e) {
+      console.log(e);
     }
-  } catch (e) {
-    console.error(e);
+  }
+
+  if (fetchedArticles.length === 0) {
     return OFFLINE_BLOGGER_CACHE;
   }
 
-  return fetchedArticles;
-}
+  fetchedArticles.sort(
+    (a, b) =>
+      new Date((b as any).rawPublishedAt || b.publishedAt).getTime() -
+      new Date((a as any).rawPublishedAt || a.publishedAt).getTime()
+  );
 
+  let filtered = fetchedArticles;
+
+  if (category !== "All") {
+    const cat = category.toLowerCase();
+
+    filtered = filtered.filter(a =>
+      (a.category || "").toLowerCase() === cat ||
+      (a.tags || []).some(t => t.toLowerCase().includes(cat))
+    );
+  }
+
+  if (searchQuery.trim()) {
+    const q = searchQuery.toLowerCase();
+
+    filtered = filtered.filter(a =>
+      (
+        (a.title || "") +
+        (a.summary || "") +
+        (a.content || "") +
+        (a.tags || []).join(" ")
+      )
+        .toLowerCase()
+        .includes(q)
+    );
+  }
+
+  return filtered;
+}
