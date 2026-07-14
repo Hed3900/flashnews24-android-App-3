@@ -220,19 +220,31 @@ const [articles, setArticles] = useState<Article[]>([]);
 fetchBloggerArticles('All')
       .then(liveArticles => {
         if (liveArticles && liveArticles.length > 0) {
-          const merged = [...liveArticles, ...prev];
+    setArticles(prev => {
 
-const unique = Array.from(
-  new Map(merged.map(item => [item.id, item])).values()
-);
+        const merged = [...liveArticles, ...prev];
 
-unique.sort(
-  (a, b) =>
-    new Date(b.rawPublishedAt || b.publishedAt).getTime() -
-    new Date(a.rawPublishedAt || a.publishedAt).getTime()
-);
+        const unique = Array.from(
+            new Map(merged.map(item => [item.id, item])).values()
+        );
 
-return unique;
+        unique.sort(
+            (a, b) =>
+                new Date(b.rawPublishedAt || b.publishedAt).getTime() -
+                new Date(a.rawPublishedAt || a.publishedAt).getTime()
+        );
+
+        return unique;
+    });
+
+    addRetrofitLog(
+        'GET',
+        `${BLOGGER_JSON_FEED_URL}?category=all`,
+        200,
+        Date.now() - startTime,
+        '48.2 KB'
+    );
+        }
           });
           addRetrofitLog('GET', `${BLOGGER_JSON_FEED_URL}?category=all`, 200, Date.now() - startTime, '48.2 KB');
         } else {
