@@ -1,5 +1,5 @@
 import { Article, NewsCategory } from '../types';
-
+import { CapacitorHttp } from '@capacitor/core';
 export const BLOGGER_SITE_URL = 'https://flashnews24.site';
 export const BLOGGER_JSON_FEED_URL = `${BLOGGER_SITE_URL}/feeds/posts/default?alt=json`;
 
@@ -318,17 +318,17 @@ alert("fetchBloggerArticles started");
 
     alert(url);
 
-    const response = await fetch(url, {
-      method: "GET",
-      cache: "no-store",
-      headers: {
-        Accept: "application/json"
-      }
-    });
+    const response = await CapacitorHttp.request({
+  url,
+  method: "GET",
+  headers: {
+    Accept: "application/json"
+  }
+});
 
     alert("Status: " + response.status);
 
-const json = await response.json();
+const json = response.data;
 
 alert("Entries: " + (json.feed?.entry?.length || 0));
 
