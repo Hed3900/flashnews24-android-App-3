@@ -330,6 +330,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
   return fetchedArticles;
 }
+}
   // 3. Fallback to public CORS proxy if direct fetch failed
   if (fetchedArticles.length === 0) {
     try {
