@@ -310,6 +310,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
   for (const url of urls) {
   try {
+    alert("URL:\n" + url);
     alert("Before fetch");
 
 const response = await fetch(url);
