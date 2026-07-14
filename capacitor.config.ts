@@ -1,24 +1,23 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: "com.flashnews24.app",
-  appName: "FlashNews24",
-  webDir: "dist",
+  appId: 'com.flashnews24.app',
+  appName: 'FlashNews24',
+  webDir: 'dist',
   server: {
-    androidScheme: "http",
-    cleartext: true
-  }
-};
+    androidScheme: 'https',
+    cleartext: true,
+  },
   plugins: {
     PushNotifications: {
-      presentationOptions: ["badge", "sound", "alert"],
+      presentationOptions: ['badge', 'sound', 'alert'],
     },
     SplashScreen: {
       launchShowDuration: 2000,
       launchAutoHide: true,
-      backgroundColor: "#0B0E14",
-      androidSplashResourceName: "splash",
-      androidScaleType: "CENTER_CROP",
+      backgroundColor: '#0B0E14',
+      androidSplashResourceName: 'splash',
+      androidScaleType: 'CENTER_CROP',
       showSpinner: false,
       splashFullScreen: true,
       splashImmersive: true,
