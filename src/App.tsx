@@ -273,7 +273,7 @@ fetchBloggerArticles('All')
       }
     });
 
-   /const interval = setInterval(() => {
+   const interval = setInterval(() => {
   if (!isOffline) {
     fetchBloggerArticles("All")
   .then((liveArticles) => {
