@@ -204,7 +204,9 @@ const [articles, setArticles] = useState<Article[]>([]);
   }, []);
 
   const handleRefreshNews = useCallback(() => {
-    setIsRefreshing(true);
+    if (articles.length === 0) {
+  setIsRefreshing(true);
+    }
     triggerHapticMedium();
     const startTime = Date.now();
     
@@ -215,6 +217,8 @@ const [articles, setArticles] = useState<Article[]>([]);
       }, 500);
       return;
     }
+
+
 fetchBloggerArticles('All')
       .then(liveArticles => {
         if (liveArticles && liveArticles.length > 0) {
