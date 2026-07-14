@@ -310,44 +310,28 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
   for (const url of urls) {
     try {
+  console.log("Fetching:", url);
 
+  const response = await fetch(url);
 
-const response = await fetch(url);
-  
+  console.log("Status:", response.status);
+  console.log("OK:", response.ok);
+  console.log("Content-Type:", response.headers.get("content-type"));
 
-if (!response.ok) {
-  throw new Error(`HTTP ${response.status}`);
-}
+  const text = await response.text();
 
-const data = await response.json();
+  console.log("Body Length:", text.length);
+  console.log("First 500 chars:", text.substring(0, 500));
 
-const feed =
-  data?.feed ??
-  data?.contents?.feed ??
-  null;
+  const data = JSON.parse(text);
 
-if (feed?.entry && Array.isArray(feed.entry)) {
-  fetchedArticles = feed.entry
-    .map((entry: any, index: number) => {
-      try {
-        return parseBloggerEntry(entry, index);
-      } catch (err) {
-        console.error("ENTRY FAILED:", err);
-        return null;
-      }
-    })
-    .filter((a): a is Article => a !== null);
+  console.log("Feed Exists:", !!data.feed);
+  console.log("Entries:", data.feed?.entry?.length || 0);
 
-  if (fetchedArticles.length > 0) {
-    break;
-  }
-}
-
-    } catch (e) {
-  
-  console.error(e);
+} catch (err) {
+  console.error("FETCH ERROR:", err);
+  throw err;
     }
-  }
   if (fetchedArticles.length === 0) {
     return [];
   }
