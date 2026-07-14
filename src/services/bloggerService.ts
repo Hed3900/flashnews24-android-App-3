@@ -298,10 +298,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
  * Fetches articles directly or via server proxy from flashnews24.site Blogger feed.
  * Guaranteed to return valid Blogger articles without console errors or UI crashes.
  */
-  export async function fetchBloggerArticles(
-  category: string = "All",
-  searchQuery: string = ""
-): Promise<Article[]> {
+  export async function fetchBloggerArticles(  category: string = "All",  searchQuery: string = ""): Promise<Article[]> {
 
   alert("fetchBloggerArticles START");
 
@@ -315,12 +312,14 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
   for (const url of urls) {
     try {
-      const res = await fetch(url, {
-  cache: "no-store",
-  headers: {
-    Accept: "application/json"
-  }
-});
+  alert(url);
+
+  const res = await fetch(url, {
+    cache: "no-store",
+    headers: {
+      Accept: "application/json"
+    }
+  });
 
 alert("HTTP: " + res.status);
 
