@@ -320,7 +320,8 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
       alert(BLOGGER_JSON_FEED_URL);
 
 const directRes = await fetch(BLOGGER_JSON_FEED_URL);
-
+alert("Fetch OK");
+alert("Status: " + directRes.status);
 alert("Direct fetch success");
       if (directRes.ok) {
         const feedJson = await directRes.json();
