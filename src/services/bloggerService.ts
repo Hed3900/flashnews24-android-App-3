@@ -358,7 +358,7 @@ if (feed?.entry && Array.isArray(feed.entry)) {
   alert(String(e));
   console.error(e);
     }
-
+  }
   if (fetchedArticles.length === 0) {
     return [];
   }
