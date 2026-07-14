@@ -298,44 +298,38 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
  * Fetches articles directly or via server proxy from flashnews24.site Blogger feed.
  * Guaranteed to return valid Blogger articles without console errors or UI crashes.
  */
-  export async function fetchBloggerArticles(category: string = 'All', searchQuery: string = ''): Promise<Article[]> {
+  export async function fetchBloggerArticles(
+  category: string = "All",
+  searchQuery: string = ""
+): Promise<Article[]> {
+
   let fetchedArticles: Article[] = [];
 
-  /*try {
-    // 1. First try calling our Express backend /api/news which fetches directly from Blogger
-    const proxyRes = await fetch(`/api/news?category=${encodeURIComponent(category)}&search=${encodeURIComponent(searchQuery)}`);
-    if (proxyRes.ok) {
-      const data = await proxyRes.json();
-      if (data && Array.isArray(data.articles) && data.articles.length > 0) {
-        fetchedArticles = data.articles;
+  try {
+    const response = await fetch(
+      "https://www.flashnews24.site/feeds/posts/default?alt=json&max-results=500",
+      {
+        method: "GET",
+        cache: "no-store",
       }
+    );
+
+    if (!response.ok) throw new Error("HTTP " + response.status);
+
+    const json = await response.json();
+
+    if (json.feed?.entry) {
+      fetchedArticles = json.feed.entry.map((entry: any, index: number) =>
+        parseBloggerEntry(entry, index)
+      );
     }
   } catch (e) {
-    console.warn('Backend proxy fetch retry needed...', e);
-  }
-*/
-  // 2. Try direct client-side fetch from Blogger JSON API endpoint
-  if (fetchedArticles.length === 0) {
-    try {
-      alert(BLOGGER_JSON_FEED_URL);
-
-const directRes = await fetch(BLOGGER_JSON_FEED_URL);
-alert("Fetch OK");
-alert("Status: " + directRes.status);
-alert("Direct fetch success");
-      if (directRes.ok) {
-        const feedJson = await directRes.json();
-        if (feedJson?.feed?.entry) {
-          fetchedArticles = feedJson.feed.entry.map((entry: any, index: number) => 
-            parseBloggerEntry(entry, index)
-          );
-        }
-      }
-    } catch (err) {
-      console.warn('Direct fetch fallback triggered...');
-    }
+    console.error(e);
+    return OFFLINE_BLOGGER_CACHE;
   }
 
+  return fetchedArticles;
+}
   // 3. Fallback to public CORS proxy if direct fetch failed
   if (fetchedArticles.length === 0) {
     try {
