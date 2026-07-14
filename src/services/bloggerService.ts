@@ -325,6 +325,8 @@ alert("HTTP: " + res.status);
 if (!res.ok) continue;
 
 const data = await res.json();
+      alert("Feed: " + (data.feed ? "YES" : "NO"));
+alert("Contents: " + (data.contents ? "YES" : "NO"));
       alert("Keys: " + Object.keys(data).join(","));
 console.log(data);
 const feed =
