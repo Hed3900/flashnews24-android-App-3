@@ -322,25 +322,28 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
       if (!res.ok) continue;
       const data = await res.json();
-      if (data?.feed?.entry && Array.isArray(data.feed.entry)) {
-        
 
-fetchedArticles = data.feed.entry
-  .map((entry: any, index: number) => {
-    try {
-      const article = parseBloggerEntry(entry, index);
-      return article;
-    } catch (err) {
-  alert("FAILED: " + (entry?.title?.$t || "Unknown"));
-  console.error("ENTRY FAILED:", entry?.title?.$t, err);
-  return null;
-    }
-  })
-  .filter((a): a is Article => a != null);
-        if (fetchedArticles.length > 0) {
-          break;
-        }
+const feed =
+  data?.feed ??
+  data?.contents?.feed ??
+  null;
+
+if (feed?.entry && Array.isArray(feed.entry)) {
+  fetchedArticles = feed.entry
+    .map((entry: any, index: number) => {
+      try {
+        return parseBloggerEntry(entry, index);
+      } catch (err) {
+        console.error("ENTRY FAILED:", err);
+        return null;
       }
+    })
+    .filter((a): a is Article => a !== null);
+
+  if (fetchedArticles.length > 0) {
+    break;
+  }
+}
 
     } catch (e) {
       console.warn(e);
