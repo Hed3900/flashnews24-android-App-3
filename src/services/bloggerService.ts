@@ -310,7 +310,12 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
   for (const url of urls) {
   try {
-    const response = await fetch(url);
+    alert("Before fetch");
+
+const response = await fetch(url);
+
+alert("After fetch");
+alert("Status: " + response.status);
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
@@ -340,8 +345,11 @@ alert("Entries: " + (data.feed?.entry?.length || 0));
         break;
       }
     }
-  } catch (err) {
-    console.error("FETCH ERROR:", err);
+ } catch (err: any) {
+  alert("FETCH ERROR");
+  alert(String(err));
+  alert(JSON.stringify(err));
+  console.error(err);
   }
   }
 
