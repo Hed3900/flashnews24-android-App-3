@@ -303,6 +303,8 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   searchQuery: string = ""
 ): Promise<Article[]> {
 
+  alert("fetchBloggerArticles START");
+
   let fetchedArticles: Article[] = [];
 
   const urls = [
@@ -351,8 +353,9 @@ if (feed?.entry && Array.isArray(feed.entry)) {
   }
 }
 
-    } catch (e) {
-      console.warn(e);
+    } catch (e: any) {
+  alert("FETCH ERROR: " + (e?.message || String(e)));
+  console.warn(e);
     }
   }
 
