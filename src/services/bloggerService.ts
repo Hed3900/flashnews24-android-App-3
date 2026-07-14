@@ -302,7 +302,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   category: string = "All",
   searchQuery: string = ""
 ): Promise<Article[]> {
-
+alert("fetchBloggerArticles started");
   let fetchedArticles: Article[] = [];
 
   const urls = [
