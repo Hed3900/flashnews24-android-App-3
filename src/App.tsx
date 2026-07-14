@@ -273,7 +273,7 @@ fetchBloggerArticles('All')
       }
     });
 
-   /* const interval = setInterval(() => {
+   /const interval = setInterval(() => {
   if (!isOffline) {
     fetchBloggerArticles("All")
   .then((liveArticles) => {
@@ -321,12 +321,12 @@ fetchBloggerArticles('All')
       })
       .catch(console.error);
   }
-}, 600000);*/
+}, 600000);
 
-/*return () => {
+return () => {
   clearInterval(interval);
   removeNetListenerPromise.then((remove) => remove());
-};*/
+};
 }, [handleRefreshNews, isOffline, selectedCategory]);
 
 useEffect(() => {
