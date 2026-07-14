@@ -314,21 +314,22 @@ alert("fetchBloggerArticles started");
   ];
 
   for (const url of urls) {
-    try {
+  try {
 
-      const response = await fetch(url, {
-  method: "GET",
-  cache: "no-store",
-  headers: {
-    Accept: "application/json"
-  }
-});
+    alert(url);
 
-alert("Status: " + response.status);
+    const response = await fetch(url, {
+      method: "GET",
+      cache: "no-store",
+      headers: {
+        Accept: "application/json"
+      }
+    });
 
+    alert("Status: " + response.status);
 
-const text = await response.text();
-alert(text.substring(0, 300));
+    const text = await response.text();
+    alert(text.substring(0, 300));
 
 
 if (!response.ok) continue;
