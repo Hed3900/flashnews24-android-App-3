@@ -330,49 +330,4 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
   return fetchedArticles;
 }
-}
-  // 3. Fallback to public CORS proxy if direct fetch failed
-  if (fetchedArticles.length === 0) {
-    try {
-      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(BLOGGER_JSON_FEED_URL)}`;
-      const proxyRes = await fetch(proxyUrl);
-      if (proxyRes.ok) {
-        const feedJson = await proxyRes.json();
-        if (feedJson?.feed?.entry) {
-          fetchedArticles = feedJson.feed.entry.map((entry: any, index: number) => 
-            parseBloggerEntry(entry, index)
-          );
-        }
-      }
-    } catch (proxyErr) {
-      console.warn('All live network proxies unavailable, serving offline Blogger cache.');
-    }
-  }
 
-  // 4. Guaranteed offline Blogger cache fallback (Never throw or log console.error)
-  if (fetchedArticles.length === 0) {
-    fetchedArticles = [...OFFLINE_BLOGGER_CACHE];
-  }
-
-  // Apply filtering if needed
-  let filtered = fetchedArticles;
-  if (category && category !== 'All') {
-    const catLower = category.toLowerCase();
-    filtered = filtered.filter(a => 
-      (typeof a.category === 'string' && a.category.toLowerCase() === catLower) ||
-      (a.tags && a.tags.some(tag => tag.includes(catLower)))
-    );
-  }
-
-  if (searchQuery && searchQuery.trim() !== '') {
-    const q = searchQuery.toLowerCase().trim();
-    filtered = filtered.filter(a => 
-      a.title.toLowerCase().includes(q) || 
-      a.summary.toLowerCase().includes(q) || 
-      a.content.toLowerCase().includes(q) ||
-      (a.tags && a.tags.some(t => t.includes(q)))
-    );
-  }
-
-  return filtered.length > 0 ? filtered : OFFLINE_BLOGGER_CACHE;
-                               }
