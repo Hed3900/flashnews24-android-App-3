@@ -461,7 +461,7 @@ const handleShareApp = async () => {
   const handleGenerateAiBreakingArticle = async (topic: string) => {
     setIsGeneratingAiNews(true);
     const startTime = Date.now();
-    alert("Final Return = " + filtered.length);
+    
     try {
       const res = await fetch(
   'https://api.flashnews24.site/api/news/ai-breaking',
