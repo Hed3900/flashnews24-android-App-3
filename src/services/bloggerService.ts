@@ -332,16 +332,12 @@ const json = await response.json();
 
 alert("Entries: " + (json.feed?.entry?.length || 0));
 
-
 if (!response.ok) continue;
 
-const json = await response.json();
-
-alert("Entries: " + (json.feed?.entry?.length || 0));
-      const feed =
-        json.feed ??
-        json.contents?.feed ??
-        null;
+const feed =
+  json.feed ??
+  json.contents?.feed ??
+  null;
 
       if (feed?.entry && Array.isArray(feed.entry)) {
 
