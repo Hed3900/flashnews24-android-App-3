@@ -315,12 +315,13 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   alert(url);
 
   const res = await fetch(url, {
-    cache: "no-store",
-    headers: {
-      Accept: "application/json"
-    }
-  });
-
+  method: "GET",
+  mode: "cors",
+  cache: "no-store",
+  headers: {
+    Accept: "application/json"
+  }
+});
 alert("HTTP: " + res.status);
 
 if (!res.ok) continue;
@@ -352,11 +353,11 @@ if (feed?.entry && Array.isArray(feed.entry)) {
   }
 }
 
-    } catch (e: any) {
-  alert("FETCH ERROR: " + (e?.message || String(e)));
-  console.warn(e);
+    } catch (e) {
+  alert(JSON.stringify(e));
+  alert(String(e));
+  console.error(e);
     }
-  }
 
   if (fetchedArticles.length === 0) {
     return [];
