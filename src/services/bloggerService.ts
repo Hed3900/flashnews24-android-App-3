@@ -319,20 +319,22 @@ alert("fetchBloggerArticles started");
     alert(url);
 
     const response = await CapacitorHttp.request({
-  url,
-  method: "GET",
-  headers: {
-    Accept: "application/json"
-  }
+    url,
+    method: "GET",
+    headers: {
+        Accept: "application/json"
+    }
 });
 
-    alert("Status: " + response.status);
+alert("Status: " + response.status);
+
+if (response.status !== 200) {
+    continue;
+}
 
 const json = response.data;
 
 alert("Entries: " + (json.feed?.entry?.length || 0));
-
-if (!response.ok) continue;
 
 const feed =
   json.feed ??
@@ -340,18 +342,21 @@ const feed =
   null;
 
       if (feed?.entry && Array.isArray(feed.entry)) {
-
-        fetchedArticles = feed.entry
-          .map((entry: any, index: number) => {
+    fetchedArticles = feed.entry
+        .map((entry: any, index: number) => {
             try {
-              return parseBloggerEntry(entry, index);
+                return parseBloggerEntry(entry, index);
             } catch {
-              return null;
+                return null;
             }
-          })
-          .filter(Boolean) as Article[];
+        })
+        .filter(Boolean) as Article[];
 
-        if (fetchedArticles.length > 0) break;
+    alert("Parsed: " + fetchedArticles.length);
+
+    if (fetchedArticles.length > 0) {
+        break;
+    }
       }
 
     } catch (e: any) {
