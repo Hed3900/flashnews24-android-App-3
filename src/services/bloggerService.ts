@@ -326,6 +326,11 @@ alert("fetchBloggerArticles started");
 
 alert("Status: " + response.status);
 
+
+const text = await response.text();
+alert(text.substring(0, 300));
+
+
 if (!response.ok) continue;
 
 const json = await response.json();
