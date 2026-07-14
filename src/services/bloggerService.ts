@@ -300,8 +300,6 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
  */
   export async function fetchBloggerArticles(  category: string = "All",  searchQuery: string = ""): Promise<Article[]> {
 
-  alert("fetchBloggerArticles START");
-
   let fetchedArticles: Article[] = [];
 
   const urls = [
@@ -312,10 +310,9 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
   for (const url of urls) {
     try {
-  alert(url);
-alert("Fetching: " + url);
 
-const response = await fetch(BLOGGER_JSON_FEED_URL, {
+
+const response = await fetch(url, {
   method: "GET",
   mode: "cors",
   cache: "no-store",
@@ -354,8 +351,7 @@ if (feed?.entry && Array.isArray(feed.entry)) {
 }
 
     } catch (e) {
-  alert(JSON.stringify(e));
-  alert(String(e));
+  
   console.error(e);
     }
   }
