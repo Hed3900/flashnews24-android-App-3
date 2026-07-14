@@ -317,7 +317,8 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
     }
 
     const data = await response.json();
-
+alert("Feed: " + !!data.feed);
+alert("Entries: " + (data.feed?.entry?.length || 0));
     const feed =
       data?.feed ??
       data?.contents?.feed ??
