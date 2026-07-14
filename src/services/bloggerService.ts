@@ -322,7 +322,7 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
 
       if (!res.ok) continue;
       const data = await res.json();
-
+console.log(data);
 const feed =
   data?.feed ??
   data?.contents?.feed ??
@@ -351,7 +351,7 @@ if (feed?.entry && Array.isArray(feed.entry)) {
   }
 
   if (fetchedArticles.length === 0) {
-    fetchedArticles = [...OFFLINE_BLOGGER_CACHE];
+    return [];
   }
       // Remove duplicates
   fetchedArticles = Array.from(
