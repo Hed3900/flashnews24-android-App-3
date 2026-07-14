@@ -328,8 +328,9 @@ alert("fetchBloggerArticles started");
 
     alert("Status: " + response.status);
 
-    const text = await response.text();
-    alert(text.substring(0, 300));
+const json = await response.json();
+
+alert("Entries: " + (json.feed?.entry?.length || 0));
 
 
 if (!response.ok) continue;
@@ -357,9 +358,10 @@ alert("Entries: " + (json.feed?.entry?.length || 0));
         if (fetchedArticles.length > 0) break;
       }
 
-    } catch (e) {
-      console.log(e);
-    }
+    } catch (e: any) {
+  alert(String(e));
+  console.error(e);
+  }
   }
 
   if (fetchedArticles.length === 0) {
