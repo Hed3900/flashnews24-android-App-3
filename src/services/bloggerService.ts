@@ -312,15 +312,8 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
     try {
 
 
-const response = await fetch(url, {
-  method: "GET",
-  mode: "cors",
-  cache: "no-store",
-  credentials: "omit",
-  headers: {
-    "Accept": "application/json"
-  }
-});
+const response = await fetch(url);
+  
 
 if (!response.ok) {
   throw new Error(`HTTP ${response.status}`);
