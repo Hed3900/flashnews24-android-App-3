@@ -195,7 +195,11 @@ const { primary, tags } =
   const sentiment = determineSentiment(title, content);
 
   // Make first 2 articles or breaking-tagged articles show as breaking news
-  const isBreaking = false;
+  const isBreaking =
+  index < 5 ||
+  /breaking|urgent|alert|earthquake|fire|explosion|crash|storm|war/i.test(
+    `${title} ${summary}`
+  );
 
   // Unique ID from Blogger post ID or fallback
   const rawId = entry.id?.$t || `blogger-${index}-${Date.now()}`;
