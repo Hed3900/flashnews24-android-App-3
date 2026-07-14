@@ -315,23 +315,21 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   alert(url);
 alert("Fetching: " + url);
 
-const res = await fetch(url, {
+const response = await fetch(BLOGGER_JSON_FEED_URL, {
   method: "GET",
+  mode: "cors",
   cache: "no-store",
+  credentials: "omit",
   headers: {
-    Accept: "application/json"
+    "Accept": "application/json"
   }
 });
 
-alert("HTTP: " + res.status);
+if (!response.ok) {
+  throw new Error(`HTTP ${response.status}`);
+}
 
-if (!res.ok) continue;
-
-const data = await res.json();
-
-alert("Feed: " + (data.feed ? "YES" : "NO"));
-alert("Contents: " + (data.contents ? "YES" : "NO"));
-alert("Keys: " + Object.keys(data).join(","));
+const data = await response.json();
 
 const feed =
   data?.feed ??
