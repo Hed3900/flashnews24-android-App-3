@@ -317,17 +317,20 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
     try {
 
       const response = await fetch(url, {
-        method: "GET",
-        cache: "no-store",
-        headers: {
-          Accept: "application/json"
-        }
-      });
+  method: "GET",
+  cache: "no-store",
+  headers: {
+    Accept: "application/json"
+  }
+});
 
-      if (!response.ok) continue;
+alert("Status: " + response.status);
 
-      const json = await response.json();
+if (!response.ok) continue;
 
+const json = await response.json();
+
+alert("Entries: " + (json.feed?.entry?.length || 0));
       const feed =
         json.feed ??
         json.contents?.feed ??
