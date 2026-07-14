@@ -204,9 +204,7 @@ const [articles, setArticles] = useState<Article[]>([]);
   }, []);
 
   const handleRefreshNews = useCallback(() => {
-    if (articles.length === 0) {
-  setIsRefreshing(true);
-    }
+    setIsRefreshing(true);
     triggerHapticMedium();
     const startTime = Date.now();
     
@@ -222,11 +220,19 @@ const [articles, setArticles] = useState<Article[]>([]);
 fetchBloggerArticles('All')
       .then(liveArticles => {
         if (liveArticles && liveArticles.length > 0) {
-          setArticles(prev => {
-            const aiStories = prev.filter(a => a.id.startsWith('art-ai-') || a.id.startsWith('art-live-'));
-            const merged = [...aiStories, ...liveArticles];
-            const unique = Array.from(new Map(merged.map(item => [item.id, item])).values());
-            return unique;
+          const merged = [...liveArticles, ...prev];
+
+const unique = Array.from(
+  new Map(merged.map(item => [item.id, item])).values()
+);
+
+unique.sort(
+  (a, b) =>
+    new Date(b.rawPublishedAt || b.publishedAt).getTime() -
+    new Date(a.rawPublishedAt || a.publishedAt).getTime()
+);
+
+return unique;
           });
           addRetrofitLog('GET', `${BLOGGER_JSON_FEED_URL}?category=all`, 200, Date.now() - startTime, '48.2 KB');
         } else {
