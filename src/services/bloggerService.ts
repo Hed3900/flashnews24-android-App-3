@@ -314,7 +314,11 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
     try {
   alert(url);
 
-  const res = await fetch(url, {
+fetch("https://www.google.com")
+  .then(r => alert("Google OK: " + r.status))
+  .catch(e => alert("Google Error: " + e));
+
+const res = await fetch(url, {
   method: "GET",
   mode: "cors",
   cache: "no-store",
