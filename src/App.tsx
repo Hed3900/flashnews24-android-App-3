@@ -225,7 +225,9 @@ const handleRefreshNews = useCallback(() => {
     return;
   }
 
-  fetchBloggerArticles("All")
+  alert("handleRefreshNews reached");
+
+fetchBloggerArticles("All")
   .then(liveArticles => {
 
     
