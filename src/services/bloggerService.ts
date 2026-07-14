@@ -314,14 +314,18 @@ const OFFLINE_BLOGGER_CACHE: Article[] = [
   for (const url of urls) {
     try {
       const res = await fetch(url, {
-        cache: "no-store",
-        headers: {
-          Accept: "application/json"
-        }
-      });
+  cache: "no-store",
+  headers: {
+    Accept: "application/json"
+  }
+});
 
-      if (!res.ok) continue;
-      const data = await res.json();
+alert("HTTP: " + res.status);
+
+if (!res.ok) continue;
+
+const data = await res.json();
+      alert("Keys: " + Object.keys(data).join(","));
 console.log(data);
 const feed =
   data?.feed ??
