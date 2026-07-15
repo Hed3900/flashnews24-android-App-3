@@ -269,7 +269,7 @@ function parseBloggerEntryServer(entry: any, index: number): any {
 app.get('/api/news', async (req, res) => {
   const { category, search } = req.query;
   let articles: any[] = [];
-  let sourceType = 'UNKNOWN';
+  let sourceType = 'FlashNews24 Team';
   let error: string | null = null;
 
   try {
