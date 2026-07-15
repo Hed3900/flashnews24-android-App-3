@@ -144,10 +144,12 @@ const regularArticles = articles
             <Flame className="w-5 h-5 fill-current" />
           </div>
           <div>
-            <h1 className="text-base font-bold tracking-tight flex items-center gap-1">
-              FlashNews<span className="text-blue-500">24</span>
-            </h1>
-            <p className="text-[9px] text-[#E1E4E8] opacity-60 font-medium">Blogger Live Feed • flashnews24.site</p>
+            <h1 className="text-base font-bold tracking-tight flex items-center gap-1 text-white">
+  FlashNews<span className="text-blue-500">24</span>
+</h1>
+            <p className="text-[9px] text-[#E1E4E8] opacity-60 font-medium">
+  Live Updates • flashnews24.site
+</p>
           </div>
         </div>
 
