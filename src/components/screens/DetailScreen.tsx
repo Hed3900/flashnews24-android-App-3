@@ -185,7 +185,7 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
           </div>
           <div className="text-right">
             <span className="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-              Blogger API • Verified
+              ✔ Verified
             </span>
           </div>
         </div>
