@@ -279,10 +279,21 @@ useEffect(() => {
       setIsOffline(!connected);
     });
 
-    initCapacitorPushNotifications((title, body, articleId) => {
-      handleBroadcastNotification(title, body, 'HIGH', articleId);
-    });
+    initCapacitorPushNotifications((title, body, articleId, link) => {
+  handleBroadcastNotification(title, body, "HIGH", articleId);
 
+  if (link) {
+    const article = articles.find(
+      (a) =>
+        a.link === link ||
+        a.id === articleId
+    );
+
+    if (article) {
+      handleSelectArticle(article);
+    }
+  }
+});
     loadNativeBookmarks().then(saved => {
       if (saved && saved.length > 0) {
         setBookmarkedIds(saved);
