@@ -99,7 +99,7 @@ export const initCapacitorPushNotifications = async (
   body: string,
   articleId?: string,
   link?: string
-) => void
+) => void,
   if (!isNativeCapacitor() || Capacitor.getPlatform() !== 'android') return;
 
   try {
