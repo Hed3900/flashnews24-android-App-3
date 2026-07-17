@@ -755,5 +755,3 @@ if (liveArticles && liveArticles.length > 0) {
     </div>
   );
 }
-
-
