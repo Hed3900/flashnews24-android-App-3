@@ -95,13 +95,13 @@ export const initCapacitorNetworkListener = async (
  */
 export const initCapacitorPushNotifications = async (
   onPushReceived: (
-  title: string,
-  body: string,
-  articleId?: string,
-  link?: string
-) => void,
-  if (!isNativeCapacitor() || Capacitor.getPlatform() !== 'android') return;
-
+    title: string,
+    body: string,
+    articleId?: string,
+    link?: string
+  ) => void
+) => {
+  if (!isNativeCapacitor() || Capacitor.getPlatform() !== "android") return;
   try {
     let permStatus = await PushNotifications.checkPermissions();
     if (permStatus.receive === 'prompt') {
