@@ -94,8 +94,12 @@ export const initCapacitorNetworkListener = async (
  * Native Android FCM Push Notifications via Capacitor
  */
 export const initCapacitorPushNotifications = async (
-  onPushReceived: (title: string, body: string, articleId?: string) => void
-) => {
+  onPushReceived: (
+  title: string,
+  body: string,
+  articleId?: string,
+  link?: string
+) => void
   if (!isNativeCapacitor() || Capacitor.getPlatform() !== 'android') return;
 
   try {
@@ -115,20 +119,22 @@ export const initCapacitorPushNotifications = async (
 
     await PushNotifications.addListener('pushNotificationReceived', (notification) => {
       onPushReceived(
-        notification.title || '🚨 Native FlashNews Alert',
-        notification.body || 'New article available in feed.',
-        notification.data?.articleId
-      );
+  notification.title || "📢 Native FlashNews Alert",
+  notification.body || "New article available.",
+  notification.data?.articleId,
+  notification.data?.link
+);
       triggerHapticSuccess();
     });
 
     await PushNotifications.addListener('pushNotificationActionPerformed', (action) => {
       const notification = action.notification;
       onPushReceived(
-        notification.title || '🚨 Native FlashNews Alert',
-        notification.body || 'Opened from native notification tray.',
-        notification.data?.articleId
-      );
+  notification.title || "📢 Native FlashNews Alert",
+  notification.body || "New article available.",
+  notification.data?.articleId,
+  notification.data?.link
+);
     });
   } catch (err) {
     console.warn('Capacitor Push init note:', err);
