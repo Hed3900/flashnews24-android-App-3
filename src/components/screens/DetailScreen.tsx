@@ -211,16 +211,12 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
             {article.summary}
           </p>
 
-          {article.content ? (
-            article.content.split(/\n\s*\n/).map((para, idx) => (
-              <p key={idx} className="leading-relaxed opacity-90">
-                {para}
-              </p>
-            ))
-          ) : (
-            <p className="leading-relaxed opacity-90">{article.summary}</p>
-          )}
-
+          <div
+  className="prose prose-invert max-w-none"
+  dangerouslySetInnerHTML={{
+    __html: article.content || article.summary,
+  }}
+/>
           {/* ===== Footer ===== */}
 <div className="mt-10 border-t border-gray-800 pt-6">
 
