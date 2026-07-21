@@ -69,7 +69,22 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
   md: 'text-sm leading-relaxed',
   lg: 'text-base leading-relaxed font-medium'
 };
+useEffect(() => {
+  // X (Twitter)
+  if ((window as any).twttr?.widgets) {
+    (window as any).twttr.widgets.load();
+  }
 
+  // Facebook
+  if ((window as any).FB?.XFBML) {
+    (window as any).FB.XFBML.parse();
+  }
+
+  // Instagram
+  if ((window as any).instgrm?.Embeds) {
+    (window as any).instgrm.Embeds.process();
+  }
+}, [article.content]);
 const articleHtml = (article.content || article.summary).replace(
   /<img[^>]*>/i,
   ""
