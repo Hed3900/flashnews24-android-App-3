@@ -65,3 +65,22 @@
   margin-top:0;
   margin-bottom:24px;
 }
+.article-content h2,
+.article-content h3{
+  position:relative;
+  padding-left:16px;
+  margin:28px 0 16px;
+  font-weight:700;
+}
+
+.article-content h2::before,
+.article-content h3::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:2px;
+  width:4px;
+  height:90%;
+  background:#ef4444;
+  border-radius:8px;
+}
