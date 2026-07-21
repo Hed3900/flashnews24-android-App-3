@@ -213,11 +213,17 @@ return (
               {article.author ? article.author.charAt(0) : 'E'}
             </div>
             <div>
+              const authorName =
+  article.author?.trim() &&
+  article.author.trim().toLowerCase() !== "unknown"
+    ? article.author.trim()
+    : "FlashNews24 News Desk";
               <h4 className="font-bold text-white">
- {article.author?.trim() || "FlashNews24 Team"}
+  {authorName}
 </h4>
-              <p className="text-[10px] text-[#E1E4E8] opacity-60">
-  {(article.sourceName?.trim() || "FlashNews24 Team")}
+
+<p className="text-[10px] text-[#E1E4E8] opacity-60">
+  {article.sourceName?.trim() || "FlashNews24.site"} • {article.publishedAt}
 </p>
             </div>
           </div>
