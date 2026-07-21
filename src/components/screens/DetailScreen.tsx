@@ -70,30 +70,33 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
   lg: 'text-base leading-relaxed font-medium'
 };
 const articleHtml = (article.content || article.summary)
-  // X / Twitter
-  .replace(
-    /https?:\/\/(?:x\.com|twitter\.com)\/[^\s<"]+/gi,
-    (url) =>
-      `<blockquote class="twitter-tweet"><a href="${url}"></a></blockquote>`
-  )
-
-  // Facebook
-  .replace(
-    /https?:\/\/(?:www\.)?facebook\.com\/[^\s<"]+/gi,
-    (url) =>
-      `<div class="fb-post" data-href="${url}"></div>`
-  )
-
-  // Instagram
-  .replace(
-    /https?:\/\/(?:www\.)?instagram\.com\/(?:p|reel)\/[^\s<"]+/gi,
-    (url) =>
-      `<blockquote class="instagram-media"><a href="${url}"></a></blockquote>`
-  )
-
-  // Remove duplicate first image
   .replace(/<img[^>]*>/i, "");
+  useEffect(() => {
+  const loadTwitter = () => {
+    if ((window as any).twttr?.widgets) {
+      (window as any).twttr.widgets.load();
+      return;
+    }
 
+    const existing = document.querySelector(
+      'script[src="https://platform.twitter.com/widgets.js"]'
+    );
+
+    if (!existing) {
+      const script = document.createElement("script");
+      script.src = "https://platform.twitter.com/widgets.js";
+      script.async = true;
+
+      script.onload = () => {
+        (window as any).twttr?.widgets?.load();
+      };
+
+      document.body.appendChild(script);
+    }
+  };
+
+  loadTwitter();
+}, [articleHtml]);
 return (
   <div className="flex flex-col h-full bg-inherit animate-in fade-in duration-200">
     {/* Top App Bar */}
