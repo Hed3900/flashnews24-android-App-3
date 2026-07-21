@@ -57,8 +57,11 @@ function cleanBloggerHtmlToParagraphs(html: string): { summary: string; content:
   const firstPara = text.split('\n\n')[0] || text;
   const summary = firstPara.length > 200 ? firstPara.slice(0, 197) + '...' : firstPara;
 
-  return { summary, content: text, readTimeMinutes };
-}
+  return {
+  summary,
+  content: html,
+  readTimeMinutes
+};
 
 /**
  * Extracts high-resolution featured image from Blogger entry thumbnail or inline HTML images.
