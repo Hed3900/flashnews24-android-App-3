@@ -70,7 +70,14 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
   lg: 'text-base leading-relaxed font-medium'
 };
 const articleHtml = (article.content || article.summary)
-  .replace(/<img[^>]*>/i, "");
+  // Remove duplicate hero image
+  .replace(/<img[^>]*>/i, "")
+
+  // Remove empty paragraphs/divs at the beginning
+  .replace(/^(?:\s|<br\s*\/?>|&nbsp;|<p>\s*<\/p>|<div>\s*<\/div>)+/i, "")
+
+  // Remove leading line breaks
+  .replace(/^(<br\s*\/?>)+/i, "");
   useEffect(() => {
   const loadTwitter = () => {
     if ((window as any).twttr?.widgets) {
