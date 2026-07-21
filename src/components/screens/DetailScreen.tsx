@@ -248,11 +248,14 @@ return (
           </span>
         </div>
         {/* Main Article Body */}
-        <div className={`space-y-4 text-[#E1E4E8] ${fontClasses[fontSize]} pt-1`}>
-<div
-  className="article-content text-[#E1E4E8]"
-  dangerouslySetInnerHTML={{ __html: articleHtml }}
-/>
+        <div className="flex items-start gap-3 pt-2">
+  <div className="w-1 rounded-full bg-gradient-to-b from-red-500 to-orange-500 self-stretch"></div>
+
+  <div
+    className="article-content flex-1 text-[#E1E4E8]"
+    dangerouslySetInnerHTML={{ __html: articleHtml }}
+  />
+</div>
           {/* ===== Footer ===== */}
 <div className="mt-10 border-t border-gray-800 pt-6">
 
