@@ -248,13 +248,15 @@ return (
           </span>
         </div>
         {/* Main Article Body */}
-        <div className="flex items-start gap-3 pt-2">
-  <div className="w-1.5 rounded-full bg-blue-500 self-stretch"></div>
+<div className={`space-y-4 text-[#E1E4E8] ${fontClasses[fontSize]} pt-1`}>
+  <div className="flex items-start gap-3">
+    <div className="w-1 rounded-full bg-red-500 self-stretch"></div>
 
-  <div
-    className="article-content flex-1 text-[#E1E4E8]"
-    dangerouslySetInnerHTML={{ __html: articleHtml }}
-  />
+    <div
+      className="article-content flex-1 text-[#E1E4E8]"
+      dangerouslySetInnerHTML={{ __html: articleHtml }}
+    />
+  </div>
 </div>
           {/* ===== Footer ===== */}
 <div className="mt-10 border-t border-gray-800 pt-6">
