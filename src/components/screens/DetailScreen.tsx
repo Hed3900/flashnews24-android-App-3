@@ -214,10 +214,10 @@ return (
             </div>
             <div>
               <h4 className="font-bold text-white">
-  {article.author?.trim() || "News Desk"}
+ {article.author?.trim() || "FlashNews24 Team"}
 </h4>
               <p className="text-[10px] text-[#E1E4E8] opacity-60">
-  {article.sourceName?.trim() || "News Desk"} • {article.publishedAt}
+  {(article.sourceName?.trim() || "FlashNews24 Team")}
 </p>
             </div>
           </div>
