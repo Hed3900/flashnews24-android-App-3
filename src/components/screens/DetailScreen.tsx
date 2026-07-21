@@ -211,10 +211,15 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
             {article.summary}
           </p>
 
-          <div
+          const articleHtml = (article.content || article.summary).replace(
+  /<img[^>]*>/i,
+  ""
+);
+
+<div
   className="prose prose-invert max-w-none"
   dangerouslySetInnerHTML={{
-    __html: article.content || article.summary,
+    __html: articleHtml,
   }}
 />
           {/* ===== Footer ===== */}
