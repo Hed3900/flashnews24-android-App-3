@@ -65,12 +65,17 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
   }, [isPlayingAudio]);
 
   const fontClasses = {
-    sm: 'text-xs leading-relaxed',
-    md: 'text-sm leading-relaxed',
-    lg: 'text-base leading-relaxed font-medium'
-  };
+  sm: 'text-xs leading-relaxed',
+  md: 'text-sm leading-relaxed',
+  lg: 'text-base leading-relaxed font-medium'
+};
 
-  return (
+const articleHtml = (article.content || article.summary).replace(
+  /<img[^>]*>/i,
+  ""
+);
+
+return (
   <div className="flex flex-col h-full bg-inherit animate-in fade-in duration-200">
     {/* Top App Bar */}
     <div className="px-3 py-2.5 flex items-center justify-between border-b border-[#2D333B] sticky top-0 bg-inherit z-30">
@@ -210,12 +215,6 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
           <p className="font-bold text-white border-l-4 border-blue-500 pl-3 py-0.5 italic">
             {article.summary}
           </p>
-
-          const articleHtml = (article.content || article.summary).replace(
-  /<img[^>]*>/i,
-  ""
-);
-          
 <div
   className="prose prose-invert max-w-none"
   dangerouslySetInnerHTML={{
