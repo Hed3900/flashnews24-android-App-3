@@ -249,7 +249,7 @@ return (
         </div>
         {/* Main Article Body */}
         <div className="flex items-start gap-3 pt-2">
-  <div className="w-1 rounded-full bg-gradient-to-b from-red-500 to-orange-500 self-stretch"></div>
+  <div className="w-1.5 rounded-full bg-blue-500 self-stretch"></div>
 
   <div
     className="article-content flex-1 text-[#E1E4E8]"
