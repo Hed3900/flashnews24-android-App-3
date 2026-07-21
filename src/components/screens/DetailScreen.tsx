@@ -240,9 +240,6 @@ return (
             Photo courtesy of {article.sourceName}
           </span>
         </div>
-
-        
-
         {/* Main Article Body */}
         <div className={`space-y-4 text-[#E1E4E8] ${fontClasses[fontSize]} pt-1`}>
 <div
