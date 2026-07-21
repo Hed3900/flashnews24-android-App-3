@@ -216,10 +216,8 @@ return (
             {article.summary}
           </p>
 <div
-  className="prose prose-invert max-w-none"
-  dangerouslySetInnerHTML={{
-    __html: articleHtml,
-  }}
+  className="article-content text-[#E1E4E8]"
+  dangerouslySetInnerHTML={{ __html: articleHtml }}
 />
           {/* ===== Footer ===== */}
 <div className="mt-10 border-t border-gray-800 pt-6">
