@@ -215,6 +215,7 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
   /<img[^>]*>/i,
   ""
 );
+          
 <div
   className="prose prose-invert max-w-none"
   dangerouslySetInnerHTML={{
