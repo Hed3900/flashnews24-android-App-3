@@ -212,9 +212,6 @@ return (
 
         {/* Main Article Body */}
         <div className={`space-y-4 text-[#E1E4E8] ${fontClasses[fontSize]} pt-1`}>
-          <p className="font-bold text-white border-l-4 border-blue-500 pl-3 py-0.5 italic">
-            {article.summary}
-          </p>
 <div
   className="article-content text-[#E1E4E8]"
   dangerouslySetInnerHTML={{ __html: articleHtml }}
