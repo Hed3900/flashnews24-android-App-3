@@ -213,8 +213,12 @@ return (
               {article.author ? article.author.charAt(0) : 'E'}
             </div>
             <div>
-              <h4 className="text-xs font-bold text-white">{article.author}</h4>
-              <p className="text-[10px] text-[#E1E4E8] opacity-60">{article.sourceName} • {article.publishedAt}</p>
+              <h4 className="font-bold text-white">
+  {article.author?.trim() || "News Desk"}
+</h4>
+              <p className="text-[10px] text-[#E1E4E8] opacity-60">
+  {article.sourceName?.trim() || "News Desk"} • {article.publishedAt}
+</p>
             </div>
           </div>
           <div className="text-right">
