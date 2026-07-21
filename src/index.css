@@ -59,3 +59,9 @@
 .article-content img:first-child {
     margin-top: 0;
 }
+.lead-paragraph{
+  border-left:4px solid #ef4444;
+  padding-left:16px;
+  margin-top:0;
+  margin-bottom:24px;
+}
