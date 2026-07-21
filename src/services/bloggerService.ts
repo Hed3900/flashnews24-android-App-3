@@ -61,8 +61,7 @@ function cleanBloggerHtmlToParagraphs(html: string): { summary: string; content:
   summary,
   content: html,
   readTimeMinutes
-};
-
+}
 /**
  * Extracts high-resolution featured image from Blogger entry thumbnail or inline HTML images.
  */
