@@ -76,10 +76,8 @@ const authorName =
     : "FlashNews24 News Desk";
 
 const articleHtml = (article.content || article.summary)
-  .replace(
-    /<p>/,
-    '<p class="lead-paragraph">'
-  );
+  .replace(/<img[^>]*>/i, "")
+  .replace(/<p>/, '<p class="lead-paragraph">');
   useEffect(() => {
   const loadTwitter = () => {
     if ((window as any).twttr?.widgets) {
