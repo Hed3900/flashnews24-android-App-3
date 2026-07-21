@@ -69,26 +69,30 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
   md: 'text-sm leading-relaxed',
   lg: 'text-base leading-relaxed font-medium'
 };
-useEffect(() => {
-  // X (Twitter)
-  if ((window as any).twttr?.widgets) {
-    (window as any).twttr.widgets.load();
-  }
+const articleHtml = (article.content || article.summary)
+  // X / Twitter
+  .replace(
+    /https?:\/\/(?:x\.com|twitter\.com)\/[^\s<"]+/gi,
+    (url) =>
+      `<blockquote class="twitter-tweet"><a href="${url}"></a></blockquote>`
+  )
 
   // Facebook
-  if ((window as any).FB?.XFBML) {
-    (window as any).FB.XFBML.parse();
-  }
+  .replace(
+    /https?:\/\/(?:www\.)?facebook\.com\/[^\s<"]+/gi,
+    (url) =>
+      `<div class="fb-post" data-href="${url}"></div>`
+  )
 
   // Instagram
-  if ((window as any).instgrm?.Embeds) {
-    (window as any).instgrm.Embeds.process();
-  }
-}, [article.content]);
-const articleHtml = (article.content || article.summary).replace(
-  /<img[^>]*>/i,
-  ""
-);
+  .replace(
+    /https?:\/\/(?:www\.)?instagram\.com\/(?:p|reel)\/[^\s<"]+/gi,
+    (url) =>
+      `<blockquote class="instagram-media"><a href="${url}"></a></blockquote>`
+  )
+
+  // Remove duplicate first image
+  .replace(/<img[^>]*>/i, "");
 
 return (
   <div className="flex flex-col h-full bg-inherit animate-in fade-in duration-200">
