@@ -76,14 +76,10 @@ const authorName =
     : "FlashNews24 News Desk";
 
 const articleHtml = (article.content || article.summary)
-  // Remove duplicate hero image
-  .replace(/<img[^>]*>/i, "")
-
-  // Remove empty paragraphs/divs at the beginning
-  .replace(/^(?:\s|<br\s*\/?>|&nbsp;|<p>\s*<\/p>|<div>\s*<\/div>)+/i, "")
-
-  // Remove leading line breaks
-  .replace(/^(<br\s*\/?>)+/i, "");
+  .replace(
+    /<p>/,
+    '<p class="lead-paragraph">'
+  );
   useEffect(() => {
   const loadTwitter = () => {
     if ((window as any).twttr?.widgets) {
@@ -248,16 +244,10 @@ return (
           </span>
         </div>
         {/* Main Article Body */}
-<div className={`space-y-4 text-[#E1E4E8] ${fontClasses[fontSize]} pt-1`}>
-  <div className="flex items-start gap-3">
-    <div className="w-1 rounded-full bg-red-500 self-stretch"></div>
-
-    <div
-      className="article-content flex-1 text-[#E1E4E8]"
-      dangerouslySetInnerHTML={{ __html: articleHtml }}
-    />
-  </div>
-</div>
+<div
+  className="article-content text-[#E1E4E8]"
+  dangerouslySetInnerHTML={{ __html: articleHtml }}
+/>
           {/* ===== Footer ===== */}
 <div className="mt-10 border-t border-gray-800 pt-6">
 
