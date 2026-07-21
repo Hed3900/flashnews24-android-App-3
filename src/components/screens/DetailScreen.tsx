@@ -69,6 +69,12 @@ export const DetailScreen: React.FC<DetailScreenProps> = ({
   md: 'text-sm leading-relaxed',
   lg: 'text-base leading-relaxed font-medium'
 };
+const authorName =
+  article.author?.trim() &&
+  article.author.trim().toLowerCase() !== "unknown"
+    ? article.author.trim()
+    : "FlashNews24 News Desk";
+
 const articleHtml = (article.content || article.summary)
   // Remove duplicate hero image
   .replace(/<img[^>]*>/i, "")
@@ -213,11 +219,6 @@ return (
               {article.author ? article.author.charAt(0) : 'E'}
             </div>
             <div>
-              const authorName =
-  article.author?.trim() &&
-  article.author.trim().toLowerCase() !== "unknown"
-    ? article.author.trim()
-    : "FlashNews24 News Desk";
               <h4 className="font-bold text-white">
   {authorName}
 </h4>
