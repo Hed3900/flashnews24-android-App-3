@@ -3,6 +3,7 @@ package com.flashnews24.app;
 import android.os.Bundle;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.getcapacitor.BridgeActivity;
 import com.google.android.gms.ads.MobileAds;
@@ -23,19 +24,28 @@ public class MainActivity extends BridgeActivity {
         MobileAds.initialize(this, initializationStatus -> {});
 
         FirebaseMessaging.getInstance().getToken()
-    .addOnCompleteListener(task -> {
-        if (!task.isSuccessful()) {
-            android.widget.Toast.makeText(
-                this,
-                "FCM Error: " + task.getException(),
-                android.widget.Toast.LENGTH_LONG
-            ).show();
-            return;
-        }
+                .addOnCompleteListener(task -> {
 
-        android.widget.Toast.makeText(
-            this,
-            task.getResult(),
-            android.widget.Toast.LENGTH_LONG
-        ).show();
-    });
+                    if (!task.isSuccessful()) {
+                        Log.e("FCM", "Token Error", task.getException());
+
+                        Toast.makeText(
+                                this,
+                                "FCM Error: " + task.getException(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                        return;
+                    }
+
+                    String token = task.getResult();
+
+                    Log.d("FCM_TOKEN", token);
+
+                    Toast.makeText(
+                            this,
+                            token,
+                            Toast.LENGTH_LONG
+                    ).show();
+                });
+    }
+}
