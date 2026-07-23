@@ -24,32 +24,16 @@ public class MainActivity extends BridgeActivity {
         MobileAds.initialize(this, initializationStatus -> {});
 
         FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(task -> {
+    .addOnCompleteListener(task -> {
+        if (!task.isSuccessful()) {
+            Log.e("FCM", "Token Error", task.getException());
 
-                    if (!task.isSuccessful()) {
-                        Log.e("FCM", "Token Error", task.getException());
-
-                        Toast.makeText(
-                                this,
-                                "FCM Error: " + task.getException(),
-                                Toast.LENGTH_LONG
-                        ).show();
-                        return;
-                    }
-
-                    String token = task.getResult();
-
-                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-builder.setTitle("FCM Token");
-builder.setMessage(token);
-builder.setPositiveButton("OK", null);
-builder.show();
-
-                    Toast.makeText(
-                            this,
-                            token,
-                            Toast.LENGTH_LONG
-                    ).show();
-                });
+            Toast.makeText(
+                this,
+                "FCM Error: " + task.getException(),
+                Toast.LENGTH_LONG
+            ).show();
+        }
+    });
     }
 }
