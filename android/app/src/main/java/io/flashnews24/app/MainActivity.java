@@ -23,16 +23,15 @@ public class MainActivity extends BridgeActivity {
 
         MobileAds.initialize(this, initializationStatus -> {});
 
-        FirebaseMessaging.getInstance().getToken()
+        FirebaseMessaging.getInstance()
+    .subscribeToTopic("flashnews24")
     .addOnCompleteListener(task -> {
-        if (!task.isSuccessful()) {
-            Log.e("FCM", "Token Error", task.getException());
-
-            Toast.makeText(
-                this,
-                "FCM Error: " + task.getException(),
-                Toast.LENGTH_LONG
-            ).show();
+        if (task.isSuccessful()) {
+            Log.d("FCM", "Subscribed to flashnews24");
+        } else {
+            Log.e("FCM", "Topic subscription failed", task.getException());
+        }
+    });
         }
     });
     }
