@@ -27,7 +27,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
     <div className="absolute inset-0 z-50 bg-[#0B0E14] text-white flex flex-col items-center justify-between p-8 select-none animate-in fade-in duration-300">
       {/* Top Status */}
       <div className="w-full flex items-center justify-between text-[10px] font-mono text-[#E1E4E8]/50 tracking-widest uppercase">
-        <span>Android 16 • API 35</span>
+        <span>Android 16 • API 36</span>
         <span className="flex items-center gap-1 text-emerald-400">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
           RELEASE READY
@@ -57,7 +57,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
           Real-Time AI & Global Breaking News
         </p>
         <span className="mt-2.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] text-blue-300 font-mono font-bold tracking-wide">
-          v1.0.0-PROD • NATIVE KOTLIN
+          v1.0.5-PROD • NATIVE KOTLIN
         </span>
 
         {/* Animated Shimmer Progress Bar */}
@@ -68,7 +68,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
           />
         </div>
         <span className="text-[10px] font-mono text-[#E1E4E8]/40 mt-2">
-          Initializing Retrofit & Room SQLite... {Math.min(progress, 100)}%
+          Syncing FlashNews24... {Math.min(progress, 100)}%
         </span>
       </div>
 
