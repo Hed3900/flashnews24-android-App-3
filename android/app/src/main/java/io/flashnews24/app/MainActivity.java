@@ -23,14 +23,19 @@ public class MainActivity extends BridgeActivity {
         MobileAds.initialize(this, initializationStatus -> {});
 
         FirebaseMessaging.getInstance().getToken()
-            .addOnCompleteListener(task -> {
-                if (!task.isSuccessful()) {
-                    Log.w("FCM", "Fetching FCM registration token failed", task.getException());
-                    return;
-                }
+    .addOnCompleteListener(task -> {
+        if (!task.isSuccessful()) {
+            android.widget.Toast.makeText(
+                this,
+                "FCM Error: " + task.getException(),
+                android.widget.Toast.LENGTH_LONG
+            ).show();
+            return;
+        }
 
-                String token = task.getResult();
-                Log.d("FCM_TOKEN", token);
-            });
-    }
-}
+        android.widget.Toast.makeText(
+            this,
+            task.getResult(),
+            android.widget.Toast.LENGTH_LONG
+        ).show();
+    });
