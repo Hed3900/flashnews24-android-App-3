@@ -3,7 +3,6 @@ package com.flashnews24.app;
 import android.os.Bundle;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.getcapacitor.BridgeActivity;
 import com.google.android.gms.ads.MobileAds;
@@ -24,15 +23,13 @@ public class MainActivity extends BridgeActivity {
         MobileAds.initialize(this, initializationStatus -> {});
 
         FirebaseMessaging.getInstance()
-    .subscribeToTopic("flashnews24")
-    .addOnCompleteListener(task -> {
-        if (task.isSuccessful()) {
-            Log.d("FCM", "Subscribed to flashnews24");
-        } else {
-            Log.e("FCM", "Topic subscription failed", task.getException());
-        }
-    });
-        }
-    });
+                .subscribeToTopic("flashnews24")
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("FCM", "Subscribed to flashnews24");
+                    } else {
+                        Log.e("FCM", "Topic subscription failed", task.getException());
+                    }
+                });
     }
 }
