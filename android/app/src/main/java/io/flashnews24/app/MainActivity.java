@@ -39,7 +39,11 @@ public class MainActivity extends BridgeActivity {
 
                     String token = task.getResult();
 
-                    Log.d("FCM_TOKEN", token);
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+builder.setTitle("FCM Token");
+builder.setMessage(token);
+builder.setPositiveButton("OK", null);
+builder.show();
 
                     Toast.makeText(
                             this,
