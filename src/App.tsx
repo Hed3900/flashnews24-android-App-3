@@ -223,7 +223,6 @@ fetchBloggerArticles('All')
 
       setArticles(liveArticles);
 saveNativeArticlesCache(liveArticles);
-      });
 
       addRetrofitLog(
         'GET',
