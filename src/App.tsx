@@ -221,20 +221,8 @@ fetchBloggerArticles('All')
   .then((liveArticles) => {
     if (liveArticles && liveArticles.length > 0) {
 
-      setArticles((prev) => {
-        const merged = [...liveArticles, ...prev];
-
-        const unique = Array.from(
-          new Map(merged.map(item => [item.id, item])).values()
-        );
-
-        unique.sort(
-          (a, b) =>
-            new Date(b.rawPublishedAt || b.publishedAt).getTime() -
-            new Date(a.rawPublishedAt || a.publishedAt).getTime()
-        );
-
-        return unique;
+      setArticles(liveArticles);
+saveNativeArticlesCache(liveArticles);
       });
 
       addRetrofitLog(
@@ -517,21 +505,8 @@ const handleShareApp = async () => {
 
 if (liveArticles && liveArticles.length > 0) {
 
-  setArticles(prev => {
-    const merged = Array.from(
-      new Map([...liveArticles, ...prev].map(item => [item.id, item])).values()
-    );
-
-    merged.sort(
-      (a, b) =>
-        new Date(b.rawPublishedAt || b.publishedAt).getTime() -
-        new Date(a.rawPublishedAt || a.publishedAt).getTime()
-    );
-
-    return merged;
-  });
-
-  saveNativeArticlesCache(liveArticles);
+  setArticles(liveArticles);
+saveNativeArticlesCache(liveArticles);
 
   const latest = liveArticles[0];
 
