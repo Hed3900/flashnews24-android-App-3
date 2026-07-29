@@ -333,7 +333,6 @@ useEffect(() => {
                 new Date(a.rawPublishedAt || a.publishedAt).getTime()
             );
 
-            saveNativeArticlesCache(unique);
 
             return unique;
           });
