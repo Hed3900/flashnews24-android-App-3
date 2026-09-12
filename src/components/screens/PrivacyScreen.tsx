@@ -6,11 +6,11 @@ interface PrivacyScreenProps {
 
 const PrivacyScreen: React.FC<PrivacyScreenProps> = ({ onBack }) => {
   return (
-    <div className="min-h-screen bg-[#0F1115] text-white overflow-y-auto">
-      <div className="sticky top-0 bg-[#161B22] border-b border-gray-800 p-4 flex items-center">
+    <div className="min-h-screen bg-[#070809] text-white overflow-y-auto">
+      <div className="sticky top-0 bg-[#0B0C0E] border-b border-[#252629] p-4 flex items-center">
         <button
           onClick={onBack}
-          className="text-blue-400 font-semibold mr-4"
+          className="text-red-400 font-semibold mr-4"
         >
           ← Back
         </button>
@@ -20,7 +20,7 @@ const PrivacyScreen: React.FC<PrivacyScreenProps> = ({ onBack }) => {
         </h1>
       </div>
 
-      <div className="p-5 space-y-6 text-gray-300 leading-7">
+      <div className="p-5 space-y-6 text-[#C4C7CE] leading-7">
 
         <div>
           <h2 className="text-lg font-bold text-white mb-2">

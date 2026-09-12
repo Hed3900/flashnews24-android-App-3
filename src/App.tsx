@@ -28,11 +28,6 @@ import {
   loadNativeArticlesCache
 } from './services/capacitorService';
 import { Flame, Bell, Database, Smartphone, Code, Wifi, Sparkles, Download } from 'lucide-react';
-import {
-  Menu,
-  MenuItem,
-  IconButton
-} from '@capacitor-community/material-menu';
 
 import { Menu as MenuIcon } from 'lucide-react';
 import AboutScreen from "./components/screens/AboutScreen";
@@ -354,22 +349,11 @@ useEffect(() => {
       await AdMob.initialize();
 
       // Banner
-      await AdMob.showBanner({
-        adId: "ca-app-pub-3288039417600063/3826509024",
-        adSize: BannerAdSize.ADAPTIVE_BANNER,
-        position: BannerAdPosition.BOTTOM_CENTER,
-      });
 
-      // App Open
-      await AdMob.prepareAppOpen({
-        adId: "ca-app-pub-3288039417600063/7707211570",
-      });
+      } catch (error) {
+        console.error("AdMob initialization failed:", error);
+      }
 
-      await AdMob.showAppOpen();
-
-    } catch (e) {
-      console.log(e);
-    }
   };
 
   initAds();
@@ -491,6 +475,22 @@ const handleShareApp = async () => {
   const handleSyncLatestBloggerPostPush = async () => {
   setIsSyncingBlogger(true);
 
+  useEffect(() => {
+    const showAdBanner = async () => {
+      try {
+        await AdMob.showBanner({
+          adId: "ca-app-pub-3288039417600063/3826509024",
+          adSize: BannerAdSize.ADAPTIVE_BANNER,
+          position: BannerAdPosition.BOTTOM_CENTER,
+        });
+      } catch (error) {
+        console.error("AdMob banner failed:", error);
+      }
+    };
+
+    showAdBanner();
+  }, []);
+
   // Hide syncing banner after 5 seconds, background sync continues
   setTimeout(() => {
     setIsSyncingBlogger(false);
@@ -567,6 +567,7 @@ saveNativeArticlesCache(liveArticles);
     isRefreshing={isRefreshing}
     isOffline={isOffline}
     setMenuOpen={setMenuOpen}
+          onNavigate={(screen) => setActiveScreen(screen as any)}
   />
 )}
             {activeScreen === 'detail' && selectedArticle && (
@@ -587,6 +588,7 @@ saveNativeArticlesCache(liveArticles);
                 onSelectArticle={handleSelectArticle}
                 onRemoveBookmark={handleToggleBookmark}
                 onClearAllBookmarks={() => setBookmarkedIds([])}
+                onBack={() => setActiveScreen("home")}
               />
             )}
 
@@ -604,6 +606,7 @@ saveNativeArticlesCache(liveArticles);
                 allArticles={articles}
                 onSelectArticle={handleSelectArticle}
                 onClearNotifications={() => setNotifications([])}
+                onBack={() => setActiveScreen("home")}
               />
             )}
                 {activeScreen === "about" && (

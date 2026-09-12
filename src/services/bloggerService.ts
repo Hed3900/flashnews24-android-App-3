@@ -229,79 +229,6 @@ const { primary, tags } =
 }
 
 /**
- * Real cached Blogger articles from flashnews24.site as instant offline / retry fallback.
- */
-const OFFLINE_BLOGGER_CACHE: Article[] = [
-  {
-    id: "tag-blogger-com-1999-blog-4592212551421716018-post-7530557018294806262",
-    title: "Small Plane Crashes Into East River Near Manhattan Ferry Terminal",
-    summary: "New York City, USA: A small aircraft crashed into the East River near a Manhattan ferry terminal on Saturday, prompting a rapid response from emergency crews. Thanks to the swift actions of rescue teams, all eight people on board were safely evacuated, and officials reported no injuries.",
-    content: "New York City, USA: A small aircraft crashed into the East River near a Manhattan ferry terminal on Saturday, prompting a rapid response from emergency crews. Thanks to the swift actions of rescue teams, all eight people on board were safely evacuated, and officials reported no injuries.\n\nThe aircraft came down in the water near one of Lower Manhattan's busy ferry terminals, drawing the attention of nearby commuters and boat operators. Witnesses reported seeing rescue vessels quickly converge on the scene as the aircraft remained partially submerged.\n\nRescue Teams Respond Within Minutes\n\nThe NYPD Harbor Unit, along with fire department marine units and other emergency responders, launched an immediate rescue operation. Rescue boats reached the aircraft within minutes, helping all eight occupants to safety. Paramedics evaluated those on board at the scene, confirming that no hospitalizations were necessary.\n\nAuthorities have not yet identified the cause of the crash. The Federal Aviation Administration (FAA) and the National Transportation Safety Board (NTSB) have been notified and are expected to conduct a thorough investigation into the incident.",
-    author: "FlashNews24 Live",
-    sourceName: "FlashNews24.site",
-    publishedAt: "2 hours ago",
-    imageUrl: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhA26VRoI9f-O72pbl-ReERqfyMyHFZEMj9szL2rA3Zo0bqlqhWX5lLlJ3E8hqUqhbqbxEBz0rpiefDOOuoIhtmMfoHgc3kGPc0RwqF4e_lIS1kYkr1rfxp9wdRkQUgOI675ieaCTdo2VQ60J8Nn6HKSvaCchoRO22yi088C64VL-qg_q_acCs3fW46QXY/s1000/1000066507.png",
-    category: "World",
-    tags: ["breaking news New York", "latest news USA", "newyork", "USA", "usa news", "world news"],
-    url: "https://www.flashnews24.site/2026/07/Small-Plane-Crashes-Into-East-River-Near-Manhattan-Ferry-Terminal.html",
-    readTimeMinutes: 2,
-    isBreaking: true,
-    sentiment: "Urgent",
-    isLiveBlogger: true
-  },
-  {
-    id: "tag-blogger-com-1999-blog-4592212551421716018-post-6302829285090124403",
-    title: "Aerosucre Cargo Boeing 737 Suffers Hard Landing at Bogotá Airport",
-    summary: "Bogotá, Colombia: An Aerosucre cargo aircraft suffered a hard landing at Bogotá's El Dorado International Airport on Saturday, causing damage to the aircraft and prompting an immediate emergency response.",
-    content: "Bogotá, Colombia: An Aerosucre cargo aircraft suffered a hard landing at Bogotá's El Dorado International Airport on Saturday, causing damage to the aircraft and prompting an immediate emergency response from airport safety teams.\n\nThe Boeing 737 freighter experienced difficulties during landing, resulting in structural impact as it touched down on the runway. Emergency fire and rescue services stationed at El Dorado International Airport quickly responded to the scene to secure the aircraft and prevent any potential fire hazard.\n\nCrew Safely Evacuated\n\nAirport authorities confirmed that all crew members on board were safely evacuated following the incident. Medical personnel assessed the flight crew at the scene, and no severe injuries or fatalities were reported.\n\nFollowing the hard landing, emergency teams worked to inspect the aircraft and clear debris from the runway area. Flights operating out of Bogotá experienced temporary delays while safety protocols were carried out.",
-    author: "FlashNews24 Live",
-    sourceName: "FlashNews24.site",
-    publishedAt: "4 hours ago",
-    imageUrl: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhd15NeEc-ClqM4ztMZjk-FVW5bIyATyf_058mAmOKvSVkf_NMAmrBODMuap7vAewahDipmM0V0Ef3Q-9tTn-9mjcwtnyd1hnkh-eDac7mSLGdZxp8BREXGi9ECICZHUdTIBEg9BOWJoIdO3dKr7xdxZE_YzPRy4L7JH_OTReSHRC8ragIa-cSDQFtF16g/s1000/1000066487.png",
-    category: "World",
-    tags: ["aerosucre boeing 737 hard landing", "aviation news", "bogotá airport incident", "colombia cargo plane accident"],
-    url: "https://www.flashnews24.site/2026/07/Aerosucre-Cargo-Boeing-737-Suffers-Hard-Landing-at-Bogota-Airport.html",
-    readTimeMinutes: 2,
-    isBreaking: true,
-    sentiment: "Urgent",
-    isLiveBlogger: true
-  },
-  {
-    id: "tag-blogger-com-1999-blog-4592212551421716018-post-477501658279747758",
-    title: "Major Fire Breaks Out at Marseille's Old Port; Multiple Boats Damaged, 14 People Injured",
-    summary: "Marseille, France: A major fire broke out at the Vieux-Port (Old Port) in Marseille on Saturday morning, engulfing several boats moored along the waterfront and triggering a large-scale emergency response.",
-    content: "Marseille, France: A major fire broke out at the Vieux-Port (Old Port) in Marseille on Saturday morning, engulfing several boats moored along the waterfront and triggering a large-scale emergency response.\n\nAccording to preliminary reports, at least two vessels caught fire, with some boats reportedly sinking as firefighters battled the flames. Authorities have not yet confirmed the full extent of the damage, and investigations into the cause of the blaze are ongoing.\n\nMore than 150 marine firefighters were deployed to the scene to contain the fire and prevent it from spreading to nearby vessels and port facilities. Thick smoke was seen rising above the historic harbor as emergency crews worked to bring the situation under control.\n\nOfficials said 14 people received medical attention following the incident. While authorities have not released detailed information about the severity of the injuries, emergency medical teams treated those affected at the scene.",
-    author: "FlashNews24 Live",
-    sourceName: "FlashNews24.site",
-    publishedAt: "6 hours ago",
-    imageUrl: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHqdonmOtaJo_femCJENk9zm4I5Ooej9nG7vxV-89dpBmKTaOvYfJHSqXWYJ1EJR5lh7GpYdiTJZplGRAEon8nQmReUHK1KjwqwwZzJPxadBuPFsDdwDhELTMmAGG1Byx880vyRBwu_Nm_y3cLNoGN1TMnGGs_Hl3nCGEnswt40BnpGX4BMOq-a0eOvGs/s1000/1000066480.png",
-    category: "World",
-    tags: ["boat accident", "breaking news", "france", "marseille", "world news"],
-    url: "https://www.flashnews24.site/2026/07/Major-Fire-Breaks-Out-at-Marseilles-Old-Port-Multiple-Boats-Damaged-14-People-Injured.html",
-    readTimeMinutes: 2,    isBreaking: false,
-    sentiment: "Urgent",
-    isLiveBlogger: true
-  },
-  {
-    id: "tag-blogger-com-1999-blog-4592212551421716018-post-5354744508706955030",
-    title: "Police Close Watermead Country Park After Body Found in Lake; Emergency Services Respond in Leicester",
-    summary: "Leicester, England: A major emergency response was launched at Watermead Country Park in Leicester on Saturday after a body was discovered in the water, prompting police to close the park while investigations continue.",
-    content: "Leicester, England: A major emergency response was launched at Watermead Country Park in Leicester on Saturday after a body was discovered in the water, prompting police to close the park while investigations continue.\n\nEmergency services, including police, ambulance crews, and specialist responders, were called to the scene during the afternoon following reports of a serious incident at the popular country park.\n\nWitnesses reported a significant emergency presence in the area, with the Air Ambulance landing in a nearby field to assist responding teams. Police officers secured the park and restricted public access while emergency personnel carried out their operations.\n\nWatermead Country Park remains closed as investigators examine the scene and gather evidence. Officers are expected to remain in the area while inquiries continue.",
-    author: "FlashNews24 Live",
-    sourceName: "FlashNews24.site",
-    publishedAt: "8 hours ago",
-    imageUrl: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjlleSFEnb9c3r9jM3WbLMofjNf4Ml-4THVAwuHZEgFY257GRlewiR20rxGNpSi0aF0TsYOXQsjV6wyyYbQCRrIRt3W2xBsljVDgT-UEoZ0I6YiTdjnUgh7june9xckopFabommWMKNvWI5VYj29LcbKOn_3fleGG-Fho2_SFdGNvCdRdN7J-9-WWQJvuU/s1000/1000066475.png",
-    category: "World",
-    tags: ["breakingnews", "england", "leicester", "uk breaking news", "world news"],
-    url: "https://www.flashnews24.site/2026/07/Police-Close-Watermead-Country-Park-After-Body-Found-in-Lake.html",
-    readTimeMinutes: 2,
-    isBreaking: false,
-    sentiment: "Urgent",
-    isLiveBlogger: true
-  }
-];
-
-/**
  * Fetches articles directly or via server proxy from flashnews24.site Blogger feed.
  * Guaranteed to return valid Blogger articles without console errors or UI crashes.
  */
@@ -339,7 +266,7 @@ if (response.status !== 200) {
     continue;
 }
 
-const json = response.data;
+const json = typeof response.data === "string" ? JSON.parse(response.data) : response.data;
 
 
 
@@ -369,10 +296,6 @@ const feed =
   
   console.error(e);
   }
-  }
-
-  if (fetchedArticles.length === 0) {
-    return OFFLINE_BLOGGER_CACHE;
   }
 
   fetchedArticles.sort(
