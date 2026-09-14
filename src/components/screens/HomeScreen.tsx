@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { registerPlugin } from '@capacitor/core';
+
+const InlineAdMob = registerPlugin<{ show: (options: { tops: number[]; slotIds: number[] }) => Promise<void>; hide: () => Promise<void> }>('InlineAdMob');
 import {
   Search,
   RotateCcw,
@@ -68,6 +71,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   setMenuOpen
 }) => {
   const [isPulling, setIsPulling] = React.useState(false);
+  const inlineAdRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const activeCategories: NewsCategory[] = ['All', ...STANDARD_CATEGORIES];
 
@@ -76,8 +80,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       ? articles.length
       : articles.filter(a => a.category === category).length;
 
-  const breakingArticles = articles.filter(a => a.isBreaking);
-  const regularArticles = articles.filter(a => !a.isBreaking);
+  const filteredArticles =
+    selectedCategory === 'All'
+      ? articles
+      : articles.filter(a => a.category === selectedCategory);
+
+  const breakingArticles = filteredArticles.filter(a => a.isBreaking);
+  const regularArticles = filteredArticles.filter(a => !a.isBreaking);
 
   const [breakingIndex, setBreakingIndex] = React.useState(0);
 
@@ -98,11 +107,57 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   }, [breakingArticles.length, breakingIndex]);
 
 
+  React.useEffect(() => {
+    const updateInlineAds = () => {
+      const tops: number[] = [];
+      const slotIds: number[] = [];
+
+      const main = document.querySelector('main.overflow-y-auto');
+      const mainRect = main?.getBoundingClientRect();
+
+      if (!mainRect) return;
+
+      inlineAdRefs.current.forEach((ref, slotIndex) => {
+        if (!ref) return;
+
+        const rect = ref.getBoundingClientRect();
+
+        if (
+          rect.top >= mainRect.top &&
+          rect.bottom <= mainRect.bottom
+        ) {
+          tops.push(Math.round(rect.top));
+          slotIds.push(slotIndex);
+        }
+      });
+
+      if (tops.length > 0) {
+        InlineAdMob.show({ tops, slotIds }).catch(() => {});
+      } else {
+        InlineAdMob.hide().catch(() => {});
+      }
+    };
+
+    const scrollContainer = document.querySelector('main.overflow-y-auto');
+
+    updateInlineAds();
+
+    scrollContainer?.addEventListener('scroll', updateInlineAds, { passive: true });
+    window.addEventListener('resize', updateInlineAds);
+
+    return () => {
+      scrollContainer?.removeEventListener('scroll', updateInlineAds);
+      window.removeEventListener('resize', updateInlineAds);
+      InlineAdMob.hide().catch(() => {});
+    };
+  }, [selectedCategory, regularArticles.length]);
+
   const isBookmarked = (id: string) => bookmarkedIds.includes(id);
 
   const handleRefresh = () => {
     onRefresh();
   };
+
 
 
   return (
@@ -313,7 +368,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           {/* ARTICLE LIST */}
           <div className="space-y-3 pb-8">
 
-            {regularArticles.map(article => (
+            {regularArticles.map((article, index) => (
+              <React.Fragment key={article.id}>
               <article
                 key={article.id}
                 onClick={() => onSelectArticle(article)}
@@ -403,6 +459,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   </div>
                 </div>
               </article>
+
+              {index % 5 === 4 && (
+                <div
+                  id={`inline-ad-placeholder-${Math.floor(index / 5)}`}
+                  ref={el => {
+                    inlineAdRefs.current[Math.floor(index / 5)] = el;
+                  }}
+                  className="w-full h-[100px] flex items-center justify-center"
+                />
+              )}
+              </React.Fragment>
             ))}
 
           </div>

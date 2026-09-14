@@ -48,6 +48,27 @@ const showInterstitial = async () => {
   
 }
 };
+
+const showPageBanner = async () => {
+  try {
+    await AdMob.showBanner({
+      adId: "ca-app-pub-3288039417600063/3826509024",
+      adSize: BannerAdSize.ADAPTIVE_BANNER,
+      position: BannerAdPosition.BOTTOM_CENTER,
+    });
+  } catch (err) {
+    console.error("Page banner error:", err);
+  }
+};
+
+const hidePageBanner = async () => {
+  try {
+    await AdMob.hideBanner();
+  } catch (err) {
+    console.error("Page banner hide error:", err);
+  }
+};
+
 const INITIAL_ARTICLES: Article[] = [
   {
 
@@ -284,7 +305,12 @@ useEffect(() => {
 
     loadNativeArticlesCache().then(cached => {
       if (cached && cached.length > 0) {
-        setArticles(cached);
+        setArticles(prev => {
+          if (prev.length >= cached.length) {
+            return prev;
+          }
+          return cached;
+        });
       }
     });
 
@@ -359,6 +385,14 @@ useEffect(() => {
   initAds();
 }, []);
   
+  useEffect(() => {
+    if (activeScreen === "home" || activeScreen === "detail") {
+      hidePageBanner();
+    } else {
+      showPageBanner();
+    }
+  }, [activeScreen]);
+
   useEffect(() => {
     saveNativeBookmarks(bookmarkedIds);
   }, [bookmarkedIds]);
@@ -475,21 +509,6 @@ const handleShareApp = async () => {
   const handleSyncLatestBloggerPostPush = async () => {
   setIsSyncingBlogger(true);
 
-  useEffect(() => {
-    const showAdBanner = async () => {
-      try {
-        await AdMob.showBanner({
-          adId: "ca-app-pub-3288039417600063/3826509024",
-          adSize: BannerAdSize.ADAPTIVE_BANNER,
-          position: BannerAdPosition.BOTTOM_CENTER,
-        });
-      } catch (error) {
-        console.error("AdMob banner failed:", error);
-      }
-    };
-
-    showAdBanner();
-  }, []);
 
   // Hide syncing banner after 5 seconds, background sync continues
   setTimeout(() => {

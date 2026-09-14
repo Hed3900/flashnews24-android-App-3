@@ -18,6 +18,7 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        registerPlugin(InlineAdMob.class);
         super.onCreate(savedInstanceState);
 
         MobileAds.initialize(this, initializationStatus -> {});

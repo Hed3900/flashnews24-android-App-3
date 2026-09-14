@@ -236,66 +236,74 @@ const { primary, tags } =
   category: string = "All",
   searchQuery: string = ""
 ): Promise<Article[]> {
-
   let fetchedArticles: Article[] = [];
 
-  const urls = [
-    "https://flashnews24.site/feeds/posts/default?alt=json&max-results=500",
-    "https://www.flashnews24.site/feeds/posts/default?alt=json&max-results=500",
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(
-      "https://flashnews24.site/feeds/posts/default?alt=json&max-results=500"
-    )}`
-  ];
+  const PAGE_SIZE = 150;
 
-  for (const url of urls) {
   try {
+    for (let startIndex = 1; ; startIndex += PAGE_SIZE) {
+      const url =
+        `https://www.flashnews24.site/feeds/posts/default` +
+        `?alt=json&start-index=${startIndex}&max-results=${PAGE_SIZE}`;
 
-    
+      const response = await CapacitorHttp.request({
+        url,
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+      });
 
-    const response = await CapacitorHttp.request({
-    url,
-    method: "GET",
-    headers: {
-        Accept: "application/json"
-    }
-});
+      console.log(`🔥 BLOGGER HTTP: start=${startIndex}, status=${response.status}`);
 
+      if (response.status !== 200) {
+        console.error(
+          `Blogger feed failed at start-index ${startIndex}:`,
+          response.status
+        );
+        break;
+      }
 
+      const json =
+        typeof response.data === "string"
+          ? JSON.parse(response.data)
+          : response.data;
 
-if (response.status !== 200) {
-    continue;
-}
+      const feed =
+        json?.feed ??
+        json?.contents?.feed ??
+        null;
 
-const json = typeof response.data === "string" ? JSON.parse(response.data) : response.data;
+      if (!feed?.entry || !Array.isArray(feed.entry)) {
+        break;
+      }
 
-
-
-const feed =
-  json.feed ??
-  json.contents?.feed ??
-  null;
-
-      if (feed?.entry && Array.isArray(feed.entry)) {
-    fetchedArticles = feed.entry
+      const pageArticles = feed.entry
         .map((entry: any, index: number) => {
-            try {
-                return parseBloggerEntry(entry, index);
-            } catch {
-                return null;
-            }
+          try {
+            return parseBloggerEntry(
+              entry,
+              startIndex - 1 + index
+            );
+          } catch (e) {
+            console.error("Failed to parse Blogger entry:", e);
+            return null;
+          }
         })
         .filter(Boolean) as Article[];
 
-    
-    if (fetchedArticles.length > 0) {
-        break;
-    }
-      }
+      fetchedArticles.push(...pageArticles);
 
-    } catch (e: any) {
-  
-  console.error(e);
-  }
+      console.log(
+        `Blogger page: start=${startIndex}, fetched=${pageArticles.length}, total=${fetchedArticles.length}`
+      );
+
+      if (pageArticles.length < PAGE_SIZE) {
+        break;
+      }
+    }
+  } catch (e) {
+    console.error("Failed to fetch Blogger articles:", e);
   }
 
   fetchedArticles.sort(
@@ -309,26 +317,36 @@ const feed =
   if (category !== "All") {
     const cat = category.toLowerCase();
 
-    filtered = filtered.filter(a =>
-      (a.category || "").toLowerCase() === cat ||
-      (a.tags || []).some(t => t.toLowerCase().includes(cat))
+    filtered = filtered.filter(
+      (a) =>
+        (a.category || "").toLowerCase() === cat ||
+        (a.tags || []).some((t) =>
+          t.toLowerCase().includes(cat)
+        )
     );
   }
 
   if (searchQuery.trim()) {
     const q = searchQuery.toLowerCase();
 
-    filtered = filtered.filter(a =>
+    filtered = filtered.filter((a) =>
       (
         (a.title || "") +
+        " " +
         (a.summary || "") +
+        " " +
         (a.content || "") +
+        " " +
         (a.tags || []).join(" ")
       )
         .toLowerCase()
         .includes(q)
     );
   }
+
+  console.log(
+    `Blogger articles: fetched=${fetchedArticles.length}, filtered=${filtered.length}`
+  );
 
   return filtered;
 }
